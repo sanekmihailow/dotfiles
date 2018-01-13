@@ -1,1 +1,27 @@
-1
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
+    else
+        color_prompt=
+    fi
+fi
+ 
+if [ "$color_prompt" = yes ]; then
+PS1="\`if [ \$? = 0 ]; then echo \[\e[32m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\e[0;93m\]\\n#-----------------------------\[\e[0m\]\[\e[37m\](\H)\[\e[0m\]-\[\e[1m\]\#-[\d]\[\e[0m\] \n \[\e[22;33m\]\t\[\e[0m\] \[\e[0;93m\]j=\j\[\e[0m\] \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;36m\]\h\[\e[0m\]: \[\e[1;94m\]\w\[\e[0m\] \n \n \[\e[1;92m\]\$\[\e[0m\] "
+else
+PS1="\`if [ \$? = 0 ]; then echo \[\e[32m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\e[0;93m\]\\n#-----------------------------\[\e[0m\]\[\e[37m\](\H)\[\e[0m\]-\[\e[1m\]\#-[\d]\[\e[0m\] \n \[\e[22;33m\]\t\[\e[0m\] \[\e[0;93m\]j=\j\[\e[0m\] \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;36m\]\h\[\e[0m\]: \[\e[1;94m\]\w\[\e[0m\] \n \n \[\e[1;92m\]\$\[\e[0m\] "
+fi
+ 
+unset color_prompt force_color_prompt
+
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    #PS1="\`if [ \$? = 0 ]; then echo \[\e[32m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\e[0;93m\]\\n#-----------------------------\[\e[0m\]\[\e[37m\](\H)\[\e[0m\]-\[\e[1m\]\#-[\d]\[\e[0m\] \n \[\e[22;33m\]\t\[\e[0m\] \[e[0;93m\]j=\j\[\e[0m\] \[\e[1;32m\]\u\[\e[0m\]@\[\e[1;36m\]\h\[\e[0m\]: \[\e[1;94m\]\w\[\e[0m\] \n \n \[\e[1;92m\]\$\[\e[0m\] "
+    ;;
+*)
+    ;;
+esac
