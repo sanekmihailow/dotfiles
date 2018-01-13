@@ -23,3 +23,5 @@ backtick 0 1 1 tail -n1 $HOME/.bash_history
 caption always "%{= kw} %{+b w}:%n|%S %{=kw} %= %{= kg}%t%{-}%{= kg} %= %{ = kw}%l %{+s k}%H%{-} %d-%m-%Y(%D) %c:%s%{= kw} "
 hardstatus alwayslastline
 hardstatus string "%{.kK}%-Lw %{= .kK}%50> %{= kg}%f*%n%{-}%+Lw%<%{= kg}"
+
+#password CRYPTO_PASSWORD
