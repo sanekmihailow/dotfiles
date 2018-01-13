@@ -11,7 +11,7 @@ skype, simple scan, pidgin, libreoffice
 clementine, inkscape, gimp
 virtualbox, torrent client
 
-############################ how tp install ubuntu 16.04
+############################ how to install ubuntu 16.04
 
 ### add repo
 sudo add-apt-repository "deb http://archive.canonical.com/ precise partner" && \
