@@ -5,3 +5,5 @@ if [ -x "`which most 2>&1`" ]; then
     #alias less=most
     export PAGER=most
 fi
+
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
