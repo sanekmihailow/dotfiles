@@ -1,0 +1,25 @@
+#--------------------------------------------------------------------------------------------------------uncomment
+vbell off
+vbell_msg ""
+hardstatus on
+#---------------------------------------------------------------------------------------------
+
+defscrollback 10024
+bind ^k
+bind ^\
+bind \\ quit
+bind K kill
+bind I login on
+bind O login off
+bind } history
+termcapinfo vt100 dl=5\E[M
+hardstatus off
+termcapinfo xterm*|rxvt*|kterm*|Eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007
+termcapinfo xterm*|linux*|rxvt*|Eterm* OP
+termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+defnonblock 5
+
+backtick 0 1 1 tail -n1 $HOME/.bash_history
+caption always "%{= kw} %{+b w}:%n|%S %{=kw} %= %{= kg}%t%{-}%{= kg} %= %{ = kw}%l %{+s k}%H%{-} %d-%m-%Y(%D) %c:%s%{= kw} "
+hardstatus alwayslastline
+hardstatus string "%{.kK}%-Lw %{= .kK}%50> %{= kg}%f*%n%{-}%+Lw%<%{= kg}"
