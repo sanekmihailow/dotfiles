@@ -1,1 +1,128 @@
-1
+#################################### alias #####################################################
+
+#aliases  ========================================
+alias su='sudo '
+alias se='sudo '
+alias sudo='sudo '
+alias suu='su '
+alias sr='sudo $(history -p !!)'
+alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
+alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
+alias ports="netstat -ntulp"
+alias used="du -ch -d 1"
+alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
+alias cmyip="curl icanhazip.com"
+
+
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
+
+#update all OS --------------------------------
+### update: update all of your packages!
+if [ ! -z "$(which brew)" ]; then
+  alias supdate="brew update && brew upgrade"
+elif [ ! -z "$(which pacman)" ]; then
+  alias supdate="sudo pacman -Syyu"
+elif [ ! -z "$(which apt)" ]; then
+  alias supdate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
+elif [ ! -z "$(which apt-get)" ]; then
+  alias supdate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
+elif [ ! -z "$(which dnf)" ]; then
+  alias supdate="sudo dnf upgrade"
+elif [ ! -z "$(which yum)" ]; then
+  alias supdate="su -c 'yum update'"
+elif [ ! -z "$(which zypper)" ]; then
+  alias supdate="sudo zypper update"
+fi
+
+#ls -------------------------------
+alias lss='ls --sort=extension --color=auto'
+alias ll='ls -lh'
+alias lal='ls -alh'
+alias la='ls -A'
+alias l='ls -CF'
+
+#ps ------------------------------
+alias psg='ps -A | grep'
+
+#dircolors ----------------------------
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias dir='dir --color=auto'
+  alias vdir='vdir --color=auto'
+  alias ls='ls -color=auto'
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+fi
+
+#git  -------------------------------
+alias gpo='git push origin master'
+alias gp='git pull'
+alias gs='git status'
+alias gd='git diff'
+alias gr='git reflog'
+alias glf='git ls-files'
+alias ga='git add'
+alias gb='git br'
+alias gdc='git diff --cached'
+alias gl='git log'
+alias gst='git stash'
+alias gplo='git pull origin master'
+alias gbv='git branch -vv'
+
+# grc --------------------------------
+if [ -f /usr/bin/grc ]; then
+ #alias cat="grc --colour=auto cat"
+  alias cvs="grc --colour=auto cvs"
+  alias diff="grc --colour=auto diff"
+  alias dig="grc --colour=auto dig"
+  alias df="grc --colour=auto df"
+  alias head="grc --colour=auto head"
+  alias esperanto="grc --colour=auto esperanto"
+  alias gcc="grc --colour=auto gcc"
+  alias ifconfig="grc --colour=auto ifconfig"
+  alias irclog="grc --colour=auto irclog"
+  alias ldap="grc --colour=auto ldap"
+  alias log="grc --colour=auto log"
+  alias ls="grc --colour=auto ls"
+  alias make="grc --colour=auto make"
+  alias mount="grc --colour=auto mount"
+  alias mount2="grc --colour=auto mount2"
+  alias mtr="grc --colour=auto mtr"
+  alias netstat="grc --colour=auto netstat"
+  alias ping="grc --colour=auto ping"
+  alias php="grc --colour=auto php"
+  alias proftpd="grc --colour=auto proftpd"
+  alias ps="grc --colour=auto ps"
+  alias traceroute="grc --colour=auto traceroute"
+  alias tail="grc --colour=auto tail"
+  alias wdiff="grc --colour=auto wdiff"
+ fi
+
+#vim --------------------------------
+if [ -f /usr/bin/vimcat ]; then
+  alias cat="vimcat "
+  alias v="vim "
+fi
+
+[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
+alias vivi="vi "
+ 
+#grep ---------------------------------------
+alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
+
+#mount ---------------------------------------
+alias mount="mount | column -t"
+
+#other -----------------------------------------
+              #pipe the output of a command to sprunge and it will give you a link to a paste-bin type page
+              #add ?php or ?sh or etc to have it add line numbers and highlighting
+alias sprunge="curl -F 'sprunge=<-' http://sprunge.us"
+              #automatically resume scp transfers that failed or paused
+alias scpresume='rsync --partial --progress --rsh=ssh'
+              #makes a directory tree listing
+alias dirtree='find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"'
+              #alias I made to strip comments from a bash or php script.   May need tweaked still
+alias stripcomments="sed -e '/^[[:blank:]]*#/d; s/[[:blank:]][[:blank:]]*#.*//'  -e '/^$/d' -e '/^\/\/.*/d' -e '/^\/\*/d;/^ \* /d;/^ \*\//d'"
+               #phpinfo_e > info.php   (write a basic phpinfo() file for testing)
+alias phpinfo_e="echo '<?php phpinfo(); ?>'";
