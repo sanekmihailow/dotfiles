@@ -8,7 +8,7 @@ endif
 set background=dark
 colorscheme sm
 
-# ------------------------------------- maps
+" ------------------------------------- maps
 nmap <F1> :set autoread<CR>
 nmap <F2> :au CursorMoved * checktime<CR>
 nmap <F3> :q!<CR>
@@ -22,7 +22,7 @@ nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
 nmap <F4> :set syntax=log<CR>
 
-# ------------------------------------ reg
+" ------------------------------------ reg
 set showcmd        
 set showmatch      
 set ignorecase     
