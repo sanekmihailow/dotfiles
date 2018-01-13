@@ -1,0 +1,84 @@
+########### need
+
+WPS
+shutter
+teamviewer, anydesk
+flash player, jdk
+firefox, chrome
+htop, hardinfo, pdf-reader 
+mc, openssh, thunderbird, #wine, aria2
+skype, simple scan, pidgin, libreoffice
+clementine, inkscape, gimp
+virtualbox, torrent client
+
+############################ how tp install ubuntu 16.04
+
+### add repo
+sudo add-apt-repository "deb http://archive.canonical.com/ precise partner" && \
+wget -q -O- "http://download.opensuse.org/repositories/home:Alexx2000/xUbuntu_`(lsb_release -rs)`/Release.key" | sudo apt-key add - && \
+sudo sh -c ‘echo "deb http://archive.canonical.com/ubuntu trusty partner" >> /etc/apt/sources.list.d/canonical_partner.list’ && \
+sudo sh -c "echo 'deb http://download.opensuse.org/repositories/home:/Alexx2000/xUbuntu_`(lsb_release -rs)`/ /' > /etc/apt/sources.list.d/doublecmd.list" && \
+sudo sh -c 'echo "deb http://deb.opera.com/opera/ stable non-free" >> /etc/apt/sources.list.d/opera.list' && \
+sudo sh -c 'wget -O - http://deb.opera.com/archive.key | apt-key add -' && \
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+sudo sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+wget -q -O - https://repo.yandex.ru/yandex-browser/YANDEX-BROWSER-KEY.GPG | sudo apt-key add - && \
+sudo sh -c 'echo "deb [arch=amd64] http://repo.yandex.ru/yandex-browser/deb beta main" > /etc/apt/sources.list.d/yandex-browser-beta.list' && \
+sudo add-apt-repository ppa:notepadqq-team/notepadqq && \
+sudo apt-add-repository ppa:shutter/ppa
+
+### apt install
+
+sudo apt update && \
+sudo apt install acroread opera google-chrome-stable yandex-browser-beta flshplugin-installer default-jdk notepadqq geany leafpad shutter skype simple-scan
+
+### dpkg install
+http://wps-community.org/downloads
+https://www.teamviewer.com/ru/download/previous-versions/
+https://anydesk.com/ru/platformy
+
+
+########################### how to install archlinux
+
+###--------------------- pacman install
+
+sudo pacman -Syy && sudo pacman -Suu
+sudo pacman -S (xf86-video-amdgpu or xf86-video-intel or xf86-video-nouveau or xf86-video-vesa or nvidia or xf86-video-ati)
+sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server gdm alsa-utils alsa-plugins firefox flashplugin exfat-utils fuse-exfat a52dec faac faad2 flac jasper lame libdca libdv gst-libav libmad libmpeg2 libtheora libvorbis libxv wavpack x264 xvidcore gstreamer0.10-plugins flashplugin libdvdcss libdvdread libdvdnav gecko-mediaplayer dvd+rw-tools dvdauthor dvgrab p7zip p7zip-plugins unrar tar rsync vlc clementine inkscape virtualbox qbittorrent aria2 thunderbird pidgin libreoffice
+
+Xorg :0 -configure
+cp /root/xorg.conf.new /etc/X11/xorg.conf
+
+###--------------------- yaourt install
+
+yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office
+
+###---------------------- PKG BUILD
+
+### packer
+wget https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=packer
+mv PKGBUILD\?h\=packer PKGBUILD
+makepkg
+sudo pacman -U packer-*.pkg.tar.xz
+
+packer -Syu
+###
+
+### skype
+wget https://aur.archlinux.org/cgit/aur.git/snapshot/skypeforlinux-bin.tar.gz
+tar zxf skypeforlinux-bin.tar.gz
+cd skypeforlinux-bin
+makepkg -s  # or install dependencies manually if you do not have sudo
+
+tar xzf /path/to/package/src.skypeforlinux-bin.tar.gz
+cd skypeforlinux-bin
+cp ../MAKEFILE ./
+makepkg
+pacman -U /path/to/package/skypeforlinux-bin-1.x.x.x-x86_64.PKG(pkg).tar.xz
+###
+
+
+
+
+
+
