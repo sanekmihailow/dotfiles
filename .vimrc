@@ -30,7 +30,8 @@ set hlsearch
 set number
 set infercase
 set incsearch
-set smartcase      
+set smartcase
+set mouse=v
 
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
