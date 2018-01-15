@@ -3,10 +3,10 @@
 ############### source
 if [ -d ~/.shell_source ]; then
      source .shell_source/defaults
-     source .shell_source /functions
-     source .shell_source /exports
-     source .shell_source /alias
-     source .shell_source /prompt
+     source .shell_source/functions
+     source .shell_source/exports
+     source .shell_source/alias
+     source .shell_source/prompt
      #source .shell _source /git
 fi
 
