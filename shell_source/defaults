@@ -5,9 +5,17 @@ case $- in
       *) return;;
 esac
 
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
+                                             #case "$TERM" in
+                                             #    xterm-color|*-256color) color_prompt=yes;;
+                                             #esac
+
+  case "$TERM" in
+    'xterm') TERM=xterm-color|256color;;
+    'screen') TERM=screen-color|256color;;
+    'Eterm') TERM=Eterm-color|256color;;
+    'tmux') TERM=tmux-color|256color;;
+  esac
+
 
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
