@@ -51,7 +51,7 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 
 ###--------------------- yaourt install
 
-yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office
+yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office lnav grc
 
 ###---------------------- PKG BUILD
 
