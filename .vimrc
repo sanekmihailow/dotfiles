@@ -31,7 +31,14 @@ set number
 set infercase
 set incsearch
 set smartcase
-set mouse=v
+set ruler
+set nocompatible
+set backspace=indent,eol,start
+
+if has('mouse')
+  set mouse=v
+endif
+
 
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
@@ -46,3 +53,18 @@ if &term == "screen"
 endif
 autocmd TabEnter,WinEnter,BufReadPost,FileReadPost,BufNewFile * let &titlestring = 'vim(' . expand("%:t") . ')'
 
+" ============================== vim 8 ===============================
+" set display=truncate
+
+" if has("autocmd")
+"   filetype plugin indent on
+"  augroup vimStartup
+"    au!
+"    autocmd BufReadPost *
+"      \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+"      \ |   exe "normal! g`\""
+"     \ | endif
+
+"  augroup END
+
+" endif " has("autocmd")
