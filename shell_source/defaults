@@ -5,15 +5,17 @@ case $- in
       *) return;;
 esac
 
-                                             #case "$TERM" in
-                                             #    xterm-color|*-256color) color_prompt=yes;;
-                                             #esac
+
 
   case "$TERM" in
-    'xterm') TERM=xterm-color|256color;;
-    'screen') TERM=screen-color|256color;;
-    'Eterm') TERM=Eterm-color|256color;;
-    'tmux') TERM=tmux-color|256color;;
+    xterm)
+        TERM=xterm-256color || TERM=xterm-color;;
+    screen)
+        TERM=screen-256color || TERM=xterm-color;;
+    Eterm)
+        TERM=Eterm-256color || TERM=Eterm-color;;
+    tmux)
+        TERM=tmux-256color || TERM=tmux-color;;
   esac
 
 
@@ -66,10 +68,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-#case $- in
-#   *i*) [[ -f /etc/bash_completion ]] && ! shopt -oq posix && . /etc/bash_completion ;;
-#esac
-
 ##################################### INPUT 
 
 
@@ -86,3 +84,19 @@ set completion-ignore-case on
 set expand-tilde on
 #set echo-control-characters off
 set colored-stats on
+
+#------------------------- comment --------------------------------
+
+                                             #case "$TERM" in
+                                             #    xterm-color|*-256color) color_prompt=yes;;
+                                             #esac
+                         
+#case $- in
+#   *i*) [[ -f /etc/bash_completion ]] && ! shopt -oq posix && . /etc/bash_completion ;;
+#esac
+
+#if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+#        export TERM='xterm-256color'
+#else
+#        export TERM='xterm-color'
+#fi
