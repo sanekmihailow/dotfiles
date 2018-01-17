@@ -1,10 +1,9 @@
 #################################### alias #####################################################
 
 #aliases  ========================================
-alias su='sudo '
-alias se='sudo '
-alias sudo='sudo '
-alias suu='su '
+alias su='sudo'
+alias se='sudo ='
+alias sudo='sudo'
 alias sr='sudo $(history -p !!)'
 alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
