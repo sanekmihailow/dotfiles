@@ -2,7 +2,7 @@
 
 #aliases  ========================================
 alias su='sudo'
-alias se='sudo ='
+alias se='sudo'
 alias sudo='sudo'
 alias sr='sudo $(history -p !!)'
 alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
