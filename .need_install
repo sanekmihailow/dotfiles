@@ -44,7 +44,7 @@ https://anydesk.com/ru/platformy
 
 sudo pacman -Syy && sudo pacman -Suu
 sudo pacman -S (xf86-video-amdgpu or xf86-video-intel or xf86-video-nouveau or xf86-video-vesa or nvidia or xf86-video-ati)
-sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server gdm alsa-utils alsa-plugins firefox flashplugin exfat-utils fuse-exfat a52dec faac faad2 flac jasper lame libdca libdv gst-libav libmad libmpeg2 libtheora libvorbis libxv wavpack x264 xvidcore gstreamer0.10-plugins flashplugin libdvdcss libdvdread libdvdnav gecko-mediaplayer dvd+rw-tools dvdauthor dvgrab p7zip p7zip-plugins unrar tar rsync vlc clementine inkscape virtualbox qbittorrent aria2 thunderbird pidgin libreoffice htop mc inxi sensors lsscsi openssh namcap
+sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server gdm alsa-utils alsa-plugins firefox flashplugin exfat-utils fuse-exfat a52dec faac faad2 flac jasper lame libdca libdv gst-libav libmad libmpeg2 libtheora libvorbis libxv wavpack x264 xvidcore gstreamer0.10-plugins flashplugin libdvdcss libdvdread libdvdnav gecko-mediaplayer dvd+rw-tools dvdauthor dvgrab p7zip p7zip-plugins unrar tar rsync vlc clementine inkscape virtualbox qbittorrent aria2 thunderbird pidgin libreoffice htop mc inxi sensors lsscsi openssh namcap git wget fakeroot jshon expac
 
 Xorg :0 -configure
 cp /root/xorg.conf.new /etc/X11/xorg.conf
