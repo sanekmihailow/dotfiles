@@ -1,4 +1,4 @@
-
+color_prompt=yes
 
 ############### source
 if [ -d ~/.shell_source ]; then
@@ -12,10 +12,19 @@ fi
 
 ############ welcome mesage
 echo "Hardware Information:"
+echo -e "\033[32m sensors \033[0m"
 sensors # Needs: 'sudo apt-get install lm-sensors'
+
+echo -e "\033[32m uptime \033[0m"
 uptime # Needs: 'sudo apt-get install lsscsi'
+
+
+echo -e "\033[32m lsscsi \033[0m"
 lsscsi
+
+echo -e "\033[32m free \033[0m"
 free -m
+
 
 if [ -x "`which inxi 2>&1`" ]; then
     inxi -IpRS -v0 -c5
