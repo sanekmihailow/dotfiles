@@ -12,6 +12,7 @@ colorscheme sm
 nmap <F1> :set autoread<CR>
 nmap <F2> :au CursorMoved * checktime<CR>
 nmap <F3> :q!<CR>
+nmap <F4> :set syntax=log<CR>
 nmap <F5> :colorscheme sm<CR>
 nmap <F6> :colorscheme desert<CR>
 nmap <F7> :colorscheme xoria256<CR>
@@ -20,7 +21,7 @@ nmap <F9> zfa(<CR>
 nmap <F10> zfa[<CR>
 nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
-nmap <F4> :set syntax=log<CR>
+vmap <C-t> <Leader>t
 
 " ------------------------------------ reg
 set showcmd        
