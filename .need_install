@@ -11,6 +11,11 @@ skype, simple scan, pidgin, libreoffice
 clementine, inkscape, gimp
 virtualbox, torrent client
 
+
+
+
+
+
 ############################ how to install ubuntu 16.04
 
 ### add repo
@@ -38,6 +43,12 @@ https://www.teamviewer.com/ru/download/previous-versions/
 https://anydesk.com/ru/platformy
 
 
+
+
+
+
+
+
 ########################### how to install archlinux
 
 ###--------------------- pacman install
@@ -51,7 +62,7 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 
 ###--------------------- yaourt install
 
-yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office lnav grc translate-shell
+yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office lnav grc translate-shell wps-office
 
 ###---------------------- PKG BUILD
 
