@@ -6,4 +6,6 @@ cd my~.dotfiles
 
 mv shell_source .shell_source
 
-mv {*,.*} ~/
+mv * ~/
+
+mv .* ~/
