@@ -35,7 +35,7 @@ sudo apt-add-repository ppa:shutter/ppa
 ### apt install
 
 sudo apt update && \
-sudo apt install htop mc acroread opera google-chrome-stable yandex-browser-beta flshplugin-installer default-jdk notepadqq geany leafpad shutter skype simple-scan inxi sensors lsscsi rsync p7zip tar unzip rar vim vim-gtk
+sudo apt install htop mc acroread opera google-chrome-stable yandex-browser-beta flshplugin-installer default-jdk notepadqq geany leafpad shutter skype simple-scan inxi sensors lsscsi rsync p7zip tar unzip rar vim vim-gtk xorg openbox
 
 ### dpkg install
 http://wps-community.org/downloads
