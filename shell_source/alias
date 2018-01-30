@@ -99,6 +99,11 @@ alias stripcomments="sed -e '/^[[:blank:]]*#/d; s/[[:blank:]][[:blank:]]*#.*//' 
                #phpinfo_e > info.php   (write a basic phpinfo() file for testing)
 alias phpinfo_e="echo '<?php phpinfo(); ?>'";
 
+                #speed test
+alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
+alias speedt1='wget -O - https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
+
+
 # grc --------------------------------
 if [ -f /usr/bin/grc ]; then
  #alias cat="grc --colour=auto cat"
