@@ -8,6 +8,9 @@ endif
 set background=dark
 colorscheme sm
 
+syn match log_comment   '\c\#.*$'                                                                                                                     
+hi link log_comment             Comment
+
 " ------------------------------------- maps
 nmap <F1> :set autoread<CR>
 nmap <F2> :au CursorMoved * checktime<CR>
@@ -22,6 +25,7 @@ nmap <F10> zfa[<CR>
 nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
 vmap <C-t> <Leader>t
+cmap w!! %!sudo tee > /dev/null %  " in cli mode :w!!
 
 " ------------------------------------ reg
 set showcmd        
