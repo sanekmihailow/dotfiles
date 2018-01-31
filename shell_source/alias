@@ -78,13 +78,13 @@ if [ -f /usr/bin/vimcat ]; then
 fi
 
 [ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
-alias vivi="vi "
+alias ve="vi "
  
 #grep ---------------------------------------
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 
 #mount ---------------------------------------
-alias mount="mount | column -t"
+#alias mount="mount | column -t"
 
 #other -----------------------------------------
               #pipe the output of a command to sprunge and it will give you a link to a paste-bin type page
@@ -120,7 +120,7 @@ if [ -f /usr/bin/grc ]; then
   alias log="grc --colour=auto log"
  #alias ls="grc --colour=auto ls"
   alias make="grc --colour=auto make"
-  alias mount="grc --colour=auto mount"
+  alias mount="grc --colour=auto mount |column -t"
   alias mount2="grc --colour=auto mount2"
   alias mtr="grc --colour=auto mtr"
   alias netstat="grc --colour=auto netstat"
