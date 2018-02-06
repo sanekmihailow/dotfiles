@@ -11,15 +11,15 @@ if [ -d /root/.shell_source ]; then
 fi
 
 ############ welcome mesage
-echo "Hardware Information:"
-sensors # Needs: 'sudo apt-get install lm-sensors'
-uptime # Needs: 'sudo apt-get install lsscsi'
-lsscsi
-free -m
+#echo "Hardware Information:"
+#sensors # Needs: 'sudo apt-get install lm-sensors'
+#uptime # Needs: 'sudo apt-get install lsscsi'
+#lsscsi
+#free -m
 
-if [ -x "`which inxi 2>&1`" ]; then
-    inxi -IpRS -v0 -c5
-fi
+#if [ -x "`which inxi 2>&1`" ]; then
+#    inxi -IpRS -v0 -c5
+#fi
 
 #-------------------------------- prompt
 if [ -n "$force_color_prompt" ]; then
