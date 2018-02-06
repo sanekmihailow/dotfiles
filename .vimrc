@@ -25,7 +25,7 @@ nmap <F10> zfa[<CR>
 nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
 vmap <C-t> <Leader>t
-cmap w!! %!sudo tee > /dev/null %  " in cli mode :w!!
+cmap ww %!sudo tee %  " in cli mode use :ww
 
 " ------------------------------------ reg
 set showcmd        
