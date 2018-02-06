@@ -1,10 +1,10 @@
 #################################### alias #####################################################
 
 #aliases  ========================================
-alias su='sudo'
-alias se='sudo'
-alias sudo='sudo'
-alias sr='sudo $(history -p !!)'
+alias su="sudo"
+alias se="sudo"
+alias sudo="sudo"
+alias sr="sudo $(history -p !!)"
 alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias ports="netstat -ntulp"
@@ -17,7 +17,7 @@ alias cmyip="curl icanhazip.com"
 
 #update all OS --------------------------------
 ### update: update all of your packages!
-if [ ! -z "$(which brew)" ]; then
+if [ ! -z "$(which brew > /dev/null 2>&1)" ]; then
   alias supdate="brew update && brew upgrade"
 elif [ ! -z "$(which pacman)" ]; then
   alias supdate="sudo pacman -Syyu"
@@ -106,7 +106,6 @@ alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlay
 
 # grc --------------------------------
 if [ -f /usr/bin/grc ]; then
-
   alias configure="grc --colour=auto configure"
  #alias cat="grc --colour=auto cat"
   alias cvs="grc --colour=auto cvs"
