@@ -11,6 +11,7 @@ alias ports="netstat -ntulp"
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"
+alias lnn="lnav"
 
 
 #alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
