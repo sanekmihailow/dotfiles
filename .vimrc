@@ -24,6 +24,7 @@ nmap <F9> zfa(<CR>
 nmap <F10> zfa[<CR>
 nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
+nmap <C-x> :set nonumber<CR>
 vmap <C-t> <Leader>t
 cmap ww %!sudo tee %  " in cli mode use :ww
 
