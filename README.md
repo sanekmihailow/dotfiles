@@ -1,11 +1,5 @@
 # my-.dotfiles
 
-git clone https://github.com/sanekmihailow/my-.dotfiles.git
+ Installasions bashrc + vim plugins
 
-cd my~.dotfiles
-
-mv shell_source .shell_source
-
-mv * ~/
-
-mv .* ~/
+sudo sh vim_update.sh
