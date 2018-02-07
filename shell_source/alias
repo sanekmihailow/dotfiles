@@ -45,6 +45,11 @@ alias l='ls -CF'
 #ps ------------------------------
 alias psg='ps -A | grep'
 
+#less ---------------------------
+if [ -f /usr/bin/vless ]; then
+  alias less="vless"
+fi
+
 #dircolors ----------------------------
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
