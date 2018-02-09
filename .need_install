@@ -89,7 +89,7 @@ drivers for the virtual machine
 sudo pacman -S xf86-video-vesa
 
 ************CLI
-sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server exfat-utils p7zip p7zip-plugins unrar tar rsync htop mc inxi sensors lsscsi openssh namcap python-pip gvim iperf speedtest-cli iptables bash-completion innotop mytop sysstat smartmontools vtop
+sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server exfat-utils p7zip p7zip-plugins unrar tar rsync htop mc inxi sensors lsscsi openssh namcap python-pip gvim iperf speedtest-cli iptables bash-completion innotop mytop sysstat smartmontools
 
 ************GUI
 sudo pacman -S gdm alsa-utils alsa-plugins firefox flashplugin fuse-exfat a52dec faac faad2 flac jasper lame libdca libdv gst-libav libmad libmpeg2 libtheora libvorbis libxv wavpack x264 xvidcore gstreamer0.10-plugins flashplugin libdvdcss libdvdread libdvdnav gecko-mediaplayer dvd+rw-tools dvdauthor dvgrab vlc clementine inkscape virtualbox qbittorrent aria2 thunderbird pidgin libreoffice
@@ -100,7 +100,7 @@ cp /root/xorg.conf.new /etc/X11/xorg.conf
 ###----------------------------------------- yaourt install
 
 ************CLI
-yaourt -S lnav grc translate-shell ftp-upload
+yaourt -S lnav grc translate-shell ftp-upload vtop
 
 ************GUI
 yaourt -S google-chrome pamac-aur jdk teamviewer anydesk wps-office
