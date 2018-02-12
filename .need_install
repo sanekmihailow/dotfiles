@@ -37,7 +37,7 @@ sudo apt-add-repository ppa:shutter/ppa
 sudo apt update
  
 ***********CLI
-sudo apt install htop mc links2 inxi sensors lsscsi rsync p7zip tar unzip rar vim vim-gtk xorg openbox iperf speedtest-cli bash-completion innotop mytop ftp-upload grc smartmontools vtop hddtemp
+sudo apt install htop mc links2 inxi sensors lsscsi rsync p7zip tar unzip rar vim vim-gtk xorg openbox iperf speedtest-cli bash-completion innotop mytop ftp-upload grc smartmontools vtop hddtemp keychain
 
 ***********GUI
 sudo apt install acroread opera google-chrome-stable yandex-browser-beta flshplugin-installer default-jdk notepadqq geany leafpad shutter skype simple-scan
@@ -89,7 +89,7 @@ drivers for the virtual machine
 sudo pacman -S xf86-video-vesa
 
 ************CLI
-sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server exfat-utils p7zip p7zip-plugins unrar tar rsync htop mc inxi sensors lsscsi openssh namcap python-pip gvim iperf speedtest-cli iptables bash-completion innotop mytop sysstat smartmontools hddtemp
+sduo pacman -S yaourt base-devel fakeroot jshon expac git wget xorg xorg-server exfat-utils p7zip p7zip-plugins unrar tar rsync htop mc inxi sensors lsscsi openssh namcap python-pip gvim iperf speedtest-cli iptables bash-completion innotop mytop sysstat smartmontools hddtemp keychain
 
 ************GUI
 sudo pacman -S gdm alsa-utils alsa-plugins firefox flashplugin fuse-exfat a52dec faac faad2 flac jasper lame libdca libdv gst-libav libmad libmpeg2 libtheora libvorbis libxv wavpack x264 xvidcore gstreamer0.10-plugins flashplugin libdvdcss libdvdread libdvdnav gecko-mediaplayer dvd+rw-tools dvdauthor dvgrab vlc clementine inkscape virtualbox qbittorrent aria2 thunderbird pidgin libreoffice
