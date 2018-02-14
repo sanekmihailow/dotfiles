@@ -30,7 +30,8 @@ if [ -x "`which inxi 2>&1`" ]; then
     inxi -IpRS -v0 -c5
 fi
 
-eval $(keychain --eval --agents ssh -Q --quiet ~/.ssh/1_id $HOME/.ssh/5_id $HOME/.ssh/123_id)
+eval $(keychain --eval --agents ssh -Q --quiet ~/.ssh/keys/1_id $HOME/.ssh/keys/05_id $HOME/.ssh/keys/123_id)
+source $HOME/.keychain/$HOSTNAME-sh
 
 #comment ------------------------------
 #if [[ $- != *i* ]] ; then
