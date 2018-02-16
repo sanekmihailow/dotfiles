@@ -1,9 +1,13 @@
 DEFAULT_IDENTITY = "v_dir"
 MATCH_ARGV = [ 
 #       (r"", "d_dir"),
-        (r"d_local", "d_dir"),
-        (r"b_local", "b_dir"),
-        (r"v_local", "v_dir"),
+        (r"d_local", "develop_dir"),
+        (r"b_local", "backup_dir"),
+        (r"v_local", "vpn_dir"),
 ]
 
 VERBOSITY = LOG_DEBUG
+
+# see my /etc/hosts other directorie
+#command 
+# $ ssh-ident user@d_local.com -p1234
