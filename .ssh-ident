@@ -8,6 +8,6 @@ MATCH_ARGV = [
 
 VERBOSITY = LOG_DEBUG
 
-# see my /etc/hosts other directorie
+
 #command 
 # $ ssh-ident user@d_local.com -p1234
