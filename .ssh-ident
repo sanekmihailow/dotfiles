@@ -1,0 +1,9 @@
+DEFAULT_IDENTITY = "v_dir"
+MATCH_ARGV = [ 
+#       (r"", "d_dir"),
+        (r"d_local", "d_dir"),
+        (r"b_local", "b_dir"),
+        (r"v_local", "v_dir"),
+]
+
+VERBOSITY = LOG_DEBUG
