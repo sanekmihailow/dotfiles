@@ -1,4 +1,4 @@
-# my-.dotfiles
+# my-.dotfiles (bashrc + vim  + tmux + screen)
 
 # Installasions bashrc + vim plugins
 
