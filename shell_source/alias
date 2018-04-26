@@ -1,7 +1,7 @@
 #################################### alias #####################################################
 
 #aliases  ========================================
-alias su="sudo"
+#alias su="sudo"
 alias se="sudo"
 alias sudo="sudo"
 alias sr="sudo $(history -p !!)"
@@ -13,7 +13,7 @@ alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla" 
 alias cmyip="curl icanhazip.com"
 alias lnn="lnav"
 alias svi="sudo vim"
-
+alias scp="scp"
 
 #alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
 
