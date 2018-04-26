@@ -1,3 +1,18 @@
+##### histrory search with help tag ###################
+##example :
+# $user: vim /etc/apt/source.list #tag-vim_source-list
+# $user: hi vim
+
+hi() {
+        history | grep --color=always "tag-$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n25 |colorex -G "^.[0-9]{4}"
+}
+
+##### history search all history and show 50 last ###########
+
+hh() {
+        history | grep --color=always -i "$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n50 |colorex -G "^.[0-9]{4}"
+}
+
 incognito() {
   case $1 in
     start)
