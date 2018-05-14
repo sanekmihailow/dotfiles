@@ -4,6 +4,8 @@ vbell_msg ""
 hardstatus on
 #---------------------------------------------------------------------------------------------
 
+#escape ^aa #- def prefix
+escape ``   #- my prefix  
 defscrollback 10024
 bind ^k
 bind ^\
