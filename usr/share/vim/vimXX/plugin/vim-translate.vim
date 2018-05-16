@@ -4,7 +4,7 @@
 " Maintainer:  Ryan Jennings
 " License:     MIT
 " Notes:       Press <leader>t in visual mode to translate highlighted text
-" Reuire:       python-setuptools
+" Reuire:       python-setuptools and googletrans
 " ===============================================================================================
 
 " Fails if vim doesn't have python3 support
