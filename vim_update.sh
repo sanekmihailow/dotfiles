@@ -6,7 +6,7 @@ vimless="/usr/share/vim/vim$vim_ver/macros/less.sh"
 user=$(find /home/ -name "vim_update.sh" |awk -F"/" '{print $3}' |head -n1)
 #check=$(find /home/ -name "vim_update.sh" |awk -F"/" '{$NF=""; print $0}' |sed "s/ /\//g")
 
-mv ./shell_source ./.shell_source &&
+mv ./shell_source ./.shell_source;
 
 if [ -z $vim_ver ]; then
 	echo -e "\033[32m Install vim first \033[0m"
@@ -32,12 +32,15 @@ else
 		#copy dot files from this folder	
 		#---------------------copy root
 	cp ./etc/bash.bashrc /etc/bash.bashrc
+	cp  ./.bashrc /root/.bashrc
+	echo 'homeuser=$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print \$3}' |head -n1)' > /root/.bashrc
+	echo 'source /home/"$homeuser"/.bashrc' >> /root/.bashrc
 	#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
-	cp ./.bashrc_root /root/.bashrc_root
-	cp ./.screenrc /root/.screenrc
-	cp ./.tmux.conf /root/.tmux.conf
-	cp ./.vimrc /root/.vimrc
-	cp -r ./.shell_source/ /root
+	#cp ./.bashrc_root /root/.bashrc_root
+	#cp ./.screenrc /root/.screenrc
+	#cp ./.tmux.conf /root/.tmux.conf
+	#cp ./.vimrc /root/.vimrc
+	#cp -r ./.shell_source/ /root
 		#----------------------copy user
 	#cp .{bashrc,bash_profile,screenrc,tmux.conf,vimrc} /home/$user/
 	cp  ./.bashrc /home/$user/.bashrc
@@ -45,7 +48,8 @@ else
 	cp ./.screenrc /home/$user/.screenrc
 	cp ./.tmux.conf /home/$user/.tmux.conf
 	cp ./.vimrc /home/$user/.vimrc
-	cp -r ./.shell_source/ /home/$user/ 
+	cp -r ./.shell_source/ /home/$user/;
+	chown -R $user /home/$user/
 		# COPY vim files
 	cp ./usr/share/vim/vimXX/colors/* $path/colors/
 	cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
