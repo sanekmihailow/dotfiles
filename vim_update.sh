@@ -14,7 +14,7 @@ else
 		#create backup dir
 	mkdir -p ./backup_dir/root/ ./backup_dir/user/ &&
 		#move backup dir
-	
+	echo '1'
 	cp /etc/bash.bashrc ./backup_dir/bash.bashrc
 	cp /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
 	cp /home/$user/.vimrc ./backup_dir/user/.vimrc
