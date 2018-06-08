@@ -20,7 +20,8 @@ case ${TERM} in
     ;;
 esac
 
-source /root/.bashrc_root
+#source /root/.bashrc_root
+source $USER/.bashrc
 
 [ -r /usr/share/bash-completion/bash_completion   ] && . /usr/share/bash-completion/bash_completion
 
