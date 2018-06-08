@@ -1,4 +1,5 @@
 color_prompt=yes
+homeuser=$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
 
 ############### source
 if [ -d ~/.shell_source ]; then
@@ -6,9 +7,16 @@ if [ -d ~/.shell_source ]; then
      source .shell_source/functions
      source .shell_source/exports
      source .shell_source/alias
-     source .shell_source/prompt
+     #source .shell_source/prompt
      #source .shell _source /git
 fi
+
+if [ "$USER" == "root" ]; then
+        source /home/"$homeuser"/.shell_source/prompt_root
+else
+        source $HOME/.shell_source/prompt
+fi
+
 
 ############ welcome mesage
 echo "Hardware Information:"
