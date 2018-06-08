@@ -3,7 +3,7 @@
 vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | awk '{print $5}' | sed -e 's/\.//g')"
 path="/usr/share/vim/vim$vim_ver"
 vimless="/usr/share/vim/vim$vim_ver/macros/less.sh"
-user=$(find /home/ -name "vim_update.sh" |awk -F"/" '{print $3}' |head -n1)
+user=$(find /home/ -name "vim_update.sh" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
 #check=$(find /home/ -name "vim_update.sh" |awk -F"/" '{$NF=""; print $0}' |sed "s/ /\//g")
 
 mv ./shell_source ./.shell_source;
