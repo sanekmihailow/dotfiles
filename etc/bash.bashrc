@@ -28,7 +28,8 @@ source $HOME/.bashrc
 if [ -f /etc/bash_complation ]; then
 	. /etc/bash_complation
 fi
-setterm blength 0
+
+#setterm blength 0
 
 
 
