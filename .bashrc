@@ -12,8 +12,8 @@ if [ -d ~/.shell_source ]; then
      		source /home/$homeuser/.shell_source/exports
      		source /home/$homeuser/.shell_source/alias
 	else
-        	     source $HOME/.shell_source/prompt
-		     source $HOME/.shell_source/defaults
+        	source $HOME/.shell_source/prompt
+		source $HOME/.shell_source/defaults
      		source $HOME/.shell_source/functions
      		source $HOME/.shell_source/exports
      		source $HOME/.shell_source/alias
