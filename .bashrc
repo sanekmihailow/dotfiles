@@ -1,21 +1,27 @@
 color_prompt=yes
-homeuser=$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
+homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
 
 ############### source
+
 if [ -d ~/.shell_source ]; then
-     source .shell_source/defaults
-     source .shell_source/functions
-     source .shell_source/exports
-     source .shell_source/alias
-     #source .shell_source/prompt
+
+	if [ "$USER" = "root" ]; then
+        	source /home/$homeuser/.shell_source/prompt_root
+     		source /home/$homeuser/.shell_source/defaults
+     		source /home/$homeuser/.shell_source/functions
+     		source /home/$homeuser/.shell_source/exports
+     		source /home/$homeuser/.shell_source/alias
+	else
+        	     source $HOME/.shell_source/prompt
+		     source $HOME/.shell_source/defaults
+     		source $HOME/.shell_source/functions
+     		source $HOME/.shell_source/exports
+     		source $HOME/.shell_source/alias
+	fi
+
      #source .shell _source /git
 fi
 
-if [ "$USER" == "root" ]; then
-        source /home/"$homeuser"/.shell_source/prompt_root
-else
-        source $HOME/.shell_source/prompt
-fi
 
 
 ############ welcome mesage
