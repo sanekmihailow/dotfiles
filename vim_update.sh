@@ -33,8 +33,9 @@ else
 		#---------------------copy root
 	cp ./etc/bash.bashrc /etc/bash.bashrc
 	cp  ./.bashrc /root/.bashrc
-	echo 'homeuser=$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print \$3}' |head -n1)' > /root/.bashrc
-	echo 'source /home/"$homeuser"/.bashrc' >> /root/.bashrc
+	echo 'homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print \$3}' |head -n1)"' > /root/.bashrc
+	echo 'source /home/$homeuser/.bashrc' >> /root/.bashrc
+	mkdir /root/.shell_source
 	#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
 	#cp ./.bashrc_root /root/.bashrc_root
 	#cp ./.screenrc /root/.screenrc
