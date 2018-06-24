@@ -1,5 +1,16 @@
 runtime! debian.vim
+
+"------------------------------------- autostart syntax -------------------------------
+
+"log webserver
 au BufRead *access.log* setf httplog
+
+"conf asterisk
+au BufNewFile,BufRead *asterisk*/*voicemail.conf* setf asteriskvm
+au BufNewFile,BufRead *asterisk/*.conf* setf asterisk
+au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
+
+"--------------------------------------------------------------------------------------
 
 if has("syntax")
   syntax on
@@ -8,9 +19,10 @@ endif
 set background=dark
 colorscheme sm
 
+"LOG syntax
 syn match log_comment   '\c\#.*$'
 syn match log_comment   '\c\^#.*$'
-syn match log_comment   '\c\^;.*$'  
+syn match log_comment   '\c\^;.*$'
 syn match log_comment   '\c\^".*$'
 hi link log_comment             Comment
 
