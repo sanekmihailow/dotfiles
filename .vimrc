@@ -8,7 +8,10 @@ endif
 set background=dark
 colorscheme sm
 
-syn match log_comment   '\c\#.*$'                                                                                                                     
+syn match log_comment   '\c\#.*$'
+syn match log_comment   '\c\^#.*$'
+syn match log_comment   '\c\^;.*$'  
+syn match log_comment   '\c\^".*$'
 hi link log_comment             Comment
 
 " ------------------------------------- maps
