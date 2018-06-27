@@ -1,3 +1,5 @@
+homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
+
 if [ -d ~/.shell_source ]; then
 
 	if [ "$USER" = "root" ]; then
