@@ -20,8 +20,11 @@ case ${TERM} in
     ;;
 esac
 
-#source /root/.bashrc_root
-source $HOME/.bashrc
+if [ "$USER" = "root" ]; then                                                                                                                                                                                      
+        source /root/.bashrc_root                                                                                                                                                                                  
+else                                                                                                                                                                                                               
+        source $HOME/.bashrc                                                                                                                                                                                       
+fi
 
 [ -r /usr/share/bash-completion/bash_completion   ] && . /usr/share/bash-completion/bash_completion
 
