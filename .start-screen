@@ -1,4 +1,6 @@
 homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
+#or use ( if you have many users in home directory) ->
+#homeuser="$(who | cut -d' ' -f1 | grep 'you_user')
 
 if [ -d ~/.shell_source ]; then
 
@@ -8,14 +10,15 @@ if [ -d ~/.shell_source ]; then
      		source /home/$homeuser/.shell_source/functions
      		source /home/$homeuser/.shell_source/exports
      		source /home/$homeuser/.shell_source/alias
-       #source /home/$homeuser/.shell_source/git
+       		 #source /home/$homeuser/.shell_source/git
 	else if [ "$USER" = "$homeuser" ]; then
-        source $HOME/.shell_source/prompt
-		    source $HOME/.shell_source/defaults
+        	source $HOME/.shell_source/prompt
+		source $HOME/.shell_source/defaults
      		source $HOME/.shell_source/functions
      		source $HOME/.shell_source/exports
      		source $HOME/.shell_source/alias
-       #source $HOME/.shell_source/git
+      		 #source $HOME/.shell_source/git
+	else echo 'Do yo have /homne directory?'	 
 	fi
   
 fi
