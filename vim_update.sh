@@ -44,6 +44,7 @@ else
 	#cp -r ./.shell_source/ /root
 		#----------------------copy user
 	#cp .{bashrc,bash_profile,screenrc,tmux.conf,vimrc} /home/$user/
+	cp  ./.start-screen /home/$user/.start-screen
 	cp  ./.bashrc /home/$user/.bashrc
 	cp ./.bash_profile /home/$user/.bash_profile
 	cp ./.screenrc /home/$user/.screenrc
