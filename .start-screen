@@ -1,0 +1,41 @@
+if [ -d ~/.shell_source ]; then
+
+	if [ "$USER" = "root" ]; then
+        	source /home/$homeuser/.shell_source/prompt_root
+     		source /home/$homeuser/.shell_source/defaults
+     		source /home/$homeuser/.shell_source/functions
+     		source /home/$homeuser/.shell_source/exports
+     		source /home/$homeuser/.shell_source/alias
+       #source /home/$homeuser/.shell_source/git
+	else if [ "$USER" = "$homeuser" ]; then
+        source $HOME/.shell_source/prompt
+		    source $HOME/.shell_source/defaults
+     		source $HOME/.shell_source/functions
+     		source $HOME/.shell_source/exports
+     		source $HOME/.shell_source/alias
+       #source $HOME/.shell_source/git
+	fi
+  
+fi
+
+
+
+############ welcome mesage
+echo "Hardware Information:"
+echo -e "\033[32m sensors \033[0m"
+sensors # Needs: 'sudo apt-get install lm-sensors'
+
+echo -e "\033[32m uptime \033[0m"
+uptime
+
+
+echo -e "\033[32m lsscsi \033[0m"
+lsscsi # Needs: 'sudo apt-get install lsscsi'
+
+echo -e "\033[32m free \033[0m"
+free -m
+
+
+if [ -x "`which inxi 2>&1`" ]; then
+    inxi -IpRS -v0 -c5
+fi
