@@ -42,7 +42,8 @@ nmap <F12> zO<CR>
 nmap <C-x> :set nonumber<CR>
 vmap <C-t> <Leader>t
 "                     " in cli mode use :ww
-cmap ww %!sudo tee %  
+cmap ww %!sudo tee %
+cmap nn echo expand('%:p')
 
 " ------------------------------------ reg
 set showcmd        
