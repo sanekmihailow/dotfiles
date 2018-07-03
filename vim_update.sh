@@ -36,9 +36,9 @@ else
 	#mkdir /root/.shell_source
 	#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
 	#cp ./.bashrc_root /root/.bashrc_root
-	#cp ./.screenrc /root/.screenrc
-	#cp ./.tmux.conf /root/.tmux.conf
-	#cp ./.vimrc /root/.vimrc
+	cp ./.screenrc /root/.screenrc
+	cp ./.tmux.conf /root/.tmux.conf
+	cp ./.vimrc /root/.vimrc
 	#cp -r ./.shell_source/ /root
 		#----------------------copy user
 	#cp .{bashrc,bash_profile,screenrc,tmux.conf,vimrc} /home/$user/
