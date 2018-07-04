@@ -5,6 +5,7 @@ homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}
 
 ############### source
        source /home/$homeuser/.start-screen
+       source /home/$homeuser/.source-home
 
 
 
