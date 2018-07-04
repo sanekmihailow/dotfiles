@@ -22,16 +22,3 @@ free -m
 if [ -x "`which inxi 2>&1`" ]; then
     inxi -IpRS -v0 -c5
 fi
-
-if [ -d ~/.shell_source ]; then                                                                                                                                                                                    
-                                                                                                                                                                                                                   
-     source /home/$homeuser/.shell_source/defaults                                                                                                                                                                 
-     source /home/$homeuser/.shell_source/functions                                                                                                                                                                
-     source /home/$homeuser/.shell_source/exports                                                                                                                                                                  
-     source /home/$homeuser/.shell_source/alias                                                                                                                                                                    
-      #source /home/$homeuser/.shell_source/git                                                                                                                                                                    
-        if [ "$USER" = "root" ]; then                                                                                                                                                                              
-                source /home/$homeuser/.shell_source/prompt_root                                                                                                                                                   
-        else    source /home/$homeuser/.shell_source/prompt                                                                                                                                                        
-        fi                                                                                                                                                                                                         
-fi 
