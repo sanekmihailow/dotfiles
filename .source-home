@@ -2,14 +2,16 @@ homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}
 
 if [ -d ~/.shell_source ]; then
 
-     source /home/$homeuser/.shell_source/defaults
-     source /home/$homeuser/.shell_source/functions
-     source /home/$homeuser/.shell_source/exports
-     source /home/$homeuser/.shell_source/alias
-      #source /home/$homeuser/.shell_source/git
+     source /home/$homeuser/.shell_source/exports      && echo 'export load'
+     source /home/$homeuser/.shell_source/defaults     && echo 'default load'
+     source /home/$homeuser/.shell_source/alias        && echo 'alias load'
+     
         if [ "$USER" = "root" ]; then
-                source /home/$homeuser/.shell_source/prompt_root
-        else    source /home/$homeuser/.shell_source/prompt
+                source /home/$homeuser/.shell_source/prompt_root && echo 'root load'
+        else    source /home/$homeuser/.shell_source/prompt      && echo 'user load'
         fi
+        
+     source /home/$homeuser/.shell_source/functions    && echo 'function load'
+    #source /home/$homeuser/.shell_source/git
 
 fi
