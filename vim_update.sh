@@ -9,15 +9,9 @@ user=$(find /home/ -name "vim_update.sh" 2>/dev/null |awk -F"/" '{print $3}' |he
 echo "\n \033[0;32m please enter the username in your home directory \n \033[0m"
 read current_user &&
 
-root_roor="
-		cp ./etc/bash.bashrc /etc/bash.bashrc
-		cp  ./.bashrc_root /root/.bashrc_root
-		#mkdir /root/.shell_source
-		#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
-		#cp ./.bashrc_root /root/.bashrc_root
-		cp ./.screenrc /root/.screenrc
-		cp ./.tmux.conf /root/.tmux.conf
-		cp ./.vimrc /root/.vimrc
+root_root=".bashrc .screenrc .tmux.conf .vimrc .source-root .start-screen"
+home_root=".bashrc .screenrc .tmux.conf .vimrc"
+home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
 	
 
 
@@ -42,41 +36,38 @@ mv ./shell_source ./.shell_source;
 		cp /root/.tmux.conf ./backup_dir/root/.tmux.conf
 		tar -czf  old_vim_bak.tar.gz /usr/share/vim/vim$vim_ver/colors /usr/share/vim/vim$vim_ver/syntax /usr/share/vim/vim$vim_ver/syntax
 		mv old_vim_bak.tar.gz ./backup_dir
-		chown -R $user ./backup_dir
+		chown -R $user ./backup_dir &&
+		cp ./etc/bash.bashrc /etc/bash.bashrc
 	fi
 	
+	
 	if [ "$current_user" = "root" ]; then
-		#move
-
-			#copy dot files from this folder	
+			#---------------------copy root_only
+		for i in $root_root; do
+			cp ./$i /root
+		done
+			cp ./.bashrc_only_root /root/.bashrc
+			cp -r ./.shell_source /root
+	else
 			#---------------------copy root
-		cp ./etc/bash.bashrc /etc/bash.bashrc
-		cp  ./.bashrc_root /root/.bashrc_root
-		#mkdir /root/.shell_source
-		#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
-		#cp ./.bashrc_root /root/.bashrc_root
-		cp ./.screenrc /root/.screenrc
-		cp ./.tmux.conf /root/.tmux.conf
-		cp ./.vimrc /root/.vimrc
-		#cp -r ./.shell_source/ /root
+		for a in $home_root; do
+			cp ./$a /root
+		done
+			cp ./bashrc_root /root/.bashrc
+			
 			#----------------------copy user
-		#cp .{bashrc,bash_profile,screenrc,tmux.conf,vimrc} /home/$user/
-		cp  ./.start-screen /home/$user/.start-screen
-		cp  ./.source-home /home/$user/.source-home
-		cp  ./.bashrc /home/$user/.bashrc
-		cp ./.bash_profile /home/$user/.bash_profile
-		cp ./.screenrc /home/$user/.screenrc
-		cp ./.tmux.conf /home/$user/.tmux.conf
-		cp ./.vimrc /home/$user/.vimrc
-		cp -r ./.shell_source/ /home/$user/;
-		chown -R $user /home/$user/
+		for b in $home_user; do
+			cp ./$b /home/$user/
+		done
+			cp -r ./.shell_source /home/$user
+	fi					
 			# COPY vim files
 		cp ./usr/share/vim/vimXX/colors/* $path/colors/
 		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
 		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
 		ln -ns $vimless /usr/bin/vless
 			# COPY files in /usr/bin
-		chmod a+rx ./usr/bim{colorex,vimcat,tmux-sessions} &&
+		chmod a+rx ./usr/bin/{colorex,vimcat,tmux-sessions} &&
 		cp ./usr/bin/{colorex,vimcat} /usr/bin
 	
 	fi
