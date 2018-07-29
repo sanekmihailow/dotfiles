@@ -1,0 +1,12 @@
+#homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
+
+if [ -d ~/.shell_source ]; then
+
+     source $HOME/.shell_source/exports      && echo 'export loaded'
+     source $HOME/.shell_source/defaults     && echo 'default loaded'
+     source $HOME/.shell_source/alias        && echo 'alias loaded'
+     source $HOME/.shell_source/prompt_root  && echo 'root loaded'
+     source $HOME/.shell_source/functions    && echo 'function load'
+    #source /home/$homeuser/.shell_source/git
+
+fi
