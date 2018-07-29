@@ -6,53 +6,71 @@ vimless="/usr/share/vim/vim$vim_ver/macros/less.sh"
 user=$(find /home/ -name "vim_update.sh" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
 #check=$(find /home/ -name "vim_update.sh" |awk -F"/" '{$NF=""; print $0}' |sed "s/ /\//g")
 
-mv ./shell_source ./.shell_source &&
+echo "\n \033[0;32m please enter the username in your home directory \n \033[0m"
+read current_user &&
 
-if [ -z $vim_ver ]; then
-	echo -e "\033[32m Install vim first \033[0m"
-else
-		#create backup dir
-	mkdir -p ./backup_dir/root/ ./backup_dir/user/ &&
-		#move backup dir
+root_root=".bashrc .screenrc .tmux.conf .vimrc .source-root .start-screen"
+home_root=".bashrc .screenrc .tmux.conf .vimrc"
+home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
 	
-	cp /etc/bash.bashrc ./backup_dir/bash.bashrc
-	cp /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
-	cp /home/$user/.vimrc ./backup_dir/user/.vimrc
-	cp /home/$user/.bashrc ./backup_dir/user/.bashrc
-	cp /home/$user/.bash_profile ./backup_dir/user/.bash_profile
-	cp /home/$user/.screenrc ./backup_dir/user/.screenrc
-	cp /home/$user/.tmux.conf ./backup_dir/user/.tmux.conf
-	cp /root/.bashrc ./backup_dir/root/.bashrc
-	cp /root/.screenrc ./backup_dir/root/.screenrc
-	cp /root/.tmux.conf ./backup_dir/root/.tmux.conf
-	tar -czf  old_vim_bak.tar.gz /usr/share/vim/vim$vim_ver/colors /usr/share/vim/vim$vim_ver/syntax /usr/share/vim/vim$vim_ver/syntax
-	mv old_vim_bak.tar.gz ./backup_dir
-	chown -R $user ./backup_dir
+mv ./shell_source ./.shell_source;
 
-		#copy dot files from this folder	
-		#---------------------copy root
-	cp ./etc/bash.bashrc /etc/bash.bashrc
-	cp  ./.bashrc /root/.bashrc
-	echo 'homeuser=$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print \$3}' |head -n1)' > /root/.bashrc
-	echo 'source /home/"$homeuser"/.bashrc' >> /root/.bashrc
-#cp .{bashrc_root,screenrc,tmux.conf,vimrc} /root 
-#cp ./.bashrc_root /root/.bashrc_root
-#cp ./.screenrc /root/.screenrc
-#cp ./.tmux.conf /root/.tmux.conf
-#cp ./.vimrc /root/.vimrc
-#cp -r ./.shell_source/ /root
-		#----------------------copy user
-#cp .{bashrc,bash_profile,screenrc,tmux.conf,vimrc} /home/$user/
-	cp  ./.bashrc /home/$user/.bashrc
-	cp ./.bash_profile /home/$user/.bash_profile
-	cp ./.screenrc /home/$user/.screenrc
-	cp ./.tmux.conf /home/$user/.tmux.conf
-	cp ./.vimrc /home/$user/.vimrc
-	cp -r ./.shell_source/ /home/$user/ 
-		# COPY vim files
-	cp ./usr/share/vim/vimXX/colors/* $path/colors/
-	cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
-	cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
-	ln -ns $vimless /usr/bin/vless
-fi
+	if [ -z $vim_ver ]; then
+		echo -e "\033[32m Install vim first \033[0m"
+	else
+			#create backup dir
+		mkdir -p ./backup_dir/root/ ./backup_dir/user/ &&
+			#move backup dir
+	
+		cp /etc/bash.bashrc ./backup_dir/bash.bashrc
+		cp /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
+		cp /home/$user/.vimrc ./backup_dir/user/.vimrc
+		cp /home/$user/.bashrc ./backup_dir/user/.bashrc
+		cp /home/$user/.bash_profile ./backup_dir/user/.bash_profile
+		cp /home/$user/.screenrc ./backup_dir/user/.screenrc
+		cp /home/$user/.tmux.conf ./backup_dir/user/.tmux.conf
+		cp /root/.bashrc ./backup_dir/root/.bashrc
+		cp /root/.screenrc ./backup_dir/root/.screenrc
+		cp /root/.tmux.conf ./backup_dir/root/.tmux.conf
+		tar -czf  old_vim_bak.tar.gz /usr/share/vim/vim$vim_ver/colors /usr/share/vim/vim$vim_ver/syntax /usr/share/vim/vim$vim_ver/syntax
+		mv old_vim_bak.tar.gz ./backup_dir
+		chown -R $user ./backup_dir &&
+		cp ./etc/bash.bashrc /etc/bash.bashrc
+	fi
+	
+	
+	if [ "$current_user" = "root" ]; then
+			#---------------------copy root_only
+		for i in $root_root; do
+			cp ./$i /root
+		done
+			cp ./.bashrc_only_root /root/.bashrc
+			cp -r ./.shell_source /root
+	else
+			#---------------------copy root
+		for a in $home_root; do
+			cp ./$a /root
+		done
+			cp ./bashrc_root /root/.bashrc
+			
+			#----------------------copy user
+		for b in $home_user; do
+			cp ./$b /home/$user/
+			chmod g=rX,o=rX /home/$user/$b
+			chown root:$user /home/$user/$b
+		done
+			cp -r ./.shell_source /home/$user
+			chown -R root:$user /home/$user/.shell_source
+			chmod -R g=rX,o=rX /home/$user/.shell_source
+						
+			# COPY vim files
+		cp ./usr/share/vim/vimXX/colors/* $path/colors/
+		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
+		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
+		ln -ns $vimless /usr/bin/vless
+			# COPY files in /usr/bin
+		chmod a+rx ./usr/bin/{colorex,vimcat,tmux-sessions} &&
+		cp ./usr/bin/{colorex,vimcat} /usr/bin
+	
+	fi
 exit 0

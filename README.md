@@ -2,6 +2,12 @@
 
 # Installasions bashrc + vim plugins
 
+### download to your $HOME directory
+
+git clone https://github.com/sanekmihailow/vim-bashrc.git
+
+cd vim-bashrc
+
 sudo sh vim_update.sh
 
 

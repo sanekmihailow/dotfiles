@@ -1,5 +1,16 @@
 runtime! debian.vim
+
+"------------------------------------- autostart syntax -------------------------------
+
+"log webserver
 au BufRead *access.log* setf httplog
+
+"conf asterisk
+au BufNewFile,BufRead *asterisk*/*voicemail.conf* setf asteriskvm
+au BufNewFile,BufRead *asterisk/*.conf* setf asterisk
+au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
+
+"--------------------------------------------------------------------------------------
 
 if has("syntax")
   syntax on
@@ -8,7 +19,11 @@ endif
 set background=dark
 colorscheme sm
 
-syn match log_comment   '\c\#.*$'                                                                                                                     
+"LOG syntax
+syn match log_comment   '\c\#.*$'
+syn match log_comment   '\c\^#.*$'
+syn match log_comment   '\c\^;.*$'
+syn match log_comment   '\c\^".*$'
 hi link log_comment             Comment
 
 " ------------------------------------- maps
@@ -27,7 +42,8 @@ nmap <F12> zO<CR>
 nmap <C-x> :set nonumber<CR>
 vmap <C-t> <Leader>t
 "                     " in cli mode use :ww
-cmap ww %!sudo tee %  
+cmap ww %!sudo tee %
+cmap nn echo expand('%:p')
 
 " ------------------------------------ reg
 set showcmd        

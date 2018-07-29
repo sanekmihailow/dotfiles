@@ -47,7 +47,10 @@ extract () {
   fi
 }
 
-.
+mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all' -y '(?i)making install' -R '(?i)?error' -M '(?i)?warning'; }
+cconfigure() { ./configure |colorex -c ' no' -g ' yes' -R '(?i)?error' -M '(?i)?warning'; }
+ccolorex() { /usr/bin/colorex "$@" -R '(?i)?err' -M '(?i)?warn'; }
+
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }         # Creates an archive (*.tar.gz) from given directory
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a ZIP archive of a file or folder.
 
