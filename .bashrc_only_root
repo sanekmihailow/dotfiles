@@ -5,7 +5,7 @@ color_prompt=yes
 
 ############### source
        source $HOME/.start-screen
-       source $HOME/.source-home
+       source $HOME/.source-root
 
 
 
