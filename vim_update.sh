@@ -13,8 +13,6 @@ root_root=".bashrc .screenrc .tmux.conf .vimrc .source-root .start-screen"
 home_root=".bashrc .screenrc .tmux.conf .vimrc"
 home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
 	
-
-
 mv ./shell_source ./.shell_source;
 
 	if [ -z $vim_ver ]; then
@@ -75,5 +73,4 @@ mv ./shell_source ./.shell_source;
 		cp ./usr/bin/{colorex,vimcat} /usr/bin
 	
 	fi
-	
 exit 0

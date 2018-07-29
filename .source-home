@@ -12,4 +12,4 @@ if [ -d /home/$homeuser/.shell_source ]; then
         else    source /home/$homeuser/.shell_source/prompt      && echo 'user loaded'
         fi
             
-fi
+
