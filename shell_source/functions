@@ -47,7 +47,7 @@ extract () {
   fi
 }
 
-mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all' -y '(?i)making install' -R '(?i)error' -M '(?i)warning'; }
+mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making install.*' -R '(?i)error.*' -M '(?i)warning.*'; }
 cconfigure() { ./configure "$@" |colorex -c ' no' -g ' yes' -R '(?i)error' -M '(?i)warning'; }
 ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; }
 
