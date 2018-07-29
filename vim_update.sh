@@ -58,9 +58,13 @@ mv ./shell_source ./.shell_source;
 			#----------------------copy user
 		for b in $home_user; do
 			cp ./$b /home/$user/
+			chmod g=rX,o=rX /home/$user/$b
+			chown root:$user /home/$user/$b
 		done
 			cp -r ./.shell_source /home/$user
-	fi					
+			chown -R root:$user /home/$user/.shell_source
+			chmod -R g=rX,o=rX /home/$user/.shell_source
+						
 			# COPY vim files
 		cp ./usr/share/vim/vimXX/colors/* $path/colors/
 		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
