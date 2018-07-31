@@ -10,6 +10,7 @@ cd vim-bashrc
 
 sudo sh vim_update.sh
 
+if you have many 1 users in '/home' directory then you need edit and uncomment 4 line and comment 2 line in .bashrc
 
 # screen images
 
