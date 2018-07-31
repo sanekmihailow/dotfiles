@@ -5,13 +5,13 @@
 # install colorex or delete string the end
 
 hi() {
-        history | grep --color=always "tag-$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n25 |colorex -G "^.[0-9]{4}"
+        history | grep --color=always "tag-$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n25 |colorex -B '^....[0-9]'
 }
 
 ##### history search all history and show 50 last ###########
 
 hh() {
-        history | grep --color=always -i "$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n50 |colorex -G "^.[0-9]{4}"
+        history | grep --color=always -i "$1" |grep -v 'grep' |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n50 |colorex -B '^....[0-9]'
 }
 
 incognito() {
