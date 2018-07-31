@@ -69,7 +69,7 @@ mv ./shell_source ./.shell_source;
 		cp ./usr/share/vim/vimXX/colors/* $path/colors/
 		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
 		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
-		ln -ns $vimless /usr/bin/vless
+		ln -ns $vimless /usr/bin/vless &&
 			
 			# COPY files in /usr/bin
 			
