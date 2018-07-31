@@ -73,7 +73,10 @@ mv ./shell_source ./.shell_source;
 			
 			# COPY files in /usr/bin
 			
-		chmod a+rx ./usr/bin/{colorex,vimcat,tmux-sessions} &&
+		#chmod a+rx ./usr/bin/{colorex,vimcat,tmux-sessions} &&
+		chmod a+rx ./usr/bin/colorex
+		chmod a+rx ./usr/bin/vimcat &&
+		
 			if [ -z $(which vimcat) ]; then
 				cp ./usr/bin/vimcat /usr/bin
 			else
