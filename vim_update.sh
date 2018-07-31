@@ -69,13 +69,13 @@ mv ./shell_source ./.shell_source;
 		cp ./usr/share/vim/vimXX/colors/* $path/colors/
 		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
 		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
-		ln -ns $vimless /usr/bin/vless &&
+		ln -ns $vimless /usr/bin/vless
 			
 			# COPY files in /usr/bin
 			
 		#chmod a+rx ./usr/bin/{colorex,vimcat,tmux-sessions} &&
-		chmod a+rx ./usr/bin/colorex
-		chmod a+rx ./usr/bin/vimcat &&
+		/usr/bin/chmod a+rx ./usr/bin/colorex &&
+		/usr/bin/chmod a+rx ./usr/bin/vimcat &&
 		
 			if [ -z $(which vimcat) ]; then
 				cp ./usr/bin/vimcat /usr/bin
