@@ -6,7 +6,7 @@ vimless="/usr/share/vim/vim$vim_ver/macros/less.sh"
 user=$(find /home/ -name "vim_update.sh" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
 #check=$(find /home/ -name "vim_update.sh" |awk -F"/" '{$NF=""; print $0}' |sed "s/ /\//g")
 
-echo "\n \033[0;32m please enter the username in your home directory (root or admin or ....)\n \033[0m"
+echo -e "\n \033[0;32m please enter the username in your home directory (root or admin or ....)\n \033[0m"
 read current_user &&
 
 root_root=".bashrc .screenrc .tmux.conf .vimrc .source-root .start-screen"
@@ -85,7 +85,7 @@ mv ./shell_source ./.shell_source;
 			else
 				echo 'colorex exist    '
 			fi
-		echo "\n \033[1;32m Congratulations , you installed vim-bashrc \n \033[0m"
+		echo -e "\n \033[1;32m Congratulations , you installed vim-bashrc \n \033[0m"
 	
 	fi
 exit 0
