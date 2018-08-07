@@ -23,7 +23,7 @@ bind -k k3 paste .      #pr + F3
     
 #
 
-defscrollback 10024
+defscrollback 200024
 bind ^k
 bind ^\
 bind \\ quit
