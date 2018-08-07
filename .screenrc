@@ -5,7 +5,17 @@ hardstatus on
 #---------------------------------------------------------------------------------------------
 
 #escape ^aa #- def prefix
-escape ``   #- my prefix  
+escape ``   #- my prefix
+#new buffer
+    # showkeys -a #command for know value button keyboard
+    #terminfo * F1=^[OP
+    #terminfo * F3=^[OR
+
+bindkey "^[OP" copy
+bindkey "^[OR" paste .
+    #bindkey m copy
+#
+
 defscrollback 10024
 bind ^k
 bind ^\
