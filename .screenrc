@@ -10,10 +10,17 @@ escape ``   #- my prefix
     # showkeys -a #command for know value button keyboard
     #terminfo * F1=^[OP
     #terminfo * F3=^[OR
-
-bindkey "^[OP" copy
-bindkey "^[OR" paste .
-    #bindkey m copy
+        # bindkey without prefix 
+        # bind with prefix
+bind -k k1 copy         #pr + F1
+bind -k k3 paste .      #pr + F3
+#bindkey "^[OR" paste . # F3
+#bindkey "^[OP" copy    # F1
+#bindkey "^[[1;5D" copy 	#arrow left + ctrl
+#bindkey "^[[1;5C" paste .	#arrow right + ctrl
+#bindkey m copy
+    
+    
 #
 
 defscrollback 10024
