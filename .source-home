@@ -4,14 +4,14 @@ homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}
 
 if [ -d /home/$homeuser/.shell_source ]; then
 
-     source /home/$homeuser/.shell_source/exports      && echo 'export loaded'
-     source /home/$homeuser/.shell_source/defaults     && echo 'default loaded'
-     source /home/$homeuser/.shell_source/alias        && echo 'alias loaded'
-     source /home/$homeuser/.shell_source/functions    && echo 'function load'
+     source /home/$homeuser/.shell_source/exports      || echo 'export dont't loaded'
+     source /home/$homeuser/.shell_source/defaults     || echo 'default dont't loaded'
+     source /home/$homeuser/.shell_source/alias        || echo 'alias dont't loaded'
+     source /home/$homeuser/.shell_source/functions    || echo 'function dont't load'
     #source /home/$homeuser/.shell_source/git
         if [ "$USER" = "root" ]; then
-                source /home/$homeuser/.shell_source/prompt_root && echo 'root loaded'
-        else    source /home/$homeuser/.shell_source/prompt      && echo 'user loaded'
+                source /home/$homeuser/.shell_source/prompt_root || echo 'root dont't loaded'
+        else    source /home/$homeuser/.shell_source/prompt      || echo 'user dont't loaded'
         fi
 fi          
 
