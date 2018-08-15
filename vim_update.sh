@@ -72,9 +72,9 @@ mv ./shell_source ./.shell_source;
 			chmod -R g=rX,o=rX /home/$user/.shell_source
 						
 			# COPY vim files
-		cp ./usr/share/vim/vimXX/colors/* $path/colors/
-		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/
-		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/
+		cp ./usr/share/vim/vimXX/colors/* $path/colors/ || echo -e "not vim colors"
+		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/ || echo -e "not vim plugins"
+		cp ./usr/share/vim/vimXX/syntax/* $path/syntax/ || echo -e "not vim syntax"
 		ln -ns $vimless /usr/bin/vless
 			
 			# COPY files in /usr/bin
