@@ -70,7 +70,13 @@ mv ./shell_source ./.shell_source;
 			cp -r ./.shell_source /home/$user
 			chown -R root:$user /home/$user/.shell_source
 			chmod -R g=rX,o=rX /home/$user/.shell_source
-						
+	fi		
+			
+	if [ -z $vim_ver ]; then
+		echo -e "\033[32m Install vim first \033[0m" &&
+		exit 1
+		
+	else						
 			# COPY vim files
 		cp ./usr/share/vim/vimXX/colors/* $path/colors/ || echo -e "not vim colors"
 		cp ./usr/share/vim/vimXX/plugin/* $path/plugin/ || echo -e "not vim plugins"
