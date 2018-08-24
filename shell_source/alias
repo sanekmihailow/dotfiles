@@ -112,6 +112,11 @@ alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/mast
 alias speedt1='wget -O - https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
 alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip' 
 
+		            #locale
+alias locru='export LC_MESSAGES=ru_RU.UTF-8'
+alias locen='export LC_MESSAGES=C'
+
+
 # grc --------------------------------
 if [ -f /usr/bin/grc ]; then
   alias configure="grc --colour=auto configure"
