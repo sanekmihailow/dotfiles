@@ -2,11 +2,13 @@
 
 #aliases  ========================================
 #alias su="sudo"
-alias se="sudo"
-alias sq="sudo"
-alias sudo="sudo"
+alias se="sudo "
+alias sq="sudo "
+alias sudo="sudo "
+alias plz='sudo "$BASH" -c "$(history -p !!)"'
+alias sr='sudo "$BASH" -c "$(history -p !!)"'
 #alias sr="sudo $(history -p \!\!)"
-alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
+#alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias ports="netstat -ntulp"
 alias used="du -ch -d 1"
