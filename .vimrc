@@ -43,6 +43,7 @@ nmap <C-x> :set nonumber<CR>
 vmap <C-t> <Leader>t
 "                     " in cli mode use :ww
 cmap ww %!sudo tee %
+       "cmap ww :w !sudo sh -c "cat > %"
 cmap nn echo expand('%:p')
 
 " ------------------------------------ reg
