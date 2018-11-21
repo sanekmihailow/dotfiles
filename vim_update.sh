@@ -41,6 +41,7 @@ mv ./shell_source ./.shell_source;
 		cp /root/.screenrc ./backup_dir/root/.screenrc
 		cp /root/.tmux.conf ./backup_dir/root/.tmux.conf
 		tar -czf  old_vim_bak.tar.gz /usr/share/vim/vim$vim_ver/colors /usr/share/vim/vim$vim_ver/syntax /usr/share/vim/vim$vim_ver/syntax
+		tar -czf  old_grc_bak.tar.gz /usr/share/grc
 		mv old_vim_bak.tar.gz ./backup_dir
 		chown -R $user ./backup_dir &&
 		cp ./etc/bash.bashrc /etc/bash.bashrc
@@ -99,6 +100,12 @@ mv ./shell_source ./.shell_source;
 				cp ./usr/bin/colorex /usr/bin
 			else
 				echo 'colorex exist    '
+			fi
+			
+			if [ -z $(which grc) ]; then
+				cp -r ./usr/share/grc/* /usr/share/grc/
+			else
+				echo 'grc not found, please install grc	'
 			fi
 		echo -e "\n \033[1;32m Congratulations , you installed vim-bashrc \n \033[0m"
 	
