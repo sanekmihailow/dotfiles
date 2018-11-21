@@ -1,6 +1,6 @@
 #
 regexp=\b(g?cc|[gc]\+\+|g?as|ld)\b
-colours=white bold
+colours=yellow
 count=once
 .........
 #
@@ -46,6 +46,27 @@ regexp=error:
 colours=bold white on_red
 count=once
 .........
+regexp=[Ff][Aa][Ii][Ll][Ee][Dd].*$
+colours=bold yellow on_red
+.........
+regexp=ошибка .*$
+colours=red
+.........
+regexp=recipe for target .*$
+colours=red
+.........
+#make
+regexp=[Mm]aking all.*$
+colours=cyan
+.........
+regexp=[Mm]aking installed.*$
+colours=magenta
+.........
+regexp=[Dd][Ee][Pp][Rr][Ee][Cc][Aa][Tt][Ee]
+colours=white bold dark italic
+.........
+#note
+
 #note
 regexp=note:
 colours=bold cyan
