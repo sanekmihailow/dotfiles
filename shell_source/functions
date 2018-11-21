@@ -14,6 +14,13 @@ hh() {
         history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n50 |colorex -B '^....[0-9]'
 }
 
+##### history search all history to master word
+
+hhall() {
+        history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'hhall' |grep -v 'history' |colorex -B '^....[0-9]'
+}
+
+
 incognito() {
   case $1 in
     start)
@@ -47,8 +54,11 @@ extract () {
   fi
 }
 
+configure() { ./configure "$@" |/usr/bin/grcat conf.configure; }
+make() { /usr/bin/make "$@" |/usr/bin/grcat conf.gcc; }
+
 mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making install.*' -R '(?i)error.*' -M '(?i)warning.*'; }
-cconfigure() { ./configure "$@" |colorex -c ' no' -g ' yes' -R '(?i)error' -M '(?i)warning'; }
+cconfigure() { ./configure "$@" |colorex -c ' not found' -g ' found' -c ' no' -g ' yes' -R '(?i)error`' -M '(?i)warning' -Y ' (?i)no support'; }
 ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; -g '(?i)done' -r '(?i)failed'; }
 
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }         # Creates an archive (*.tar.gz) from given directory
