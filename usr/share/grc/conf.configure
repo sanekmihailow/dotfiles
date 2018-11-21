@@ -4,22 +4,40 @@ colours=yellow bold
 .........
 # checking
 regexp=\bchecking\s*(for|if|whether|command|how|that)?(\s*to)?\b
-colours=bold blue
+colours=white bold dark italic
 .........
 # result is complex
 regexp=\.\.\. .*$
 colours=bold yellow
 .........
+regexp=\.\.\. found$
+colours=green
+.........
+regexp=\.\.\. yes$
+colours=green
+.........
+regexp=\.\.\. not found$
+colours=cyan
+.........
+regexp=\.\.\. no$
+colours=cyan
+.........
 # check succeeded
 regexp=\.\.\.( \(cached\))? yes$
 colours=bold cyan
+.........
+regexp=path prefix:.*$
+colours=blue
+.........
+regexp=(^|[/\w\.]+/)?no support.*$
+colours=bold white on_yellow
 .........
 # check did not succeed
 regexp=\.\.\.( \(cached\))? no$
 colours=bold red
 .........
 # ... should be normal
-regexp=\.\.\.
+regexp=\.\.\.[ ]
 colours=default
 .........
 # creating stuff
