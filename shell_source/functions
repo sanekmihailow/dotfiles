@@ -54,8 +54,6 @@ extract () {
   fi
 }
 
-configure() { ./configure "$@" |/usr/bin/grcat conf.configure; }
-make() { /usr/bin/make "$@" |/usr/bin/grcat conf.gcc; }
 
 mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making install.*' -R '(?i)error.*' -M '(?i)warning.*'; }
 cconfigure() { ./configure "$@" |colorex -c ' not found' -g ' found' -c ' no' -g ' yes' -R '(?i)error`' -M '(?i)warning' -Y ' (?i)no support'; }
