@@ -2,7 +2,7 @@
 
 #aliases  ========================================
 #alias su="sudo"
-alias se="sudo "
+#alias se="sudo "
 alias sq="sudo "
 alias sudo="sudo "
 alias plz='sudo "$BASH" -c "$(history -p !!)"'
