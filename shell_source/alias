@@ -5,10 +5,12 @@
 #alias se="sudo "
 alias sq="sudo "
 alias sudo="sudo "
-alias plz='sudo "$BASH" -c "$(history -p !!)"'
+
+alias plz='sudo "$BASH" -c "$(cat $HOME/.bash_history |grep -v '^#' |grep -v '^plz' |grep -v '^history' |grep -v '^sr' |grep -v '^sq' |grep -v '^hh' |grep -v 'hi' |grep -v bash_history |tail -n1)"'
 alias sr='sudo "$BASH" -c "$(history -p !!)"'
 #alias sr="sudo $(history -p \!\!)"
-#alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"
+#alias plz='sudo "$BASH" -c "$(history -p !!)"'              #also as "sr"
+#alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"          #inside screen starts lags from "xargs"
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias ports="netstat -ntulp"
 alias used="du -ch -d 1"
