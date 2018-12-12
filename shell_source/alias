@@ -194,7 +194,7 @@ if [ -f /usr/bin/grc ]; then
   alias tcpdump="grc --colour=auto tcpdump"
   alias traceroute="grc --colour=auto traceroute"
   alias tune2fs="grc --colour=auto tune2fs"
-  alias ulimit="grc --colour=auto ulimit"
+  #alias ulimit="grc --colour=auto ulimit"
   alias uptime="grc --colour=auto uptime"
   alias vmstat="grc --colour=auto vmstat"
   alias wdiff="grc --colour=auto wdiff"
