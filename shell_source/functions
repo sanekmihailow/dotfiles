@@ -5,19 +5,19 @@
 # install colorex or delete string the end
 
 hi() {
-        history | grep --color=always "tag-$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n25 |colorex -B '^....[0-9]'
+        history | grep --color=always "tag-$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |grep -v 'plz' |grep -v 'sq' |grep -v 'sr' |tail -n25 |colorex -B '^....[0-9]'
 }
 
 ##### history search all history and show 50 last ###########
 
 hh() {
-        history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |tail -n50 |colorex -B '^....[0-9]'
+        history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'history' |grep -v 'plz' |grep -v 'sq' |grep -v 'sr' |tail -n50 |colorex -B '^....[0-9]'
 }
 
 ##### history search all history to master word
 
 hhall() {
-        history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'hhall' |grep -v 'history' |colorex -B '^....[0-9]'
+        history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'hhall' |grep -v 'history' |grep -v 'plz' |grep -v 'sq' |grep -v 'sr' |colorex -B '^....[0-9]'
 }
 
 
