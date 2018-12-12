@@ -31,6 +31,7 @@ mv ./shell_source ./.shell_source;
 			#move backup dir
 	
 		cp /etc/bash.bashrc ./backup_dir/bash.bashrc
+		cp /etc/grc.conf ./backup_dir/grc.conf
 		cp /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
 		cp /home/$user/.vimrc ./backup_dir/user/.vimrc
 		cp /home/$user/.bashrc ./backup_dir/user/.bashrc
@@ -102,8 +103,9 @@ mv ./shell_source ./.shell_source;
 				echo 'colorex exist    '
 			fi
 			
-			if [ -z $(which grc) ]; then
+			if [ $(which grc) ]; then
 				cp -r ./usr/share/grc/* /usr/share/grc/
+				cp ./etc/grc.conf /etc/grc.conf
 			else
 				echo 'grc not found, please install grc	'
 			fi
