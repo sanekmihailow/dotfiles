@@ -20,6 +20,9 @@ hhall() {
         history | grep --color=always -i "$@" |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'hhall' |grep -v 'history' |grep -v 'plz' |grep -v 'sq' |grep -v 'sr' |colorex -B '^....[0-9]'
 }
 
+hhistory() {history |grep -v "^grep.*" |grep -wv "grep.*" |grep -v 'hi' |grep -v 'hh' |grep -v 'hhall' |grep -v 'history' |grep -v 'plz' |grep -v 'sq' |grep -v 'sr' |colorex -B '^....[0-9]' -r '\|' -c '[A-z].*/[A-z].*' 
+}
+
 
 incognito() {
   case $1 in
