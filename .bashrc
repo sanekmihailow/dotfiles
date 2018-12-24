@@ -8,6 +8,7 @@ homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}
        source /home/$homeuser/.source-home
 
 complete -cf se
+#setxkbmap -option caps:none
 
 #eval $(keychain --eval --agents ssh -Q --quiet ~/.ssh/keys/1_id $HOME/.ssh/keys/05_id $HOME/.ssh/keys/123_id)
 #source $HOME/.keychain/$HOSTNAME-sh
