@@ -11,7 +11,8 @@ esac
     xterm)
         TERM=xterm-256color || TERM=xterm-color;;
     screen)
-        TERM=screen-256color || TERM=xterm-color;;
+        #TERM=screen-256color || TERM=xterm-color;;
+        TERM=xterm-256color || TERM=xterm-color;;
     Eterm)
         TERM=Eterm-256color || TERM=Eterm-color;;
     tmux)
