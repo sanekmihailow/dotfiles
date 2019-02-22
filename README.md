@@ -1,14 +1,14 @@
 # my-.dotfiles
 
-# Installasions bashrc + vim plugins
+# Installasions dotfiles + vim plugins + grc
 
 ### download to your $HOME directory
 
-git clone https://github.com/sanekmihailow/vim-bashrc.git
+git clone https://github.com/sanekmihailow/dotfiles_and_other.git
 
-cd vim-bashrc
+cd dotfiles_and-other
 
-sudo sh vim_update.sh
+sudo sh dot_update.sh
 
 if you have many 1 users in '/home' directory then you need edit and uncomment 4 line and comment 2 line in .bashrc
 
