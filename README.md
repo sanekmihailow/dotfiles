@@ -6,7 +6,7 @@
 
 git clone https://github.com/sanekmihailow/dotfiles_and_other.git
 
-cd dotfiles_and-other
+cd dotfiles_and_other
 
 sudo sh dot_update.sh
 
