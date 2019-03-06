@@ -1,16 +1,11 @@
 #################################### alias #####################################################
 
 #aliases  ========================================
-#alias su="sudo"
-#alias se="sudo "
+
 alias sq="sudo "
 alias sudo="sudo "
-
 alias plz='sudo "$BASH" -c "$(cat $HOME/.bash_history |grep -v '^#' |grep -v '^plz' |grep -v '^history' |grep -v '^sr' |grep -v '^sq' |grep -v '^hh' |grep -v 'hi' |grep -v bash_history |tail -n1)"'
 alias sr='sudo "$BASH" -c "$(history -p !!)"'
-#alias sr="sudo $(history -p \!\!)"
-#alias plz='sudo "$BASH" -c "$(history -p !!)"'              #also as "sr"
-#alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"          #inside screen starts lags from "xargs"
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias ports="netstat -ntulp"
 alias used="du -ch -d 1"
@@ -20,23 +15,21 @@ alias lnn="lnav"
 alias svi="sudo vim"
 alias scp="scp"
 
-#alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
-
 #update all OS --------------------------------
-### update: update all of your packages!
+### update: update and upgrade all of your packages!
 if [ ! -z "$(which brew > /dev/null 2>&1)" ]; then
   alias supdate="brew update && brew upgrade"
-elif [ ! -z "$(which pacman)" ]; then
+elif [ ! -z "$(which pacman > /dev/null 2>&1)" ]; then
   alias supdate="sudo pacman -Syyu"
-elif [ ! -z "$(which apt)" ]; then
+elif [ ! -z "$(which apt > /dev/null 2>&1)" ]; then
   alias supdate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
-elif [ ! -z "$(which apt-get)" ]; then
+elif [ ! -z "$(which apt-get > /dev/null 2>&1)" ]; then
   alias supdate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
-elif [ ! -z "$(which dnf)" ]; then
+elif [ ! -z "$(which dnf > /dev/null 2>&1)" ]; then
   alias supdate="sudo dnf upgrade"
-elif [ ! -z "$(which yum)" ]; then
-  alias supdate="su -c 'yum update'"
-elif [ ! -z "$(which zypper)" ]; then
+elif [ ! -z "$(which yum > /dev/null 2>&1)" ]; then
+  alias supdate="sudo yum update"
+elif [ ! -z "$(which zypper > /dev/null 2>&1)" ]; then
   alias supdate="sudo zypper update"
 fi
 
@@ -81,45 +74,8 @@ alias gst='git stash'
 alias gplo='git pull origin master'
 alias gbv='git branch -vv'
 
-
-
-#vim --------------------------------
-if [ -f /usr/bin/vimcat ]; then
-  alias cat="vimcat "
-  alias v="vim "
-fi
-
-[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
-alias ve="vi "
- 
 #grep ---------------------------------------
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
-
-#mount ---------------------------------------
-#alias mount="mount | column -t"
-
-#other -----------------------------------------
-              #pipe the output of a command to sprunge and it will give you a link to a paste-bin type page
-              #add ?php or ?sh or etc to have it add line numbers and highlighting
-alias sprunge="curl -F 'sprunge=<-' http://sprunge.us"
-              #automatically resume scp transfers that failed or paused
-alias scpresume='rsync --partial --progress --rsh=ssh'
-              #makes a directory tree listing
-alias dirtree='find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"'
-              #alias I made to strip comments from a bash or php script.   May need tweaked still
-alias stripcomments="sed -e '/^[[:blank:]]*#/d; s/[[:blank:]][[:blank:]]*#.*//'  -e '/^$/d' -e '/^\/\/.*/d' -e '/^\/\*/d;/^ \* /d;/^ \*\//d'"
-               #phpinfo_e > info.php   (write a basic phpinfo() file for testing)
-alias phpinfo_e="echo '<?php phpinfo(); ?>'";
-
-                #speed test (check you speed)
-alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
-alias speedt1='wget -O - https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
-alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip' 
-
-		            #locale
-alias locru='export LC_MESSAGES=ru_RU.UTF-8'
-alias locen='export LC_MESSAGES=C'
-
 
 # grc --------------------------------
 if [ -f /usr/bin/grc ]; then
@@ -161,7 +117,6 @@ if [ -f /usr/bin/grc ]; then
   alias last="grc --colour=auto last"
   alias ldap="grc --colour=auto ldap"
   alias log="grc --colour=auto log"
- #alias ls="grc --colour=auto ls"
   alias lsattr="grc --colour=auto lsattr"
   alias lsblk="grc --colour=auto lsblk"
   alias lsmod="grc --colour=auto lsmod"
@@ -194,9 +149,59 @@ if [ -f /usr/bin/grc ]; then
   alias tcpdump="grc --colour=auto tcpdump"
   alias traceroute="grc --colour=auto traceroute"
   alias tune2fs="grc --colour=auto tune2fs"
-  #alias ulimit="grc --colour=auto ulimit"
   alias uptime="grc --colour=auto uptime"
   alias vmstat="grc --colour=auto vmstat"
   alias wdiff="grc --colour=auto wdiff"
   alias whois="grc --colour=auto whois"
+  #alias ls="grc --colour=auto ls"
+  #alias ulimit="grc --colour=auto ulimit"
  fi
+
+#vim --------------------------------
+if [ -f /usr/bin/vimcat ]; then
+  alias cat="vimcat "
+  alias v="vim "
+fi
+
+[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
+alias ve="vi "
+
+
+#other -----------------------------------------
+       #pipe the output of a command to sprunge and it will give you a link to a paste-bin type page
+       #add ?php or ?sh or etc to have it add line numbers and highlighting
+alias sprunge="curl -F 'sprunge=<-' http://sprunge.us"
+       
+       #automatically resume scp transfers that failed or paused
+alias scpresume='rsync --partial --progress --rsh=ssh'
+       
+       #makes a directory tree listing
+alias dirtree='find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"'
+       
+       #alias I made to strip comments from a bash or php script.   May need tweaked still
+alias stripcomments="sed -e '/^[[:blank:]]*#/d; s/[[:blank:]][[:blank:]]*#.*//'  -e '/^$/d' -e '/^\/\/.*/d' -e '/^\/\*/d;/^ \* /d;/^ \*\//d'"
+       
+       #phpinfo_e > info.php   (write a basic phpinfo() file for testing)
+alias phpinfo_e="echo '<?php phpinfo(); ?>'";
+
+       #speed test (check you speed)
+alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
+alias speedt1='wget -O - https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
+alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip' 
+
+	#change locale
+alias locru='export LC_MESSAGES=ru_RU.UTF-8'
+alias locen='export LC_MESSAGES=C'
+
+
+
+
+#------------------------------ comment ----------------------
+#mount ---------------------------------------
+#alias mount="mount | column -t"
+#alias su="sudo"
+#alias se="sudo "
+#alias sr="sudo $(history -p \!\!)"
+#alias plz='sudo "$BASH" -c "$(history -p !!)"'              #also as "sr"
+#alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"          #inside screen starts lags from "xargs"
+#alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
