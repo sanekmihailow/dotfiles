@@ -7,5 +7,5 @@ if [ -x "`which most 2>&1`" ]; then
 fi
 
 PATH="$HOME/.local/bin:$PATH:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/usr/LOCAL/bin:/usr/LOCAL/sbin"      
-										                                        #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+	#/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib:/usr/LOCAL/lib"
