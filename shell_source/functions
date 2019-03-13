@@ -69,7 +69,7 @@ ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; -g '(?i)done' -r 
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }         # Creates an archive (*.tar.gz) from given directory
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a ZIP archive of a file or folder.
 
-
+cht() { /usr/bin/curl cheat.sh/"$@"; }
 
 
 #----------------------------------------------------comment --------------------------------------------------
