@@ -60,6 +60,14 @@ extract () {
   fi
 }
 
+defcat() {
+    if [ -x /bin/cat ]; then
+        /bin/cat "$@"
+    else /usr/bin/cat "$@"
+    fi
+}
+
+
 gulimit() { ulimit "$@" |grcat conf.ulimit ; }
 se() { /usr/bin/sudo "$@"; }
 mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making install.*' -R '(?i)error.*' -M '(?i)warning.*'; }
@@ -71,7 +79,6 @@ function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a
 
 #use - cht /ls/
 cht() { /usr/bin/curl cheat.sh/"$@"; }
-
 
 #----------------------------------------------------comment --------------------------------------------------
 
