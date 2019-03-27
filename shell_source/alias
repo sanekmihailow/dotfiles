@@ -14,6 +14,7 @@ alias cmyip="curl icanhazip.com"
 alias lnn="lnav"
 alias svi="sudo vim"
 alias scp="scp"
+alias xsc="xclip -select clipboard"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
