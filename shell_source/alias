@@ -15,6 +15,8 @@ alias lnn="lnav"
 alias svi="sudo vim"
 alias scp="scp"
 alias xsc="xclip -select clipboard"
+# in centos use vimx
+alias vim="vim"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
@@ -79,7 +81,7 @@ alias gbv='git branch -vv'
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 
 # grc --------------------------------
-if [ -f /usr/bin/grc ]; then
+if [ $(which grc) ]; then
   alias ant="grc --colour=auto ant"
   alias blkid="grc --colour=auto blkid"
   alias configure="grc --colour=auto configure"
@@ -159,13 +161,13 @@ if [ -f /usr/bin/grc ]; then
  fi
 
 #vim --------------------------------
-if [ -f /usr/bin/vimcat ]; then
+if [ -f /usr/local/bin/vimcat ]; then
   alias cat="vimcat "
   alias v="vim "
 fi
 
-[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
-alias ve="vi "
+#[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
+#alias ve="vi "
 
 
 #other -----------------------------------------
