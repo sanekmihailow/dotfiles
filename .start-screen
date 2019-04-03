@@ -21,4 +21,5 @@ free -m
 
 if [ -x "`which inxi 2>&1`" ]; then
     inxi -IpRS -v0 -c5
+    inxi -FbnDGiIPmMRNsx -c5
 fi
