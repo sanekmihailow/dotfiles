@@ -92,22 +92,25 @@ mv ./shell_source ./.shell_source;
 		chmod a+rx ./usr/bin/vimcat && echo "executable vimcat \n"
 		
 			if [ -z $(which vimcat) ]; then
-				cp ./usr/bin/vimcat /usr/bin
+				cp ./usr/bin/vimcat /usr/local/bin/
 			else
 				echo 'vimcat exist     '
 			fi
 			
 			if [ -z $(which colorex) ]; then
-				cp ./usr/bin/colorex /usr/bin
+				cp ./usr/bin/colorex /usr/local/bin/
 			else
 				echo 'colorex exist    '
 			fi
 			
-			if [ $(which grc) ]; then
-				cp -r ./usr/share/grc/* /usr/share/grc/
+			if [ -z $(which grc) ]; then
+				cp ./usr/bin/grc /usr/local/bin/
+				cp ./usr/bin/grcat /usr/local/bin/
+				cp -r ./usr/share/grc/ /usr/local/share/
 				cp ./etc/grc.conf /etc/grc.conf
 			else
-				echo 'grc not found, please install grc	'
+				cp -r ./usr/share/grc/* /usr/share/grc/
+				cp ./etc/grc.conf /etc/grc.conf
 			fi
 		echo -e "\n \033[1;32m Congratulations , you installed vim-bashrc \n \033[0m"
 	
