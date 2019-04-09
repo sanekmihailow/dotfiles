@@ -84,7 +84,7 @@ alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 if [ $(which grc) ]; then
   alias ant="grc --colour=auto ant"
   alias blkid="grc --colour=auto blkid"
-  alias configure="grc --colour=auto configure"
+  alias configure="grc --colour=auto ./configure"
   alias cvs="grc --colour=auto cvs"
   alias df="grc --colour=auto df"
   alias diff="grc --colour=auto diff"
