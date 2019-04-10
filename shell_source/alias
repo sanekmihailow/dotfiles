@@ -8,7 +8,7 @@ alias plz='sudo "$BASH" -c "$(cat $HOME/.bash_history |grep -v '^#' |grep -v '^p
 alias sr='sudo "$BASH" -c "$(history -p !!)"'
 alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
-    #or use (работает криво)
+    #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
 alias ports="netstat -ntulp"
 alias used="du -ch -d 1"
