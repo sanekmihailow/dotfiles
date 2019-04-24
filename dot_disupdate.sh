@@ -1,26 +1,26 @@
-#!/bin/bash                                                                                                                            
-user="$(who | cut -d' ' -f1 | grep "$current_user" |head -n1)"                                                                         
-vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | awk '{print $5}' | sed -e 's/\.//g')"                                         
-path="/usr/share/vim/vim$vim_ver"                                                                                                      
-user_dot=".vimrc .bashrc .bash_profile .screenrc .tmux.conf .source-home .source-root .start-screen"                                   
-other_dor="bash.bashrc grc.conf"                                                                                                       
-                                                                                                                                       
-echo -e "\n \033[0;32m Are you shure? It's script delete dot files in /etc/ /home/user and /root and restore old dot files.\nAnswer "Ye
-s" or "No" \n \033[0m"                                                                                                                 
-                                                                                                                                       
-read answer &&                                                                                                                         
-if [ "$answer" = 'Yes' ]; then 
+#!/bin/bash
+user="$(who | cut -d' ' -f1 | grep "$current_user" |head -n1)"
+vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | awk '{print $5}' | sed -e 's/\.//g')"
+path="/usr/share/vim/vim$vim_ver"
+user_dot=".vimrc .bashrc .bash_profile .screenrc .tmux.conf .source-home .source-root .start-screen"
+other_dor="bash.bashrc grc.conf"
 
-    #---- Remove current                                                                                                               
-    echo -e "\nRemoved current dot files"                                                                                              
-    for i in $user_dot; do                                                                                                             
-        rm /home/${user}/${i}                                                                                                          
-        rm /root/${i}                                                                                                                  
-    done                                                                                                                               
-                                                                                                                                       
-    for a in $other_dot; do                                                                                                            
-        rm /etc/${a}                                                                                                                   
-    done                                                                                                                               
+echo -e "\n \033[0;32m Are you shure? It's script delete dot files in /etc/ /home/user and /root and restore old dot files.\nAnswer "Ye
+s" or "No" \n \033[0m"
+
+read answer &&
+if [ "$answer" = 'Yes' ]; then
+
+    #---- Remove current
+    echo -e "\nRemoved current dot files"
+    for i in $user_dot; do
+        rm /home/${user}/${i}
+        rm /root/${i}
+    done
+    
+    for a in $other_dot; do
+        rm /etc/${a}
+    done
 
     rm /etc/vim/vimrc || rm /etc/vimrc
     rm -rf /usr/share/vim/vim$vim_ver/colors
