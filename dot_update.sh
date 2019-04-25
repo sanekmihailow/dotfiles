@@ -22,60 +22,59 @@ home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
 	
 mv ./shell_source ./.shell_source;
 
-	if [ -z $vim_ver ]; then
-		echo -e "\033[32m Install vim first \033[0m" &&
-		exit 1
-		
-	else
-		#---- create backup dir
-		mkdir -p ./backup_dir/root/ ./backup_dir/user/ &&
-		#---- move backup dir
-
-        	for h in $home_user; do
-            		cp /home/${user}/${h} ./backup_dir/user/
-		done
-
-        	for r in $home_root; do
-            		cp /root/${r} ./backup_dir/root/
-       		done
-
-        	for e in $other_home; do
-            		cp /etc/${e} ./backup_dir/
-	    	done
-		
-		cp /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
-		cp ./etc/bash.bashrc /etc/bash.bashrc
-		
-		vim_tar="./backup_dir/vim_tar/"
-		vim_fpath="/usr/share/vim/vim${vim_ver}"
-		grc_fpath="/usr/share/grc"
-        	
-		tar -czf  old_vim_bak.tar.gz "$vim_fpath"/colors "$vim_fpath"/syntax
-		tar -czf  old_grc_bak.tar.gz "$grc_fpath"
-		mv old_vim_bak.tar.gz ./backup_dir
-        	mv old_grc_bak.tar.gz ./backup_dir
-        	mkdir ./backup_dir/{vim_tar,grc_tar}
-        	cp -r "$vim_fpath"/colors "$vim_tar"
-        	cp -r "$vim_fpath"/syntax "$vim_tar"
-        	cp -r "$grc_fpath" ./backup_dir/grc_tar
-		chown -R $user ./backup_dir &&
-	fi
+if [ -z $vim_ver ]; then
+	echo -e "\033[32m Install vim first \033[0m" &&
+	exit 1	
+else
+	#C---- create backup dir
+	mkdir -p ./backup_dir/root/ ./backup_dir/user/ &&
 	
+	#C---- move backup dir
+        for h in $home_user; do
+            	cp -f /home/${user}/${h} ./backup_dir/user/
+	done
+
+        for r in $home_root; do
+            	cp -f /root/${r} ./backup_dir/root/
+       	done
+
+        for e in $other_home; do
+            	cp -f /etc/${e} ./backup_dir/
+	done
+		
+	cp -f /etc/vim/vimrc ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
+	cp -f ./etc/bash.bashrc /etc/bash.bashrc
+		
+	vim_tar="./backup_dir/vim_tar/"
+	vim_fpath="/usr/share/vim/vim${vim_ver}"
+	grc_fpath="/usr/share/grc"
+        	
+	tar -czf  ./backup_dir/old_vim_bak.tar.gz "$vim_fpath"/colors "$vim_fpath"/syntax
+	tar -czf  ./backup_dir/old_grc_bak.tar.gz "$grc_fpath"
+	mv old_vim_bak.tar.gz ./backup_dir
+#M        mv old_grc_bak.tar.gz ./backup_dir
+#M        mkdir ./backup_dir/{vim_tar,grc_tar}
+        cp -rf "$vim_fpath"/colors "$vim_tar"
+        cp -rf "$vim_fpath"/syntax "$vim_tar"
+        cp -rf "$grc_fpath" ./backup_dir/grc_tar
+	chown -R $user ./backup_dir &&
+	echo -e "\n\033[32m You old setting (dot_files) moved to home-dir-dot_update.sh/backup_dir \033[0m" &&
+
 	if [ "$current_user" = "root" ]; then
-		#---- copy root_only
+		#C---- copy root_only
 		for i in $root_root; do
 			cp ./$i /root
 		done
 			cp ./.bashrc_only_root /root/.bashrc
 			cp -r ./.shell_source /root
 	else
-		#---- copy root
+		#C---- copy root
 		for a in $home_root; do
 			cp ./$a /root
 		done
 			cp ./bashrc_root /root/.bashrc
 			
-		#---- copy user
+		#C---- copy user
 		for b in $home_user; do
 			cp ./$b /home/$user/
 			chmod g=rX,o=rX /home/$user/$b
@@ -84,8 +83,9 @@ mv ./shell_source ./.shell_source;
 			cp -r ./.shell_source /home/$user
 			chown -R root:$user /home/$user/.shell_source
 			chmod -R g=rX,o=rX /home/$user/.shell_source
-	fi		
-			
+	fi
+	
+	echo -e "\n\033[32m Dot files changed \033[0m"
 	if [ -z $vim_ver ]; then
 		echo -e "\033[32m Install vim first \033[0m" &&
 		exit 1
@@ -103,12 +103,14 @@ mv ./shell_source ./.shell_source;
 		chmod a+rx ./usr/bin/vimcat && echo "executable vimcat \n"
 		
 		if [ -z $(which vimcat) ]; then
-			cp ./usr/bin/vimcat /usr/local/bin/; else
+			cp ./usr/bin/vimcat /usr/local/bin/
+			echo -e "\n\033[32m Copied colorex \033[0m"; else
 			echo 'vimcat exist     '
 		fi
 			
 		if [ -z $(which colorex) ]; then
-			cp ./usr/bin/colorex /usr/local/bin/; else
+			cp ./usr/bin/colorex /usr/local/bin/
+			echo -e "\n\033[32m Copied colorex \033[0m"; else
 			echo 'colorex exist    '
 		fi
 			
@@ -117,11 +119,15 @@ mv ./shell_source ./.shell_source;
 			cp ./usr/bin/grcat /usr/local/bin/
 			cp -r ./usr/share/grc/ /usr/local/share/
 			cp ./etc/grc.conf /etc/grc.conf
+			echo -e "\n\033[32m Create grc \033[0m"
 		else
 			cp -r ./usr/share/grc/* /usr/share/grc/
 			cp ./etc/grc.conf /etc/grc.conf
+			echo -e "\n\033[32m Copied files grc \033[0m"
 		fi
-		echo -e "\n \033[1;32m Congratulations , you installed vim-bashrc \n \033[0m"
-	
+		
+		echo -e "\n \033[1;32m Congratulations , you updated dot_files \n \033[0m"
 	fi
+fi
+echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0
