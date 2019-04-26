@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+#C  old colorex
 #    colorex is a powerful console tool that displays files highlighting some patterns with colors
 #    Copyright (C) 2011  http://www.scopart.fr
 #    
