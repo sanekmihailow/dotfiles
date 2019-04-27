@@ -41,7 +41,7 @@ nmap <F11> zfa{<CR>
 nmap <F12> zO<CR>
 nmap <C-x> :set nonumber<CR>
 "-- higlight space
-nmap <C-y> :highligh Spaces ctermbg=Yellow guibg=Yellow<CR>
+nmap <C-y> :highligh Spaces ctermbg=DarkGrey guibg=DarkGrey<CR>
 nmap <C-u> :call matchadd('Spaces', '\s\+')<CR>
 "-- translate
 vmap <C-t> <Leader>t
