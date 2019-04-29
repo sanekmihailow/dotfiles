@@ -6,7 +6,7 @@
 ```nginx
 git clone https://github.com/sanekmihailow/dotfiles_and_other.git
 cd dotfiles_and_other
-sudo sh dot_update.sh
+sudo bash dot_update.sh
 ```
 > if you have many 1 users in '/home' directory then you need edit and uncomment 4 line and comment 2 line in .bashrc
 
