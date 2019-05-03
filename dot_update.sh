@@ -121,7 +121,7 @@ else
          if [ -z $(which grc) ]; then
              cp ./usr/bin/grc /usr/local/bin/
              cp ./usr/bin/grcat /usr/local/bin/
-             cp -r ./usr/share/grc/ /usr/local/share/
+             cp -r ./usr/share/grc /usr/local/share/
              cp ./etc/grc.conf /etc/grc.conf
              echo -e "\n\033[32m Create grc /usr/loca/bin \033[0m"
          else
