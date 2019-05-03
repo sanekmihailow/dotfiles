@@ -11,12 +11,12 @@ if [ "$answer" = 'Yes' ]; then
     #C---- Remove current
     echo -e "\nRemoved current dot files"
     for i in $user_dot; do
-        rm /home/${user}/${i}
-        rm /root/${i}
+        rm -f /home/${user}/${i}
+        rm -f /root/${i}
     done
     
     for a in $other_dot; do
-        rm /etc/${a}
+        rm -f /etc/${a}
     done
     
     colors="/usr/share/vim/vim${vim_ver}/colors"
@@ -25,22 +25,28 @@ if [ "$answer" = 'Yes' ]; then
     inside_colors="fairyloss.vim noctu.vim sm.vim sm.vim.tar wombat.vim xoria256.vim"
     inside_plugin="head.vim vim-translate.vim"
     inside_syntax="httplog.vim log.vim nginx.vim sm.vim"
+    local_files="colorex grc grcat vimcat"
+    
     rm /etc/vim/vimrc || rm /etc/vimrc
     
     for col in $inside_colors; do
-        rm "$colors"/"$col"
+        rm -f "$colors"/"$col"
     done
     
     for plug in $inside_plugin; do
-        rm "$plugin"/"$plug"
+        rm -f "$plugin"/"$plug"
     done    
     
     for syn in $inside_syntax; do
-        rm "$syntax"/"$syn"
+        rm -f "$syntax"/"$syn"
     done
     
-    rm -rf /usr/share/grc/*
-
+    rm -f /usr/share/grc/*
+    for local in $local_files; do
+        rm -f /usr/local/bin/"$local"
+    done
+    rm -rf /usr/local/share/grc
+    
     #C---- Copy old
     echo -e "\nCopied old dot files"
     for b in $other_dot; do
