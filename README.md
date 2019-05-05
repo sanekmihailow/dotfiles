@@ -14,7 +14,9 @@ If you want restore your old dot files, then
 ```nginx
 sudo bash dot_disupdate.sh
 ```
-
+```
+reconnect to Stty
+```
 # screen images
 
 ![root](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/root%20PS1_.png)
