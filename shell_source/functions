@@ -67,6 +67,13 @@ defcat() {
     fi
 }
 
+# remove unprintable characters for output utilit "script"
+# use - scriptformat input_file output_file
+scriptformat() {
+	defaultcat=$(which cat)
+	${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
+}
+
 
 gulimit() { ulimit "$@" |grcat conf.ulimit ; }
 gconfigure() { configure "$@" |grcat conf.configure; }
