@@ -62,8 +62,11 @@ set smartcase
 set ruler
 set nocompatible
 set backspace=indent,eol,start
-" tab = 4 spaces
+"- tab = 4 spaces
 set expandtab ts=4 sw=4 ai
+"- nomodeline secure
+set modelines=0
+set nomodeline
 
 if has('mouse')
   set mouse=v
