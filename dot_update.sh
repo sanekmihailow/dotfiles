@@ -108,7 +108,7 @@ else
  	
          if [ -z $(which vimcat) ]; then
              cp ./usr/bin/vimcat /usr/local/bin/
-             echo -e "\n\033[32m Copied colorex \033[0m"; else
+             echo -e "\n\033[32m Copied vimcat \033[0m"; else
              echo 'vimcat exist     '
          fi
 			
