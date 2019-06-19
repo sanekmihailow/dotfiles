@@ -13,6 +13,7 @@ sudo bash dot_update.sh
 If you want restore your old dot files, then
 ```nginx
 sudo bash dot_disupdate.sh
+exit
 ```
 ```
 reconnect to Stty
