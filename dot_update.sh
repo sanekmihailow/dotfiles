@@ -103,7 +103,8 @@ else
 	 list_ex="colorex vimcat grc grcat tmux-sessions"
 	 
 	 for list in $list_ex; do
-	     chmod a+rx ./usr/bin/${list} && echo -e "executable ${list} \n"
+	     chmod a+rx ./usr/bin/${list} 
+	     #&& echo -e "executable ${list}"
 	 done
  	
          if [ -z $(which vimcat) ]; then
