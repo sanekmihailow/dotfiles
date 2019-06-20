@@ -13,7 +13,6 @@ bind [ paste .
 bind ^[ copy
 
 #
-
 defscrollback 200024
 bind ^k
 bind ^\
