@@ -2,7 +2,7 @@
 user="$(who | cut -d' ' -f1 | grep "$current_user" |head -n1)"
 vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | awk '{print $5}' | sed -e 's/\.//g')"
 path="/usr/share/vim/vim$vim_ver"
-user_dot=".vimrc .bashrc .bash_profile .screenrc .tmux.conf .source-home .source-root .start-screen"
+user_dot=".vimrc .bashrc .bash_profile .screenrc .tmux.conf .source-home .source-root .start-screen .bash_history"
 other_dor="bash.bashrc grc.conf"
 
 echo -e "\n \033[0;32m Are you shure? It's script delete dot files in /etc/ /home/user and /root and restore old dot files.\nAnswer "Yes" or "No" \n \033[0m"
