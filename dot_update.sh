@@ -18,7 +18,7 @@ fi
 other_home="bash.bashrc grc.conf"
 root_root=".screenrc .tmux.conf .vimrc .source-root .start-screen"
 home_root=".bashrc .screenrc .tmux.conf .vimrc"
-home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen .bash_history"
+home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
 	
 mv ./shell_source ./.shell_source;
 
@@ -32,6 +32,7 @@ else
     #C---- move backup dir
     for h in $home_user; do
         cp -f /home/${user}/${h} ./backup_dir/user/
+	cp -f /home/${user}/.bash_history ./backup_dir/user/
     done
 
     for r in $home_root; do
