@@ -18,7 +18,7 @@ fi
 other_home="bash.bashrc grc.conf"
 root_root=".screenrc .tmux.conf .vimrc .source-root .start-screen"
 home_root=".bashrc .screenrc .tmux.conf .vimrc"
-home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen"
+home_user=".bashrc .screenrc .tmux.conf .vimrc .source-home .start-screen .bash_history"
 	
 mv ./shell_source ./.shell_source;
 
