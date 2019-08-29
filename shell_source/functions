@@ -2,32 +2,38 @@ highlightsudo='se|sq|sudo'
 highlightcom='vim|ssh|chown|chmod|configure|ls|sed|grep|mc'
 highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csplit|wc|sum|uniq|comm|ptx|tsort|cut|paste|join|tr|expand|unexpand|ls|dir|vdir|dircolors|cp|dd|mv|rm|shred|link|ln|mkdir|mkfifo|mknod|readlink|rmdir|unlink|chown|chmod|chgrp|touch|df|du|stat|sync|truncate|echo|printf|test|expr|tee|basename|dirname|pathchk|mktemp|realpath|pwd|logname|whoami|id|groups|users|who|date|arch|nproc|uname|hostname|hostid|uptime|chcon|runcon|chroot|env|nice|nohup|stdbuf|timeout|kill|pkill|sleep|factor|numfmt|seq|source'
 
-##### histrory search with help tag ###################
-##example :
+##### --histrory search START-- ###################
+## example search with tag :
 # $user: vim /etc/apt/source.list #tag-vim_source-list
 # $user: hi vim
 # install colorex or delete string the end
+hhgrepv='"^grep.*\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr"'
 
+#search for tag-
 hi() {
-    history | grep --color=always "tag-$@" |grep -v "^grep.*\|hi\|hh\|hhall\|history\|hhistory\|plz\|sr" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
+    history | grep --color=always "tag-$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
 }
 
-##### history search all history and show 50 last ###########
-
+# search for all history and show 50 last
 hh() {
-    history | grep --color=always -i "$@" |grep -v "^grep.*\|hi\|hh\|hhall\|history\|hhistory\|plz\|sr" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
+    history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
 }
 
-##### history search all history to master word
-
+# search all history to master word
 hhall() {
-    history | grep --color=always -i "$@" |grep -v "^grep.*\|hi\|hh\|hhall\|history\|hhistory\|plz\|sr" |grep -wv "grep.*" |colorex -B '^....[0-9]'
+    history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
 }
 
 hhistory() {
-    history |grep -v "^grep.*\|hi\|hh\|hhall\|history\|hhistory\|plz\|sr" |grep -wv "grep.*" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -Y ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+    history |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -Y ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
 }
 
+# serach uniq word
+hhuniq() {
+        history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3=\$4=\"\"; print \$0}" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++"
+}
+
+##### --histrory search END-- #####################
 
 incognito() {
   case $1 in
