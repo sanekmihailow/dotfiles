@@ -24,6 +24,7 @@ hhall() {
     history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
 }
 
+# search all history and highlight special command
 hhistory() {
     history |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -Y ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
 }
@@ -31,6 +32,14 @@ hhistory() {
 # serach uniq word
 hhuniq() {
         history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3=\$4=\"\"; print \$0}" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++"
+}
+
+## serach uniq word and nummber command
+# search better thought last word in commnad
+# example : hhuniqnum start.sh
+# output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
+hhuniqnum() {
+history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
 }
 
 ##### --histrory search END-- #####################
