@@ -34,10 +34,10 @@ hhuniq() {
         history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s//g' |sed 's/^[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]\s[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]\s[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]\s//g' |awk "!a[\$0]++"
 }
 
-## serach uniq word and nummber command
-# search better thought last word in commnad
-# example : hhnumuniq start.sh
-# output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
+# serach uniq word and nummber command
+	# search better thought last word in commnad
+	# example : hhnumuniq start.sh
+		# output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 hhnumuniq() {
 history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
 }
