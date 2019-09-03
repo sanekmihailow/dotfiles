@@ -39,7 +39,7 @@ hhuniq() {
 	# example : hhnumuniq start.sh
 		# output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 hhnumuniq() {
-history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
+	history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
 }
 
 ##### --histrory search END-- #####################
