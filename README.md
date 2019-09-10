@@ -27,5 +27,6 @@ reconnect to Stty
 ![root](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/root%20PS1_.png)
 ![user](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/user%20PS1_.png)
 ![vim](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/vim.png)
-![vim](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/gnuscreen.png)
-![vim](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/tmux.png)
+![screen](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/gnuscreen.png)
+![tmux](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/tmux.png)
+![screen-insode-tmux](https://github.com/sanekmihailow/my-.dotfiles/blob/master/screenshots/screen-insode-tmux.png)
