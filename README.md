@@ -1,5 +1,3 @@
-# my-.dotfiles
-
 # Installasions dotfiles + vim plugins + grc
 
 ### download to your $HOME directory
