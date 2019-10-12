@@ -7,7 +7,7 @@ highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csp
 # $user: vim /etc/apt/source.list #tag-vim_source-list
 # $user: hi vim
 # install colorex or delete string the end
-hhgrepv='"^grep.*\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr"'
+hhgrepv='"^grep.*\|^(\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr)"'
 
 #search for tag-
 hi() {
@@ -39,9 +39,38 @@ hhuniq() {
 # 	example : hhnumuniq start.sh
 # 	output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 
+#M- hhnumuniq() {
+#	history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
+#}
+
 hhnumuniq() {
-	history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
+    declare -A number
+    declare -A unnumber
+    len=$(history | wc -l)
+    ((len=len-1))
+
+    for i in $(seq 1 $len); do
+        str=$(history | sed "$i!d")
+        idx="${str:0:5}"
+        idx=$(echo "${idx//[!0-9]/}")
+        number["$idx"]="${str:0}"
+        unnumber["$idx"]="${str:27}"
+    done
+    commandnum=''
+    for i in $(seq 1 $len); do
+        if [ number["$i"] = "dupe" ]; then
+            continue
+        fi
+        for j in $(seq 1 $len); do
+            if [ "${unnumber[$j]}" = "${unnumber[$i]}" ] && [ "$i" != "$j" ]; then
+                number["$j"]="dupe"
+            fi
+        done
+        commandnum=$(echo -e "$commandnum$\r\n${number[$i]}")
+    done
+    echo "$commandnum" |grep --color=always -i "$@" |grep -wv "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
 }
+
 
 ##### --histrory search END-- #####################
 
