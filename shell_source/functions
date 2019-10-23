@@ -2,12 +2,13 @@ highlightsudo='se|sq|sudo'
 highlightcom='vim|ssh|chown|chmod|configure|ls|sed|grep|mc'
 highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csplit|wc|sum|uniq|comm|ptx|tsort|cut|paste|join|tr|expand|unexpand|ls|dir|vdir|dircolors|cp|dd|mv|rm|shred|link|ln|mkdir|mkfifo|mknod|readlink|rmdir|unlink|chown|chmod|chgrp|touch|df|du|stat|sync|truncate|echo|printf|test|expr|tee|basename|dirname|pathchk|mktemp|realpath|pwd|logname|whoami|id|groups|users|who|date|arch|nproc|uname|hostname|hostid|uptime|chcon|runcon|chroot|env|nice|nohup|stdbuf|timeout|kill|pkill|sleep|factor|numfmt|seq|source'
 
-##### --histrory search START-- ###################
+##### --histrory search START-- ######
+
 ## example search with tag :
 # $user: vim /etc/apt/source.list #tag-vim_source-list
 # $user: hi vim
 # install colorex or delete string the end
-hhgrepv='"^grep.*\|^(\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr)"'
+hhgrepv='"^grep.*\|^(\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr|hhnumniq)"'
 
 #search for tag-
 hi() {
@@ -35,44 +36,27 @@ hhuniq() {
 }    
 
 # serach uniq word and nummber command
-# search better thought last word in commnad
-# 	example : hhnumuniq start.sh
+# search better thought first word in commnad
+# 	example : hhnumuniq bash
 # 	output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 
-#M- hhnumuniq() {
-#	history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
-#}
-
-hhnumuniq() {
-    declare -A number
+hhnumniq() {
     declare -A unnumber
-    len=$(history | wc -l)
-    ((len=len-1))
+    len="$(hhuniq "$@" |wc -l)"
+    criterion="$(history | grep --color=none -i "$@" |grep --color=none -v "${hhgrepv}" |grep --color=none -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"
+    listprevent="$(history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++")"
 
-    for i in $(seq 1 $len); do
-        str=$(history | sed "$i!d")
-        idx="${str:0:5}"
-        idx=$(echo "${idx//[!0-9]/}")
-        number["$idx"]="${str:0}"
-        unnumber["$idx"]="${str:27}"
+    for i in $(seq $len); do
+    str=$(echo "$criterion" |sed "$i!d")
+    idx="$i"
+    unnumber["$idx"]="${str:0}"
+    idnumber="${unnumber[$idx]}"
+    change="$(echo "$idnumber" |awk -v sec="$1.*" '{ $1="";  print sec$0; }')"
+    echo -e "$listprevent" |grep "${change}" |tail -n1
     done
-    commandnum=''
-    for i in $(seq 1 $len); do
-        if [ number["$i"] = "dupe" ]; then
-            continue
-        fi
-        for j in $(seq 1 $len); do
-            if [ "${unnumber[$j]}" = "${unnumber[$i]}" ] && [ "$i" != "$j" ]; then
-                number["$j"]="dupe"
-            fi
-        done
-        commandnum=$(echo -e "$commandnum$\r\n${number[$i]}")
-    done
-    echo "$commandnum" |grep --color=always -i "$@" |grep -wv "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
 }
 
-
-##### --histrory search END-- #####################
+##### --histrory search END-- #####
 
 incognito() {
   case $1 in
@@ -138,6 +122,43 @@ function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a
 cht() { /usr/bin/curl cheat.sh/"$@"; }
 
 #----------------------------------------------------comment --------------------------------------------------
+
+### old hostory search 
+# too so on over 1000 strings search
+# hhnumuniq() {
+#    declare -A number
+#    declare -A unnumber
+#    len=$(history | wc -l)
+#    ((len=len-1))
+
+#    for i in $(seq 1 $len); do
+#        str=$(history | sed "$i!d")
+#        idx="${str:0:5}"
+#        idx=$(echo "${idx//[!0-9]/}")
+#        number["$idx"]="${str:0}"
+#        unnumber["$idx"]="${str:27}"
+#    done
+#    commandnum=''
+#    for i in $(seq 1 $len); do
+#        if [ number["$i"] = "dupe" ]; then
+#            continue
+#        fi
+#        for j in $(seq 1 $len); do
+#            if [ "${unnumber[$j]}" = "${unnumber[$i]}" ] && [ "$i" != "$j" ]; then
+#                number["$j"]="dupe"
+#            fi
+#        done
+#        commandnum=$(echo -e "$commandnum$\r\n${number[$i]}")
+#    done
+#    echo "$commandnum" |grep --color=always -i "$@" |grep -wv "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
+# }
+
+# hhnumuniq() {
+#	history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++" |tail -n5 |colorex -B '^....[0-9]'
+# }
+
+
+
 
 ### Runs a ls immediately when you're inside a file. 
 #cl() {
