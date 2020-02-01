@@ -9,6 +9,7 @@ highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csp
 # $user: hi vim
 # install colorex or delete string the end
 hhgrepv='"^grep.*\|^(\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr|hhnumniq)"'
+hhlocalgrepv="^(hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr\|hhnumniq)"
 
 #search for tag-
 hi() {
@@ -34,6 +35,15 @@ hhistory() {
 hhuniq() {
     history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++"
 }    
+
+# search last uniq word from your past line numbers
+hhlastuniq() {
+    history |tail -n "$1" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+}
+
+hhlastuniq-grep() {
+    history |tail -n "$1" |grep -v "${hhlocalgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+}
 
 # serach uniq word and nummber command
 # search better thought first word in commnad
