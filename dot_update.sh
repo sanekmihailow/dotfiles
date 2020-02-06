@@ -36,7 +36,8 @@ else
     done
 
     for r in $home_root; do
-        cp -f /root/${r} ./backup_dir/root/
+        cp -f ${r} ./backup_dir/root/
+	cp -f /root/.bash_history ./backup_dir/root/
     done
 
     for e in $other_home; do
