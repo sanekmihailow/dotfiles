@@ -135,6 +135,16 @@ else
 	     fi
 	     echo '2' > /dev/null
          fi
+	 
+	 #COPY FONTS
+	 if [ -d /usr/local/share/fonts ]; then
+	 	cp -r ./usr/local/share/fonts/* /usr/local/share/fonts/
+	  else 
+		mkdir -p /usr/local/share/fonts &&
+		cp -r ./usrl/local/share/fonts/* /usr/local/share/fonts/
+		fc-cache -f -v
+	 fi	
+		
 		
     echo -e "\n \033[1;32m Congratulations , you updated dot_files \n \033[0m"
     fi
