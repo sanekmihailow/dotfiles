@@ -41,6 +41,7 @@ hhlastuniq() {
     history |tail -n "$1" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
 }
 
+#C- use hhlastuniq-grep <50>
 hhlastuniq-grep() {
     history |tail -n "$1" |grep -v "${hhlocalgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
 }
@@ -117,7 +118,7 @@ scriptformat() {
 	${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
 }
 
-
+#C- color highlight output
 gulimit() { ulimit "$@" |grcat conf.ulimit ; }
 gconfigure() { configure "$@" |grcat conf.configure; }
 se() { /usr/bin/sudo "$@"; }
@@ -125,13 +126,21 @@ mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making insta
 cconfigure() { ./configure "$@" |colorex -c ' not found' -g ' found' -c ' no' -g ' yes' -R '(?i)error`' -M '(?i)warning' -Y ' (?i)no support'; }
 ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; -g '(?i)done' -r '(?i)failed'; }
 
+#C- create archive
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }         # Creates an archive (*.tar.gz) from given directory
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a ZIP archive of a file or folder.
 
-#use - cht /ls/
+#C- use - cht /ls/
 cht() { /usr/bin/curl cheat.sh/"$@"; }
 
-#----------------------------------------------------comment --------------------------------------------------
+#C- systemd status
+sys-start() { sudo bash -c "systemctl start $*"; systemctl status $*; }
+sys-stop() { sudo bash -c "systemctl stop $*"; systemctl status $*; }
+sys-reload() { sudo bash -c "systemctl reload $*"; systemctl status $*; }
+sys-restart() { sudo bash -c "systemctl restart $*"; systemctl status $*; }
+sys-stat() { sudo bash -c "systemctl status $*"; }
+
+#C- ----------------------------------------------------comment --------------------------------------------------
 
 ### old hostory search 
 # too so on over 1000 strings search
