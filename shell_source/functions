@@ -140,6 +140,20 @@ sys-reload() { sudo bash -c "systemctl reload $*"; systemctl status $*; }
 sys-restart() { sudo bash -c "systemctl restart $*"; systemctl status $*; }
 sys-stat() { sudo bash -c "systemctl status $*"; }
 
+#C- check used memory/or..
+check_mem() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
+check_swap() {
+	for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
+		pid=$(echo $dir |cut -d/ -f3)
+		cmd=$(ps h -o comm -p $pid)
+		swap=$(grep VmSwap $dir/status 2> /dev/null |awk '{print int($2/1024)}')
+		if [ ! -z $swap ] && [ $swap -ne 0 ]; then
+			echo "pid: $pid command: $cmd swap: $swap MB"
+		fi
+	done |sort -rnk6 |column -t
+}	
+	
+
 #C- ----------------------------------------------------comment --------------------------------------------------
 
 ### old hostory search 
