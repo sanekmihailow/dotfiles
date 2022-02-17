@@ -165,7 +165,7 @@ if [ $(which grc) ]; then
 
 #vim --------------------------------
 if [ -f /usr/local/bin/vimcat ]; then
-  alias gcat="vimcat "
+  alias cat_g="vimcat "
   alias v="vim "
 fi
 
