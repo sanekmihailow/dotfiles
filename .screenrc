@@ -12,7 +12,7 @@ escape ``   #- my prefix tilda <~>
 bind [ paste .                                                                                                                                                                                                     
 bind ^[ copy
 
-#copy mode <~> + <ESCAPE>
+#copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
 #^ - meta ( alt or esc or ctrl)
 
 defscrollback 200024
