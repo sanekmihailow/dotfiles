@@ -12,7 +12,9 @@ escape ``   #- my prefix
 bind [ paste .                                                                                                                                                                                                     
 bind ^[ copy
 
-#
+#copy mode <~> + <ESCAPE>
+#^ - meta ( alt or esc or ctrl)
+
 defscrollback 200024
 bind ^k
 bind ^\
