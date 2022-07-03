@@ -20,6 +20,7 @@ alias scp="scp"
 alias xsc="xclip -select clipboard"
 # in centos use vimx
 alias vim="vim"
+alias lessr="less --raw-control-chars"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
