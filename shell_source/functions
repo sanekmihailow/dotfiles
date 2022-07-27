@@ -152,7 +152,8 @@ check_swap() {
 		fi
 	done |sort -rnk6 |column -t
 }	
-	
+
+vime() { xargs sh -c 'vim "$@" < /dev/tty' example; } ## or use "xarg -o vim", #example - any word
 
 #C- ----------------------------------------------------comment --------------------------------------------------
 
