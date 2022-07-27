@@ -20,6 +20,10 @@ alias scp="scp"
 alias xsc="xclip -select clipboard"
 # in centos use vimx
 alias vim="vim"
+#alias vime="xargs vim"  ## after exit vim. use "reset" for update window prompt
+                         ## use CTRL(SHIFT) + BACKSPACE - del one character
+                         ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
+
 alias lessr="less --raw-control-chars"
 
 #update all OS --------------------------------
