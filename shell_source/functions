@@ -143,17 +143,55 @@ sys-stat() { sudo bash -c "systemctl status $*"; }
 #C- check used memory/or..
 check_mem() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
 check_swap() {
-	for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
-		pid=$(echo $dir |cut -d/ -f3)
-		cmd=$(ps h -o comm -p $pid)
-		swap=$(grep VmSwap $dir/status 2> /dev/null |awk '{print int($2/1024)}')
-		if [ ! -z $swap ] && [ $swap -ne 0 ]; then
-			echo "pid: $pid command: $cmd swap: $swap MB"
-		fi
-	done |sort -rnk6 |column -t
-}	
+    for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
+        pid=$(echo $dir |cut -d/ -f3)
+        cmd=$(ps h -o comm -p $pid)
+        swap=$(grep VmSwap $dir/status 2> /dev/null |awk '{print int($2/1024)}')
+        if [ ! -z $swap ] && [ $swap -ne 0 ]; then
+            echo "pid: $pid command: $cmd swap: $swap MB"
+        fi
+    done |sort -rnk6 |column -t
+}
 
 vime() { xargs sh -c 'vim "$@" < /dev/tty' example; } ## or use "xarg -o vim", #example - any word
+
+allcrontab() {
+    red='\e[0;31m'
+    RED='\e[1;31m'
+    green='\e[0;32m'
+    GREEN='\e[1;32m'
+    NC='\e[0m'
+
+    for user in $(cut -d':' -f1 /etc/passwd); do
+        usercrontab=$(crontab -l -u ${user} 2>/dev/null)
+        if [ -n "${usercrontab}" ]; then
+            echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
+            crontab -l -u ${user} | sed '/ *#/d; /^ *$/d'
+            echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC} ${RED}========${NC}\n"
+        fi
+    done
+    for crond in $(ls -L1 /etc/cron.d); do
+        crondtab=$(cat "/etc/cron.d/${crond}" 2>/dev/null | egrep -Ev "^\s*(;|#|$)")
+        if [ -n "${crondtab}" ]; then
+            echo -e "${RED}====== Start cron.d ${NC}${GREEN}/etc/cron.d/${crond}${NC} ${RED}======${NC}"
+            echo "${crondtab}"
+            echo -e "${RED}====== End cron.d ${NC}${GREEN}/etc/cron.d${crond}${NC} ${RED}======${NC}\n"
+        fi
+    done
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #C- ----------------------------------------------------comment --------------------------------------------------
 
