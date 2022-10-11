@@ -141,7 +141,9 @@ sys-restart() { sudo bash -c "systemctl restart $*"; systemctl status $*; }
 sys-stat() { sudo bash -c "systemctl status $*"; }
 
 #C- check used memory/or..
-check_mem() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
+check_mem_humanreadable() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
+check_mem_procent() { ps -e -o pid,user,%mem,command --sort %mem; }
+check_mem() { ps -e -o pid,vsz,comm= | sort -n -k 2; }
 check_swap() {
     for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
         pid=$(echo $dir |cut -d/ -f3)
