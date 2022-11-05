@@ -25,6 +25,7 @@ alias vim="vim"
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
 
 alias lessr="less --raw-control-chars"
+alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
