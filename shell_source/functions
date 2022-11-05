@@ -182,7 +182,10 @@ allcrontab() {
     done
 }
 
-
+checksizeindir() {
+    list="$(ls -I 'notexistnotfound')"
+    du -sh $list
+}    
 
 
 
