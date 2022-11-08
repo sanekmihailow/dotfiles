@@ -182,10 +182,24 @@ allcrontab() {
     done
 }
 
-checksizeindir() {
-    list="$(ls -I 'notexistnotfound')"
-    du -sh $list
-}    
+checkSizeInDirWithIgnore() {
+    				# example checkSizeInDirWithIgnore var boot
+    #check that args != 0		
+    if [ "$#" -lt 1 ]; then
+        params="-I proc -I sys -I dev";
+    elif [ "$#" -gt 1 ]; then
+        $count = "$#";
+        params=""
+        for i in ${count}; do
+           params+="-I $i ";
+        done
+    else
+        params="-I $1";
+    fi
+    list="$(ls $params)"
+    du -sh $list | sort -hr
+}
+ 
 
 
 
