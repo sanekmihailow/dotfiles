@@ -9,3 +9,25 @@ fi
 PATH="$HOME/.local/bin:$PATH:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"      
 #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib"
+
+WhatItPC="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.' |grep -v '^172.' |grep -v '^192.')"
+
+if [ -n $WhatItPC ]; then
+    WhatItPC=$WhatItPC
+fi
+
+if [ -z $WhatItPC ]; then
+    WhatItPC192="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.' |grep -v '^172.')"
+    WhatItPC172="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.')"
+    WhatItPC10="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.')"
+
+    if [ -n $WhatItPC192 ]; then
+        WhatItPC=LAN-${WhatItPC192}
+    elif [ -n $WhatItPC172 ]; then
+        WhatItPC=LAN-${WhatItPC172}
+    elif [ -n $WhatItPC10 ]; then
+        WhatItPC=LAN-${WhatItPC10}
+    else
+        WhatItPC='LAN_computer'
+    fi
+fi
