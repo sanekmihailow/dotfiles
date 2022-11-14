@@ -1,3 +1,17 @@
+fg_1='\[\e[1m\]'
+fg_LIGHTGREEN='\[\e[1;92m\]'
+fg_GREEN='\[\e[01;32m\]'
+fg_green='\[\e[32m\]'
+fg_LIGHTRED='\[\e[1;91m\]'
+fg_red='\[\e[31m\]'
+fg_lightgray='\[\e[37m\]'
+fg_dimyellow='\[\e[22;33m\]'
+fg_lightyellow='\[\e[0;93m\]'
+fg_CYAN='\[\e[1;36m\]'
+fg_LIGHTBLUE='\[\e[1;94m\]'
+bg_LIGHTRED='\[\e[1;101m\]'
+reset_NC='\[\e[0m\]'
+
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
         # We have color support; assume it's compliant with Ecma-48
@@ -10,9 +24,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
  
 if [ "$color_prompt" = yes ]; then
-PS1="\`if [ \$? = 0 ]; then echo \[\e[32m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\e[1;92m\]\\n#---------------------------------------------\[\e[0m\]\[\e[37m\](\H)\[\e[0m\] \[\e[1m\]\#-[\d]\[\e[0m\] \n \[\e[22;33m\]\t\[\e[0m\] \[\e[0;93m\]j=\j\[\e[0m\] \[\e[1;101m\]\u\[\e[0m\]\[\e[1;91m\]@\[\e[0m\]\[\e[1;36m\]\h\[\e[0m\]: \[\e[1;94m\]\w\[\e[0m\] \n \n \[\e[1;91m\]\\$\[\e[0m\] "
+PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_LIGHTGREEN}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${bg_LIGHTRED}\u${reset_NC}${fg_LIGHTRED}@${reset_NC}${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTRED}\\$ ${reset_NC} "
 else
-PS1="\`if [ \$? = 0 ]; then echo \[\e[32m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\e[1;92m\]\\n#---------------------------------------------\[\e[0m\]\[\e[37m\](\H)\[\e[0m\] \[\e[1m\]\#-[\d]\[\e[0m\] \n \[\e[22;33m\]\t\[\e[0m\] \[\e[0;93m\]j=\j\[\e[0m\] \[\e[1;101m\]\u\[\e[0m\]\[\e[1;91m\]@\[\e[0m\]\[\e[1;36m\]\h\[\e[0m\]: \[\e[1;94m\]\w\[\e[0m\] \n \n \[\e[1;91m\]\\$\[\e[0m\] "
+PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_LIGHTGREEN}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${bg_LIGHTRED}\u${reset_NC}${fg_LIGHTRED}@${reset_NC}${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTRED}\\$ ${reset_NC} "
 fi
  
 unset color_prompt force_color_prompt
