@@ -1,3 +1,5 @@
+### "\[\e[32m\]" = "\[\033[0;32m\]"
+## see https://misc.flogisoft.com/bash/tip_colors_and_formatting
 fg_1='\[\e[1m\]'
 fg_LIGHTGREEN='\[\e[1;92m\]'
 fg_GREEN='\[\e[01;32m\]'
