@@ -1,1 +1,11 @@
-1
+git_getbranch() {
+    if [ -d .git ]; then
+        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+    fi
+}
+
+git_getorigin() {
+    if [ -d .git ]; then
+        gbv 2> /dev/null |cut -d ' ' -f 4
+    fi
+}
