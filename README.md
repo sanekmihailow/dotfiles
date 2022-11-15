@@ -14,7 +14,7 @@ reconnect to Stty
 
 If you want restore your old dot files, then
 ```nginx
-sudo bash dot_disupdate.sh
+sudo bash dot_uninstall.sh
 exit
 ```
 ```
