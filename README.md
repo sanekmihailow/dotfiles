@@ -2,9 +2,9 @@
 
 ### download to your $HOME directory
 ```nginx
-git clone https://github.com/sanekmihailow/dotfiles_and_other.git
-cd dotfiles_and_other
-sudo bash dot_update.sh
+git clone https://github.com/sanekmihailow/dotfiles.git
+cd dotfiles
+sudo bash dot_install.sh
 exit
 ```
 ```
