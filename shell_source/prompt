@@ -11,6 +11,7 @@ fg_dimyellow='\[\e[22;33m\]'
 fg_lightyellow='\[\e[0;93m\]'
 fg_CYAN='\[\e[1;36m\]'
 fg_LIGHTBLUE='\[\e[1;94m\]'
+fg_lightblue='\[\e[0;94m\]'
 bg_LIGHTRED='\[\e[1;101m\]'
 reset_NC='\[\e[0m\]'
 
@@ -26,9 +27,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
  
 if [ "$color_prompt" = yes ]; then
-    PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${fg_GREEN}\u${reset_NC}@${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTGREEN}\$ ${reset_NC}"
+    PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC ${fg_lightblue}\$(git_getbranch)${reset_NC} \$(git_getorigin) \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${fg_GREEN}\u${reset_NC}@${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTGREEN}\$ ${reset_NC}"
 else
-    PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${fg_GREEN}\u${reset_NC}@${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTGREEN}\$ ${reset_NC}"
+    PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#---------------------------------------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC ${fg_lightblue}\$(git_getbranch)${reset_NC} \$(git_getorigin) \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${fg_GREEN}\u${reset_NC}@${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTGREEN}\$ ${reset_NC}"
 fi
 
 unset color_prompt force_color_prompt
