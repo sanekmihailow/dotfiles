@@ -230,5 +230,8 @@ libpaper.d/
 **/logs
 *.log
 *.bin
+# python bin fiiles
+*.pyc
+*.pyo
 
 # end section managed by etckeeper
