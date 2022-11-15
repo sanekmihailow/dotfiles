@@ -1,0 +1,234 @@
+# begin section managed by etckeeper (do not edit this section by hand)
+
+# new and old versions of conffiles, stored by apt/rpm
+*.rpmnew
+*.rpmorig
+*.rpmsave
+
+# old versions of files
+*.old
+
+# mount(8) records system state here, no need to store these
+blkid.tab
+blkid.tab.old
+
+# some other files in /etc that typically do not need to be tracked
+nologin
+ld.so.cache
+prelink.cache
+mtab
+mtab.fuselock
+.pwd.lock
+*.LOCK
+network/run
+adjtime
+udev/hwdb.bin
+lvm/cache
+lvm/archive
+X11/xdm/authdir/authfiles/*
+ntp.conf.dhcp
+.initctl
+webmin/fsdump/*.status
+webmin/webmin/oscache
+apparmor.d/cache/*
+service/*/supervise/*
+service/*/log/supervise/*
+sv/*/supervise/*
+sv/*/log/supervise/*
+*.elc
+*.pyc
+*.pyo
+init.d/.depend.*
+openvpn/openvpn-status.log
+cups/subscriptions.conf
+cups/subscriptions.conf.O
+fake-hwclock.data
+check_mk/logwatch.state
+
+# editor temp files
+*~
+.*.sw?
+.sw?
+\#*\#
+EADJOE
+
+
+ # Mysets for /etc
+
+/.etckeeper
+/etckeeper/
+/.git/
+[Ll]ogs/
+                #once copy
+/NetworkManager/
+                #once copy
+/X11/
+                #once copy
+/DIR_COLORS*
+/GeoIP.conf
+/GREP_COLORS
+/adjtime
+#remove of use mail postfix or etc
+/aliases*
+/alternatives/
+/anacrontab
+/asound.conf
+/chrony.*
+/crypttab
+/dbus-*/
+/dconf/
+/depmod.d/
+/dracut.*
+#remove of use ldap
+/dnsmasq.*
+/egl/
+/e2fsck.conf
+/ethertypes
+/exports
+#remove of use token ring
+/fcoe/
+favicong.png
+                                #once copy
+/filesystems
+/fonts/
+#remove of use ipmi
+/freeipmi/
+        #symlink    #once copy
+/grub2.cfg
+/gconf/
+/gcrypt/
+/grc.conf
+                                #once copy
+/geoclue/
+/ghostscript/
+/glvnd/
+/gnupg/
+/groff/
+/gss/
+        #symlink    #once copy
+/init.d/
+/inittab
+                                #once copy
+/ipmi/
+/iproute2/
+/issue*
+                                #once copy
+/kdump.conf
+/ld.so.cache
+/letsencrypt/
+/libaudit.conf
+/libblockdev/
+/libibverbs.d/
+/libnl/
+libpaper.d/
+/libreport/
+                                #once copy
+/libuser.conf
+        #symlink
+/localtime
+/locale.conf
+                                #once copy
+/login.defs
+/logrotate.conf
+                                #once copy
+/lvm/
+/magic
+/mailcap
+                                #once copy
+/mail.rc
+/makedumpfile.conf.sample
+/man_db.conf
+                                #once copy
+/mke2fs.conf
+        #symlink
+/mtab
+/multipath/
+                                #once copy
+/ndctl/
+/netconfig
+/networks
+                                #once copy
+/nsswitch.conf*
+                                #once copy
+/ntp/
+/ntp.conf
+                                #once copy
+/oddjob*
+/openvpn/easy-rsa/
+        #symlink
+/os-release
+/papersize
+/pkcs11/
+/pki/
+/plymouth/
+/popt.d/
+#remove of use ppp
+/ppp
+                                #once copy
+/prelink.conf.d/
+/printcap
+/profile*
+/protocols
+/pulse/
+/push-server/*
+!/push-server/*.service
+!/push-server/push-server-?ub-__PORT__.json
+/python/
+        #symlinks   once copy
+/rc.local
+/rc?.d
+/rc.d/
+        #symlink
+/redhat-release
+                #once copy
+/rdma/
+                                #once copy
+/rpc
+                                #once copy
+/rpm/
+                                #once copy
+/rsyncd.conf
+/screenrc
+/security/*
+!/security/limits.d/
+                                #once copy
+!/security/limits.conf
+
+                                #once copy
+/selinux/
+                                #once copy
+/sensors3.conf
+/services
+/shells
+                                #once copy
+/skel/
+/sgml/
+/ssh/*
+!/ssh/ssh*_config
+                                #once copy
+/ssl/
+/statetab*
+#remove of use ldap
+/sudo-ldap.conf
+/systemd/*
+!/systemd/system/
+!/systemd/user/
+#symlinik
+/system-release
+                                #once copy
+/tcsd.conf
+/tmpfiles.d/
+/trusted-key.key
+                                #once copy
+/vconsole.conf
+/vimrc
+/virc
+/wgetrc
+/xml/
+/gshadow*
+/shadow*
+**/logs
+*.log
+*.bin
+
+# end section managed by etckeeper
