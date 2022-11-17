@@ -56,7 +56,7 @@ EADJOE
  # Mysets for /etc
 
 
-/.etckeeper
+#/.etckeeper
 /etckeeper/
 /.git/
 /.hg/
