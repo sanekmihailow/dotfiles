@@ -60,6 +60,8 @@ EADJOE
 /etckeeper/
 /.git/
 /.hg/
+/.bzr/
+/.darcs/
 [Ll]ogs/
                 #once copy
 /NetworkManager/
