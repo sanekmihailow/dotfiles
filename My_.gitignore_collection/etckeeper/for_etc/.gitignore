@@ -55,9 +55,11 @@ EADJOE
 
  # Mysets for /etc
 
+
 /.etckeeper
 /etckeeper/
 /.git/
+/.hg/
 [Ll]ogs/
                 #once copy
 /NetworkManager/
