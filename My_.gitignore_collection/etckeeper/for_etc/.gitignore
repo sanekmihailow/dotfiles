@@ -56,7 +56,8 @@ EADJOE
  # Mysets for /etc
 
 
-#/.etckeeper
+!/.etckeeper
+!/.gitigore
 /etckeeper/
 /.git/
 /.hg/
@@ -74,19 +75,39 @@ EADJOE
 /adjtime
 #remove of use mail postfix or etc
 /aliases*
-/alternatives/
 /anacrontab
+                #once copy
+/apparmor.*/
 /asound.conf
+                #once copy
+/avahi/
+/binfmt.*/
+                #once copy
+/bluetooth/
+/bonobo-activation/
+/byobu/
+                #once copy
+/ca-certificates*
+/calendar/
+                #once copy
+/chatscripts/
+                #once copy
+/console-setup/
 /chrony.*
 /crypttab
+                #once copy
+/cups/
+/cupshelpers/
 /dbus-*/
 /dconf/
 /depmod.d/
-/dracut.*
+/dictionaries-common/
 #remove of use ldap
 /dnsmasq.*
-/egl/
+/dracut.*
 /e2fsck.conf
+/egl/
+/emacs/
 /ethertypes
 /exports
 #remove of use token ring
@@ -94,37 +115,52 @@ EADJOE
 favicong.png
                                 #once copy
 /filesystems
+/firefox/
 /fonts/
 #remove of use ipmi
 /freeipmi/
+/fwupd/
+/gai.conf
         #symlink    #once copy
 /grub2.cfg
 /gconf/
 /gcrypt/
-/grc.conf
                                 #once copy
 /geoclue/
 /ghostscript/
 /glvnd/
 /gnupg/
+/gnome*/
+/grc.conf
 /groff/
+                                #once copy
+/grub.d/
 /gss/
+/gtk-*/
+/guest-session/
+/hddtemp.db
+/hdparm.conf
+/ifplug.d/
         #symlink    #once copy
-/init.d/
+!/init.d/
 /inittab
                                 #once copy
 /ipmi/
 /iproute2/
-/issue*
                                 #once copy
 /kdump.conf
 /ld.so.cache
+# remove of use ldap
+/ldap/
+/legal
 /letsencrypt/
+/libao
 /libaudit.conf
 /libblockdev/
 /libibverbs.d/
-/libnl/
+/libnl*/
 libpaper.d/
+/lightdm/
 /libreport/
                                 #once copy
 /libuser.conf
@@ -136,6 +172,8 @@ libpaper.d/
 /logrotate.conf
                                 #once copy
 /lvm/
+/lxdm/
+/lynx/
 /magic
 /mailcap
                                 #once copy
@@ -151,6 +189,8 @@ libpaper.d/
 /ndctl/
 /netconfig
 /networks
+/networkd-dispatcher/
+/newt/
                                 #once copy
 /nsswitch.conf*
                                 #once copy
@@ -158,55 +198,69 @@ libpaper.d/
 /ntp.conf
                                 #once copy
 /oddjob*
+/openal/
 /openvpn/easy-rsa/
         #symlink
 /os-release
 /papersize
+                                #once copy
+/pcmcia/
 /pkcs11/
 /pki/
 /plymouth/
 /popt.d/
+/pollinate/
 #remove of use ppp
 /ppp
                                 #once copy
 /prelink.conf.d/
 /printcap
+                                #once copy
 /profile*
 /protocols
 /pulse/
+/purple/
 /push-server/*
 !/push-server/*.service
 !/push-server/push-server-?ub-__PORT__.json
-/python/
+/python*/
         #symlinks   once copy
 /rc.local
 /rc?.d
 /rc.d/
+/reader.cnof.d/
+
         #symlink
 /redhat-release
                 #once copy
 /rdma/
+/rlinux.*
                                 #once copy
 /rpc
                                 #once copy
 /rpm/
                                 #once copy
 /rsyncd.conf
+/scalpel/
 /screenrc
+                                #once copy
 /security/*
 !/security/limits.d/
                                 #once copy
 !/security/limits.conf
-
                                 #once copy
 /selinux/
                                 #once copy
 /sensors3.conf
+/sendors.d/ 
 /services
 /shells
                                 #once copy
 /skel/
 /sgml/
+/sos/
+/sos.conf
+/sound/
 /ssh/*
 !/ssh/ssh*_config
                                 #once copy
@@ -217,10 +271,13 @@ libpaper.d/
 /systemd/*
 !/systemd/system/
 !/systemd/user/
+!/systemd/networks/
 #symlinik
 /system-release
                                 #once copy
 /tcsd.conf
+/terminfo/
+/thermal/
 /tmpfiles.d/
 /trusted-key.key
                                 #once copy
@@ -228,6 +285,10 @@ libpaper.d/
 /vimrc
 /virc
 /wgetrc
+/wildmidi/
+/wpa_supplicant/
+                                #once copy
+/xdg/
 /xml/
 /gshadow*
 /shadow*
