@@ -58,12 +58,14 @@ EADJOE
 
 !/.etckeeper
 !/.gitigore
+!/MyLocal/
 /etckeeper/
 /.git/
 /.hg/
 /.bzr/
 /.darcs/
 [Ll]ogs/
+
                 #once copy
 /NetworkManager/
                 #once copy
