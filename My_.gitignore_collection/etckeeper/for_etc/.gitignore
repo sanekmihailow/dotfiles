@@ -300,5 +300,6 @@ libpaper.d/
 # python bin fiiles
 *.pyc
 *.pyo
+*.swo
 
 # end section managed by etckeeper
