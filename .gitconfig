@@ -1,0 +1,24 @@
+[core]
+	editor = \"C:\\Users\\Administrator\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code\" --wait
+[user]
+	name = sanekmihailow
+	email = sanekmihailow@gmail.com
+[diff]
+	tool = meld
+[difftool "meld"]		
+	path = C:/Program Files/Meld/Meld.exe
+[mergetool]
+	keepBackup = false	
+[alias]
+	branches = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+	logs = log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)'
+	st = status --short --branch
+	cherryv = cherry --verbose
+	commend = commit --amend --no-edit
+	pushforce = push --force-with-lease
+	sth = stash -u
+	clm = clean -n
+	a = add --all
+	cm = commit -m
+	cv = cherry --abbrev -v
+	sw = switch
