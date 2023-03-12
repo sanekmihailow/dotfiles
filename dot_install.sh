@@ -38,8 +38,8 @@ else
     mkdir -p ./backup_dir/{user,root}
     echo -e "\n \033[0;32m please choose how you want to install it (1 or 2) :\033[0m \n 1) locally for the current user \n 2) for the entire current system\n"
 
-    if [ -z $(which mc) ]; then
-        cp -rf $HOME/.config/mc ./backup_dir/
+    if [ -d ${home_dir}/.config ]; then
+        cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
     fi
     read choose &&
 
