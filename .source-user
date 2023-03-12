@@ -1,0 +1,14 @@
+
+if [ -d ~/.shell_source ]; then
+
+     source $HOME/.shell_source/exports      || echo "export dont't loaded"
+     source $HOME/.shell_source/defaults     || echo "default dont't loaded"
+     source $HOME/.shell_source/alias        || echo "alias dont't loaded"
+     source $HOME/.shell_source/functions    || echo "function dont't load"
+     source $HOME/.shell_source/git          || echo "git dont't load"
+     if [ "$USER" = "root" ]; then
+          source $HOME/.shell_source/prompt_root  || echo "root prompt dont't loaded"
+     else source $HOME/.shell_source/prompt       || echo "user prompt dont't loaded"
+     fi
+     
+fi
