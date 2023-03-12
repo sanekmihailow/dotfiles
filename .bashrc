@@ -1,5 +1,5 @@
 color_prompt=yes
-homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
+#homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)"
 #or use ( if you have many users in home directory) ->
 #homeuser="$(who | cut -d' ' -f1 | grep 'you_user' |head -n1)"
 #or
@@ -7,7 +7,7 @@ homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}
 
 ############### source
        #source /home/$homeuser/.start-screen #if you have trouble with rsync or scp -> comment this line
-       source /home/$homeuser/.source-home
+       source $HOME/.source-user
 
 complete -cf se
 #setxkbmap -option caps:none
