@@ -11,6 +11,7 @@ current_user="$USER"
 home_dir="$HOME"
 curr_dir="$(pwd)"
 os_family="$(cat /etc/os-release |grep -w 'ID_LIKE')"
+next='yes'
 
 conf_files=".bashrc .screenrc .tmux.conf .vimrc .source-user"
 backup_user=".bashrc .screenrc .tmux.conf .vimrc .bash_history .grc .local .vim"
@@ -36,12 +37,29 @@ if [ -z $vim_ver ]; then
 
 else
     mkdir -p ./backup_dir/{user,root}
-    echo -e "\n \033[0;32m please choose how you want to install it (1 or 2) :\033[0m \n 1) locally for the current user \n 2) for the entire current system\n"
-
+    
     if [ -d ${home_dir}/.config ]; then
         cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
     fi
-    read choose &&
+
+    if [ -n "$1" ]; then
+        if [ "$1" == 'local' ]; then
+            choose=1
+            next='no'
+        elif [ "$1" == 'all' ]; then
+            choose=2
+            next='no'
+        else
+            echo -e "not found correct parameter \n"
+        fi
+    fi
+
+    if [ "$next" == 'yes' ]; then
+        echo -e "\n \033[0;32m please choose how you want to install it (1 or 2) :\033[0m \n 1) locally for the current user \n 2) for the entire current system\n Please choose in 1 min and push enter\n"
+        if read -t 60 -sp "" choose; then
+            echo -e "you choose $choose\n"
+        fi
+    fi
 
     source ${curr_dir}/functions.sh
 #C---- create backup dir and copy
