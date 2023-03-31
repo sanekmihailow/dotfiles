@@ -15,5 +15,6 @@ if [ -d /home/${SUDO_USER}/.shell_source ]; then
           source $homedirectory/.shell_source/prompt_root  || echo "root prompt dont't loaded"
      else source $homedirectory/.shell_source/prompt       || echo "user prompt dont't loaded"
      fi
-
+     
+     complete -cf se
 fi
