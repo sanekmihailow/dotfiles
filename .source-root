@@ -1,0 +1,19 @@
+if [ -d /home/${SUDO_USER}/.shell_source ]; then
+
+     homedirectory=/home/${SUDO_USER}
+     oldpath=$PATH
+     
+     source /home/${SUDO_USER}/.shell_source/exports      || echo "export dont't loaded"
+     PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$homedirectory/.local/bin"
+     LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib:$homedirectory/.local/lib"
+
+     source $homedirectory/.shell_source/defaults     || echo "default dont't loaded"
+     source $homedirectory/.shell_source/alias        || echo "alias dont't loaded"
+     source $homedirectory/.shell_source/functions    || echo "function dont't load"
+     source $homedirectory/.shell_source/git          || echo "git dont't load"
+     if [ "$USER" = "root" ]; then
+          source $homedirectory/.shell_source/prompt_root  || echo "root prompt dont't loaded"
+     else source $homedirectory/.shell_source/prompt       || echo "user prompt dont't loaded"
+     fi
+
+fi
