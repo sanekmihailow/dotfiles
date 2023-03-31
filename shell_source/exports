@@ -6,7 +6,8 @@ if [ -x "`which most 2>&1`" ]; then
     export PAGER=most
 fi
 
-PATH="$HOME/.local/bin:$PATH:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"      
+oldpath=$PATH
+PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"      
 #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib"
 
