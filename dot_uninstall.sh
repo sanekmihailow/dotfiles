@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 user="$(who | cut -d' ' -f1 | grep "$current_user" |head -n1)"
 vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | awk '{print $5}' | sed -e 's/\.//g')"
 path="/usr/share/vim/vim$vim_ver"
