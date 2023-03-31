@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 date_time="$(date +"%Y-%m-%d_%H-%M-%S")"
 
 backupHome(){
