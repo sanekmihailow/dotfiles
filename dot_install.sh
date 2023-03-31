@@ -13,8 +13,8 @@ curr_dir="$(pwd)"
 os_family="$(cat /etc/os-release |grep -w 'ID_LIKE')"
 next='yes'
 
-conf_files=".bashrc .screenrc .tmux.conf .vimrc .source-user"
-backup_user=".bashrc .screenrc .tmux.conf .vimrc .bash_history .grc .local .vim"
+conf_files=".bashrc .screenrc .tmux.conf .vimrc .source-user .bash_profile .profile"
+backup_user=".bashrc .screenrc .tmux.conf .vimrc .bash_history .grc .local .vim .bash_profile .profile"
 
 if [ ! -d ${curr_dir}/.shell_source ]; then
     mv ${curr_dir}/shell_source ${curr_dir}/.shell_source;
@@ -67,6 +67,13 @@ else
         $(backupHome)
             echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
         $(copyHome)
+        
+        if $(sudo -v); then
+            sudo sh -c "cp /root/{.bash_profile,.profile} ./backup_dir/root/"
+            sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
+            sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+        fi
+
     elif [[ $choose == 2 ]]; then
         backupRoot
             echo -e "\n\033[32m $current_user You old setting bacuped to dotfiles/backup_dir"
