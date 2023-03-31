@@ -1,5 +1,4 @@
-
-#!/bin/bash
+#!/usr/bin/env bash
 home_path=$(whoami)
 local_path="/usr/local/MY_LOCAL"
 mkdir -p "$local_path"/LOCAL &
