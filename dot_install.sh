@@ -72,6 +72,7 @@ else
             sudo sh -c "cp /root/{.bash_profile,.profile} ./backup_dir/root/"
             sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
             sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+            sudo sh -c "cp -f ${curr_dir}/.source-root /root/"
         fi
 
     elif [[ $choose == 2 ]]; then
