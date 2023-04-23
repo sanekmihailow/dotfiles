@@ -166,6 +166,7 @@ allcrontab() {
     NC='\e[0m'
 
     for user in $(cut -d':' -f1 /etc/passwd); do
+    	#C - <crontab -l> get data in /var/spool/cron/crontabs/*
         usercrontab=$(crontab -l -u ${user} 2>/dev/null)
         if [ -n "${usercrontab}" ]; then
             echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
