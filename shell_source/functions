@@ -134,10 +134,10 @@ function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a
 cht() { /usr/bin/curl cheat.sh/"$@"; }
 
 #C- systemd status
-sys-start() { sudo bash -c "systemctl start $*"; systemctl status $*; }
-sys-stop() { sudo bash -c "systemctl stop $*"; systemctl status $*; }
-sys-reload() { sudo bash -c "systemctl reload $*"; systemctl status $*; }
-sys-restart() { sudo bash -c "systemctl restart $*"; systemctl status $*; }
+sys-start() { sudo bash -c "sudo systemctl start $*"; sudo systemctl status $*; }
+sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $*; }
+sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $*; }
+sys-restart() { sudo bash -c "systemctl restart $*"; sudo systemctl status $*; }
 sys-stat() { sudo bash -c "systemctl status $*"; }
 
 #C- check used memory/or..
@@ -162,6 +162,7 @@ allcrontab() {
     RED='\e[1;31m'
     green='\e[0;32m'
     GREEN='\e[1;32m'
+    PURPLE='\e[1;35m'
     NC='\e[0m'
 
     for user in $(cut -d':' -f1 /etc/passwd); do
@@ -172,14 +173,20 @@ allcrontab() {
             echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC} ${RED}========${NC}\n"
         fi
     done
-    for crond in $(ls -L1 /etc/cron.d); do
-        crondtab=$(cat "/etc/cron.d/${crond}" 2>/dev/null | egrep -Ev "^\s*(;|#|$)")
-        if [ -n "${crondtab}" ]; then
-            echo -e "${RED}====== Start cron.d ${NC}${GREEN}/etc/cron.d/${crond}${NC} ${RED}======${NC}"
-            echo "${crondtab}"
-            echo -e "${RED}====== End cron.d ${NC}${GREEN}/etc/cron.d${crond}${NC} ${RED}======${NC}\n"
-        fi
+    cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
+    for dir in $cron_dir; do
+    	echo -e "----------------- ${PURPLE}Start ${dir} -------------------- ${NC}\n"
+    	for crond in $(ls -L1 $dir); do
+            crondtab=$(cat "${dir}/${crond}" 2>/dev/null | egrep -Ev "^\s*(;|#|$)")
+            if [ -n "${crondtab}" ]; then
+                echo -e "${RED}====== Start ${dir}/ ${NC}${GREEN}${crond}${NC} ${RED}======${NC}"
+                echo "${crondtab}"
+                echo -e "${RED}====== End ${cond} ${NC}${GREEN}${crond}${NC} ${RED}======${NC}\n"
+            fi
+    	done
+        echo -e "----------------- ${PURPLE}End ${dir} -------------------- ${NC}\n"
     done
+
 }
 
 checkSizeInDirWithIgnore() {
