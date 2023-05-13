@@ -139,7 +139,7 @@ sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $*; }
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $*; }
 sys-restart() { sudo bash -c "systemctl restart $*"; sudo systemctl status $*; }
 sys-stat() { sudo bash -c "systemctl status $*"; }
-sysstopstart() { sudo bash -c "sudo systemctl stop $*"; sudo systemctl staart $*; sudo systemctl status $*; }
+sysstopstart() { sudo bash -c "sudo systemctl stop $*"; sudo systemctl start $*; sudo systemctl status $*; }
 
 #C- check used memory/or..
 check_mem_humanreadable() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
