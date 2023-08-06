@@ -37,7 +37,7 @@ if [ -z $vim_ver ]; then
 
 else
     mkdir -p ./backup_dir/{user,root}
-    
+
     if [ -d ${home_dir}/.config ]; then
         cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
     fi
@@ -49,13 +49,16 @@ else
         elif [ "$1" == 'all' ]; then
             choose=2
             next='no'
+        elif [ "$1" == 'update' ]; then
+            choose=3
+            next='no'
         else
             echo -e "not found correct parameter \n"
         fi
     fi
 
     if [ "$next" == 'yes' ]; then
-        echo -e "\n \033[0;32m please choose how you want to install it (1 or 2) :\033[0m \n 1) locally for the current user \n 2) for the entire current system\n Please choose in 1 min and push enter\n"
+        echo -e "\n \033[0;32m please choose how you want to install it (1 or 2) :\033[0m \n 1) locally for the current user \n 2) for the entire current system \n 3) update configuration \n  Please choose in 1 min and push enter\n"
         if read -t 60 -sp "" choose; then
             echo -e "you choose $choose\n"
         fi
@@ -65,22 +68,24 @@ else
 #C---- create backup dir and copy
     if [[ $choose == 1 ]]; then
         $(backupHome)
-            echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
         $(copyHome)
-        
-        if $(sudo -v); then
-            sudo sh -c "cp /root/{.bash_profile,.profile} ./backup_dir/root/"
-            sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
-            sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
-            sudo sh -c "cp -f ${curr_dir}/.source-root /root/"
-        fi
+        $(copyHomeRoot)
 
     elif [[ $choose == 2 ]]; then
         backupRoot
-            echo -e "\n\033[32m $current_user You old setting bacuped to dotfiles/backup_dir"
         copyRoot
+
+    elif [[ $choose == 3 ]]; then
+
+            if [ -e /root/.source-root ]; then
+                $(backupRoot)
+                $(copyRoot)
+            else
+                $(backupHome)
+                $(copyHome)
+            fi
     else
-        echo -e "you choose not found, please try again start script"
+            echo -e "you choose not found, please try again start script"
         exit 1
     fi
 

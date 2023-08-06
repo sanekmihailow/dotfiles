@@ -24,31 +24,29 @@ alias vim="vim"
                          ## use CTRL(SHIFT) + BACKSPACE - del one character
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
 
-alias lessr="less --raw-control-chars"
-alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
-if [ ! -z "$(which brew > /dev/null 2>&1)" ]; then
+if [ ! -z "$(which brew > /dev/null 2>&1)" ];       then
   alias supdate="brew update && brew upgrade"
-elif [ ! -z "$(which pacman > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which pacman > /dev/null 2>&1)" ];   then
   alias supdate="sudo pacman -Syyu"
-elif [ ! -z "$(which apt > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which apt > /dev/null 2>&1)" ];      then
   alias supdate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
-elif [ ! -z "$(which apt-get > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which apt-get > /dev/null 2>&1)" ];  then
   alias supdate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
-elif [ ! -z "$(which dnf > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which dnf > /dev/null 2>&1)" ];      then
   alias supdate="sudo dnf upgrade"
-elif [ ! -z "$(which yum > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which yum > /dev/null 2>&1)" ];      then
   alias supdate="sudo yum update"
-elif [ ! -z "$(which zypper > /dev/null 2>&1)" ]; then
+elif [ ! -z "$(which zypper > /dev/null 2>&1)" ];   then
   alias supdate="sudo zypper update"
 fi
 
 #ls -------------------------------
 alias lss='ls --sort=extension --color=auto'
 alias ll='ls -lh'
-alias lal='ls -alh'
+alias lla='ls -lah'
 alias la='ls -A'
 alias l='ls -CF'
 
@@ -57,9 +55,9 @@ alias psg='ps -A | grep'
 alias psu='ps aux | grep'
 
 #less ---------------------------
-if [ -f /usr/bin/vless ]; then
-  alias less="vless"
-fi
+#if [ -f /usr/bin/vless ]; then
+#  alias less="vless"
+#fi
 
 #dircolors ----------------------------
 if [ -x /usr/bin/dircolors ]; then
@@ -173,7 +171,7 @@ if [ $(which grc) ]; then
 #vim --------------------------------
 if [ -f /usr/local/bin/vimcat ]; then
   alias cat_g="vimcat "
-  alias v="vim "
+  alias vi="vim "
 fi
 
 #[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
@@ -184,29 +182,30 @@ fi
        #pipe the output of a command to sprunge and it will give you a link to a paste-bin type page
        #add ?php or ?sh or etc to have it add line numbers and highlighting
 alias sprunge="curl -F 'sprunge=<-' http://sprunge.us"
-       
+
        #automatically resume scp transfers that failed or paused
 alias scpresume='rsync --partial --progress --rsh=ssh'
-       
+
        #makes a directory tree listing
 alias dirtree='find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"'
-       
+
        #alias I made to strip comments from a bash or php script.   May need tweaked still
 alias stripcomments="sed -e '/^[[:blank:]]*#/d; s/[[:blank:]][[:blank:]]*#.*//'  -e '/^$/d' -e '/^\/\/.*/d' -e '/^\/\*/d;/^ \* /d;/^ \*\//d'"
-       
+
        #phpinfo_e > info.php   (write a basic phpinfo() file for testing)
 alias phpinfo_e="echo '<?php phpinfo(); ?>'";
 
        #speed test (check you speed)
 alias speedt='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
 alias speedt1='wget -O - https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
-alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip' 
+alias speeddown='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip'
 
-	#change locale
+       #change locale
 alias locru='export LC_MESSAGES=ru_RU.UTF-8'
 alias locen='export LC_MESSAGES=C'
 
-
+alias lessr="less --raw-control-chars"
+alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
 
 
 #------------------------------ comment ----------------------

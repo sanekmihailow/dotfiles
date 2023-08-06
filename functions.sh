@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-date_time="$(date +"%Y-%m-%d_%H-%M-%S")"
+date_time="$(date +%Y-%m-%d_%H-%M-%S)"
 
 backupHome(){
 
@@ -7,13 +7,21 @@ backupHome(){
         cp -rf ${home_dir}/$conf ./backup_dir/user/
     done
 
+    if $(sudo -v); then
+        sudo sh -c "cp /root/{.bash_profile,.profile} ./backup_dir/root/"
+    fi
+
+    tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
+        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
 }
 
 backupRoot(){
     mkdir -p ./backup_dir/{vim_tar,grc_tar}
+
     for conf in $backup_user; do
         cp -fr /root/$conf ./backup_dir/root/
     done
+
     cp -f /etc/vim/vimrc   ./backup_dir/vimrc || cp /etc/vimrc ./backup_dir/vimrc
     cp -f /etc/bash.bashrc ./backup_dir/
     cp -f /etc/grc.conf    ./backup_dir/
@@ -21,6 +29,8 @@ backupRoot(){
     cp -rf /usr/share/grc ./backup_dir/grc_tar/
     cp -rf /usr/local/bin ./backup_dir
 
+    tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
+        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
 }
 
 copyHome(){
@@ -47,7 +57,14 @@ copyHome(){
 #    if [ -z $(which mc) ]; then
 #        cp -rf /.config/mc ./config/
 #    fi
+}
 
+copyHomeRoot(){
+    if $(sudo -v); then
+        sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
+        sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+        sudo sh -c "cp -f ${curr_dir}/.source-root /root/"
+    fi
 }
 
 copyRoot(){

@@ -7,20 +7,20 @@ if [ -x "`which most 2>&1`" ]; then
 fi
 
 oldpath=$PATH
-PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"      
+PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
 #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib"
 
-WhatItPC="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.' |grep -v '^172.' |grep -v '^192.')"
+WhatItPC="$(ip r |grep -vE 'docker|br-' |grep src |head -n1 |cut -d ' ' -f 9)"
 
 if [ -n $WhatItPC ]; then
     WhatItPC=$WhatItPC
 fi
 
 if [ -z $WhatItPC ]; then
-    WhatItPC192="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.' |grep -v '^172.')"
-    WhatItPC172="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |grep -v '^10.')"
-    WhatItPC10="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.')"
+    WhatItPC192="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -vE '^127.|^10.|^172.' |head -n1)"
+    WhatItPC172="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -vE '^127.|^10.' |head -n1)"
+    WhatItPC10="$(awk '/32 host/ { print f } {f=$2}' <<< "$(</proc/net/fib_trie)" |sort -u |grep -v '^127.' |head -n1)"
 
     if [ -n $WhatItPC192 ]; then
         WhatItPC=LAN-${WhatItPC192}

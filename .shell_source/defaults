@@ -24,7 +24,7 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# ------------------- screen 
+# ------------------- screen
 trap "" DEBUG
 if [ "$TERM" = "screen" ]; then
   export PROMPT_COMMAND='true'
@@ -46,13 +46,15 @@ if [ "$TERM" = "screen" ]; then
 fi
 
 ####################################### history options
-HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups    ### don't overwrite GNU Midnight Commander's setting of `ignorespace'.
-HISTCONTROL=ignoreboth                                ### Don't put duplicate lines or lines starting with space in the history.
+#HISTCONTROL=$HISTCONTROL${HISTCONTROL+:}ignoredups    ### don't overwrite GNU Midnight Commander's setting of `ignorespace'.
+HISTCONTROL=ignoreboth                                ### Don't put duplicate lines or lines starting with space in the history and ave lines matching the previous history entry.
 HISTSIZE=5000000
 HISTFILESIZE=5000000
 HISTTIMEFORMAT="%F %H:%M:%S "
+HISTIGNORE="ls:ll:lla:ls *:ll *:lla *:ps aux:ps auxe:pstree:exit:pwd:history:history *:dir:tree:cheat *:incognito*:clear:man *:vim:vi:git status:git st:git ls-files:git branch:git br:git log:git branch -vv:git diff:git diff *:git add *:git a:git remote*:gs:gd:gl:glf:ga:gb:gbv:err *:vless *:less *:more *:cmyip:hh *:hhistory:hhall *:hhuniq *:hhlastuniq:hhlastuniq-grep:dirtree:locru:locen:lessr:showfatindir:extract: *:se:maketar:makezip:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore"
+
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"  ### Save and reload history after each command finishes
-shopt -s histappend                                   ### Append to the history file, don't overwrite it
+shopt -s histappend                                                          ### Append to the history file, don't overwrite it
 
 ###################################### GENERAL UI
 force_color_prompt=yes
@@ -69,16 +71,34 @@ if ! shopt -oq posix; then
   fi
 fi
 
-##################################### INPUT 
+##################################### INPUT
 
 
-shopt -s cdspell                    ### correct minor spelling errors in cd
 shopt -s autocd
+shopt -s cdspell                    ### correct minor spelling errors in cd
+shopt -s cmdhist
+shopt -s checkjobs
+shopt -s complete_fullquote
+shopt -s direxpand
+shopt -s dirspell
+shopt -s expand_aliases
+shopt -s extglob
+shopt -s extquote
+shopt -s force_fignore
+shopt -s globasciiranges
+shopt -s interactive_comments
+shopt -s progcomp
+shopt -s promptvars
+shopt -s sourcepath
+
 ### include dotfiles in wildcard expansion, and match case-insensitively
 #shopt -s dotglob
 #shopt -s nocaseglob
 #shopt -s extglob
-#shopt -s globstar                  ### epands to all files including subdir
+#shopt -s globstar                   # depands to all files including subdir
+#shopt -s compat32
+#shopt -s gnu_errfmt                 #https://www.opennet.ru/docs/RUS/glibc/glibc-2.html, https://www.gnu.org/software/libc/manual/html_node/Error-Messages.html
+#shopt -s lastpipe                   #https://stackoverflow.com/questions/36340599/how-does-shopt-s-lastpipe-affect-bash-script-behavior
 
 set mark-symlinked-directories on
 set completion-ignore-case on
@@ -91,7 +111,7 @@ set colored-stats on
                                              #case "$TERM" in
                                              #    xterm-color|*-256color) color_prompt=yes;;
                                              #esac
-                         
+
 #case $- in
 #   *i*) [[ -f /etc/bash_completion ]] && ! shopt -oq posix && . /etc/bash_completion ;;
 #esac
