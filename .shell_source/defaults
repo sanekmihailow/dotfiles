@@ -52,7 +52,7 @@ HISTSIZE=5000000
 HISTFILESIZE=5000000
 HISTTIMEFORMAT="%F %H:%M:%S "
 #ignore only at start command not pipe command
-HISTIGNORE="ls:ll:lla:ls *:ll *:lla *:ps aux:ps auxe:pstree:exit:pwd:history:history *:dir:tree:cheat *:incognito*:clear:man *:vim:vi:git status:git st:git ls-files:git branch:git br:git log:git branch -vv:git diff:git diff *:git add *:git a:git remote*:gs:gd:gl:glf:ga:gb:gbv:err *:vless *:less *:more *:cmyip:hh *:hhistory:hhall *:hhuniq *:hhlastuniq:hhlastuniq-grep:dirtree:locru:locen:lessr:showfatindir:extract: *:se:maketar:makezip:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore:screen -r*:screen -R*"
+HISTIGNORE="ls:ll:lla:ls *:ll *:lla *:ps aux:ps auxe:pstree:exit:pwd:history:history *:dir:tree:cheat *:incognito*:clear:man *:vim:vi:git status:git st:git ls-files:git branch:git br:git log:git branch -vv:git diff:git diff *:git add *:git a:git remote*:gs:gd:gl:glf:ga:gb:gbv:err *:vless *:less *:more *:cmyip:hh *:hhistory:hhall *:hhuniq *:hhlastuniq:hhlastuniq-grep:dirtree:locru:locen:lessr:showfatindir:extract: *:se:maketar:makezip:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore:screen -r*:screen -R*:df -h:df -hT:du -s*:du -sh*"
 
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"  ### Save and reload history after each command finishes
 shopt -s histappend                                                          ### Append to the history file, don't overwrite it
