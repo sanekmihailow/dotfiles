@@ -79,18 +79,19 @@ shopt -s autocd
 shopt -s cdspell                    ### correct minor spelling errors in cd
 shopt -s cmdhist
 shopt -s checkjobs
-shopt -s complete_fullquote
 shopt -s direxpand
 shopt -s dirspell
 shopt -s expand_aliases
 shopt -s extglob
 shopt -s extquote
 shopt -s force_fignore
-shopt -s globasciiranges
 shopt -s interactive_comments
 shopt -s progcomp
 shopt -s promptvars
 shopt -s sourcepath
+
+shopt -s complete_fullquote
+shopt -s globasciiranges
 
 ### include dotfiles in wildcard expansion, and match case-insensitively
 #shopt -s dotglob
