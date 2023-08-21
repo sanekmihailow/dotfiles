@@ -46,9 +46,9 @@ nmap <C-u> :call matchadd('Spaces', '\s\+')<CR>
 "-- translate
 vmap <C-t> <Leader>t
 "                     " in cli mode use :ww
-cmap ww %!sudo tee %
+cmap <C-w><C-w> %!sudo tee %
        "cmap ww :w !sudo sh -c "cat > %"
-cmap nn echo expand('%:p')
+cmap <C-n><C-n> echo expand('%:p')
 
 " ------------------------------------ reg
 set showcmd        
