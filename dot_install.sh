@@ -92,7 +92,7 @@ else
     echo -e "\n \033[1;32m Congratulations, you updated dot_files \n \033[0m"
     bashversion=$(bash -version |head -n1 | cut -d '.' -f 1 | egrep -o '[[:digit:]]')
 
-    if [[ $bashversion <= 4 ]]; then
+    if [ $bashversion <= 4 ]; then
         sed -i 's/^shopt -s complete_fullquote/#&/' ~/.shell_source/defaults
         sed -i 's/^shopt -s globasciiranges/#&/' ~/.shell_source/defaults
     fi    
