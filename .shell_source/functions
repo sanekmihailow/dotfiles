@@ -205,8 +205,13 @@ checkSizeInDirWithIgnore() {
     else
         params="-I $1";
     fi
+
     list="$(ls $params)"
-    du -sh $list | sort -hr
+    
+    if $(sudo -v); then
+        sudo du -sh $list | sort -hr; else
+        du -sh $list | sort -hr
+    fi 
 }
  
 

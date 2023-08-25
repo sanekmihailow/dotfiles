@@ -10,7 +10,8 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-alias ports="netstat -ntulp"
+#alias ports="netstat -ntulp"
+alias ports="if $(sudo -v); then sudo netstat -ntulp; else netstat -ntulp; fi"
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"

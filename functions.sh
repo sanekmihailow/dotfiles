@@ -12,7 +12,7 @@ backupHome(){
     fi
 
     tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
+        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
 }
 
 backupRoot(){
@@ -30,7 +30,7 @@ backupRoot(){
     cp -rf /usr/local/bin ./backup_dir
 
     tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir"
+        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
 }
 
 copyHome(){
@@ -49,7 +49,7 @@ copyHome(){
     ln -ns $vimless ${home_dir}/.local/bin/vmless
     cp -rf ${curr_dir}/usr/share/grc ${home_dir}/.local/share/
     cp -rf ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
-    cp -rf ${curr_dir}/usr/share/grc /usr/local/share
+    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
     cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax} ${home_dir}/.vim/
     fc-cache -f -v
