@@ -1,119 +1,121 @@
-#! /usr/bin/env python2.7
+#! /usr/bin/env python3
 
-#C need install python2.7 before it use.
 
-#    colorex is a powerful console tool that displays files highlighting some patterns with colors
-#    Copyright (C) 2011  http://www.scopart.fr
-#    
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#    
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#    
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt.
+__version__ = "3.0"
 
-__version__ = "2.0"
-
-from optparse import OptionParser, TitledHelpFormatter
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import random, sys, re, types
 import sre_constants
 
-colorcode = {'red':chr(27)+'[31m', 'green':chr(27)+'[32m', 'yellow':chr(27)+'[33m',
-             'blue':chr(27)+'[34m', 'magenta':chr(27)+'[35m', 'cyan':chr(27)+'[36m',
-             'bred':chr(27)+'[41m', 'bgreen':chr(27)+'[42m', 'byellow':chr(27)+'[43m',
-             'bblue':chr(27)+'[44m', 'bmagenta':chr(27)+'[45m', 'bcyan':chr(27)+'[46m',
-             'blink':chr(27)+'[5m', 'bold':chr(27)+'[1m', 'undrln' : chr(27)+'[4m',
-             'reset':chr(27)+'[0m'}
+colorcode = {'red': '\033[31m', 'green': '\033[32m', 'yellow': '\033[33m',
+             'blue': '\033[34m', 'magenta': '\033[35m', 'cyan': '\033[36m',
+             'bred': '\033[41m', 'bgreen': '\033[42m', 'byellow': '\033[43m',
+             'bblue': '\033[44m', 'bmagenta': '\033[45m', 'bcyan': '\033[46m',
+             'blink': '\033[5m', 'bold': '\033[1m', 'undrln': '\033[4m',
+             'reset': '\033[0m'}
 
 def colorise(line, regexp, tx_list, options):
     def get_colorised_value(matchobj):
         return tx_list[matchobj.lastindex - 1] + matchobj.group() + colorcode['reset']
-    if options['bisounours']:
-        color = random.choice(colorcode.keys())
+    if options.bisounours:
+        color = random.choice(list(colorcode.keys()))
         return line.replace(line,  colorcode[color] + line.rstrip() + colorcode['reset']).rstrip()
     else:
         return regexp.sub(get_colorised_value, line).rstrip()
 
 def create_tx_dict(options):
     tx_dict = {}
-    for option, values in options.items():
-        if type(values) == types.ListType:
+    for option, values in options._get_kwargs():
+        if isinstance(values, list):
             for pattern in values:
-                tx_dict['('+pattern+')'] = colorcode[option]
+                tx_dict['(' + pattern + ')'] = colorcode[option]
     return tx_dict
 
 def option_parse():
     version = __version__
     description = "Display files or sdtin with pretty colors for matched patterns. if you don't specify files, stdin is used."
     epilog = """Regular expressions are interpreted, so if you want to match a '*' or a '[' ... escape it with a backslash.
-                                                                            usage examples:
-                                                                            ---------------
-                                                                    colorex --red '\*' -b '\[' foo.txt
-                                                                    tail -f bar.txt | colorex --blue word --red otherword --yellow '[0-9]{3}'"""
-    usage='colorex [options] [file1] [file2] ...'
-    formatter=TitledHelpFormatter(width=90, max_help_position=39)
-    parser = OptionParser( prog='colorex',description=description, version=__version__, usage=usage, formatter=formatter, epilog=epilog)
-    parser.add_option("-b", "--blue", action="append", dest="blue", help="display BLUE pattern in blue")
-    parser.add_option("-r", "--red", action="append", dest="red", help="display RED pattern in red")
-    parser.add_option("-g", "--green", action="append", dest="green", help="display GREEN pattern in green")
-    parser.add_option("-y", "--yellow", action="append", dest="yellow", help="display YELLOW pattern in yellow")
-    parser.add_option("-m", "--magenta", action="append", dest="magenta", help="display MAGENTA pattern in magenta")
-    parser.add_option("-c", "--cyan", action="append", dest="cyan", help="display CYAN pattern in cyan")
-    parser.add_option("-B", "--bblue", action="append", dest="bblue", help="display BBLUE pattern in blue background")
-    parser.add_option("-R", "--bred", action="append", dest="bred", help="display BRED pattern in red background")
-    parser.add_option("-G", "--bgreen", action="append", dest="bgreen", help="display BGREEN pattern in green background")
-    parser.add_option("-Y", "--byellow", action="append", dest="byellow", help="display BYELLOW pattern in yellow background")
-    parser.add_option("-M", "--bmagenta", action="append", dest="bmagenta", help="display BMAGENTA pattern in magenta background")
-    parser.add_option("-C", "--bcyan", action="append", dest="bcyan", help="display BCYAN pattern in cyan background")
-    parser.add_option("-K", "--blink", action="append", dest="blink", help="display BLINK pattern blinking (not widely supported)")
-    parser.add_option("-D", "--bold", action="append", dest="bold", help="display BOLD pattern in bold")
-    parser.add_option("-u", "--undrln", action="append", dest="undrln", help="display UNDRLN pattern underlined")
-    parser.add_option("-N", "--bisounours", action="store_true", dest="bisounours", default=False, help="display with random colors")
+usage examples:
+---------------
+colorex --red '\*' -b '\[' foo.txt
+tail -f bar.txt | colorex --blue word --red otherword --yellow '[0-9]{3}'"""
+    usage = 'colorex [options] [file1] [file2] ...'
+    formatter = ArgumentDefaultsHelpFormatter
+    parser = ArgumentParser(prog='colorex', description=description, epilog=epilog,
+                          formatter_class=formatter, usage=usage)
+    parser.add_argument("-b", "--blue", action="append", dest="blue", help="display BLUE pattern in blue")
+    parser.add_argument("-r", "--red", action="append", dest="red", help="display RED pattern in red")
+    parser.add_argument("-g", "--green", action="append", dest="green", help="display GREEN pattern in green")
+    parser.add_argument("-y", "--yellow", action="append", dest="yellow", help="display YELLOW pattern in yellow")
+    parser.add_argument("-m", "--magenta", action="append", dest="magenta", help="display MAGENTA pattern in magenta")
+    parser.add_argument("-c", "--cyan", action="append", dest="cyan", help="display CYAN pattern in cyan")
+    parser.add_argument("-B", "--bblue", action="append", dest="bblue", help="display BBLUE pattern in blue background")
+    parser.add_argument("-R", "--bred", action="append", dest="bred", help="display BRED pattern in red background")
+    parser.add_argument("-G", "--bgreen", action="append", dest="bgreen", help="display BGREEN pattern in green background")
+    parser.add_argument("-Y", "--byellow", action="append", dest="byellow", help="display BYELLOW pattern in yellow background")
+    parser.add_argument("-M", "--bmagenta", action="append", dest="bmagenta", help="display BMAGENTA pattern in magenta background")
+    parser.add_argument("-C", "--bcyan", action="append", dest="bcyan", help="display BCYAN pattern in cyan background")
+    parser.add_argument("-K", "--blink", action="append", dest="blink", help="display BLINK pattern blinking (not widely supported)")
+    parser.add_argument("-D", "--bold", action="append", dest="bold", help="display BOLD pattern in bold")
+    parser.add_argument("-u", "--undrln", action="append", dest="undrln", help="display UNDRLN pattern underlined")
+    parser.add_argument("-N", "--bisounours", action="store_true", dest="bisounours", default=False,
+                      help="display with random colors")
+    parser.add_argument("files", nargs="*", help="input files")
     return parser.parse_args()
 
 def main():
-    (options_instance, args) = option_parse()
-    options = options_instance.__dict__
-    tx_dict = create_tx_dict(options)
-    if not tx_dict and not options['bisounours']:
+    args = option_parse()
+    tx_dict = create_tx_dict(args)
+    if not tx_dict and not args.bisounours:
         sys.stderr.write("nothing to do :-(\ntry --help\n")
         sys.exit(0)
     regexp = re.compile('|'.join(tx_dict))
-    tx_list = tx_dict.values()
+    tx_list = list(tx_dict.values())
 
-    if args:
-        for file in args:
+    if args.files:
+        for file in args.files:
             try:
-                file_handle = open(file, 'r')
-                for line in file_handle:
-                    print colorise(line, regexp, tx_list, options)
-                file_handle.close()
-            except Exception,info:
-                sys.stderr.write("ERROR : can't read file %s\n" % file)
+                with open(file, 'r') as file_handle:
+                    for line in file_handle:
+                        print(colorise(line, regexp, tx_list, args))
+            except Exception as info:
+                sys.stderr.write(f"ERROR : can't read file {file}\n")
                 sys.stderr.write(str(info) + '\n')
     else:
-        while True:
-            line = raw_input()
-            print colorise(line, regexp, tx_list, options)
+        try:
+            while True:
+                line = input()
+                print(colorise(line, regexp, tx_list, args))
+        except KeyboardInterrupt:
+            sys.stderr.write('KeyboardInterrupt\nexiting ...\n')
+            sys.exit(0)
+        except EOFError:
+            sys.stderr.write('End of Input ...\n')
+            sys.exit(0)
+        except sre_constants.error as info:
+            sys.stderr.write(f"ERROR : bad expression : {info}\n")
+            sys.exit(1)
+        except Exception as info:
+            sys.stderr.write(f"ERROR : {info}\n")
+            sys.exit(1)
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        sys.stderr.write('KeyboardInterrupt\nexiting ...\n')
-        sys.exit(0)
-    except EOFError:
-        sys.stderr.write('End of Input ...\n')
-        sys.exit(0)
-    except sre_constants.error, info:
-        sys.stderr.write("ERROR : bad expression : %s\n" % info)
-        sys.exit(1)
-    except Exception, info:
-        sys.stderr.write("ERROR : %s\n" % info)
-        sys.exit(1)
+    main()
+
+
+#LICENSE    
+# colorex is a powerful console tool that displays files highlighting some patterns with colors
+# Copyright (C) 2011  http://www.scopart.fr
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt.
