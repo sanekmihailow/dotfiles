@@ -44,6 +44,7 @@ else
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
+            ifhome=yes
             choose=1
             next='no'
         elif [ "$1" == 'all' ]; then
@@ -95,9 +96,15 @@ else
     if [[ $((bashversion)) -le 4 ]]; then
         sed -i 's/^shopt -s complete_fullquote/#&/' ${home_dir}/.shell_source/defaults
         sed -i 's/^shopt -s globasciiranges/#&/' ${home_dir}/.shell_source/defaults
-    fi    
+    fi
 
 fi
 
+
+if [ "$ifhome" == 'yes' ]; then
+    source ${home_dir}/.source-user; else
+    source ${home_dir}/.source-root
+fi    
+    
 echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0
