@@ -11,7 +11,7 @@ alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
 #alias ports="netstat -ntulp"
-alias ports="sudo netstat -ntulp || sudo ss -ntulp"
+alias ports="sudo netstat -tulpn |sort -t: -k2 -n || sudo ss -tulpn |sort -t: -k2 -n"
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"

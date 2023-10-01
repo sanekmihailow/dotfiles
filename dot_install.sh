@@ -44,7 +44,6 @@ else
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
-            ifhome=yes
             choose=1
             next='no'
         elif [ "$1" == 'all' ]; then
@@ -71,11 +70,9 @@ else
         $(backupHome)
         $(copyHome)
         $(copyHomeRoot)
-
     elif [[ $choose == 2 ]]; then
         backupRoot
         copyRoot
-
     elif [[ $choose == 3 ]]; then
 
             if [ -e /root/.source-root ]; then
@@ -101,10 +98,10 @@ else
 fi
 
 
-if [ "$ifhome" == 'yes' ]; then
-    source ${home_dir}/.source-user; else
-    source ${home_dir}/.source-root
+if [ "$current_user" = "root" ]; then
+    source ${home_dir}/.source-root; else
+    source ${home_dir}/.source-user
 fi    
-    
+
 echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0
