@@ -19,6 +19,7 @@ BACKUP/conf
 BACKUP/file   
 BACKUP/lib    
 BACKUP/script 
+BACKUP/os_upgrade
 SCRIPTS/RESULT-scripts
 SCRIPTS/Script
 '
