@@ -1,5 +1,7 @@
 [core]
 	editor = \"C:\\Users\\Administrator\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\code\" --wait
+	symlinks = true
+	longpaths = true
 [user]
 	name = sanekmihailow
 	email = sanekmihailow@gmail.com
