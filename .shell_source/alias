@@ -54,6 +54,7 @@ alias l='ls -CF'
 #ps ------------------------------
 alias psg='ps -A | grep'
 alias psu='ps aux | grep'
+alias psaux='ps aux |sort -k1,1 -k11,11'
 
 #less ---------------------------
 #if [ -f /usr/bin/vless ]; then
@@ -207,7 +208,6 @@ alias locen='export LC_MESSAGES=C'
 
 alias lessr="less --raw-control-chars"
 alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
-
 
 #------------------------------ comment ----------------------
 #mount ---------------------------------------
