@@ -214,6 +214,31 @@ checkSizeInDirWithIgnore() {
     fi 
 }
  
+removeComments() {
+#Used: removeComments /path/to/file \;
+# or removeComments /path/to/file
+    removed='#'
+
+    echo -e "$#"
+    if [ "$#" -eq 2 ]; then
+       removed="$2"
+       path="$1"
+    elif [ "$#" -lt 1 ]; then
+       echo -e "Error: no arguments"
+    elif [ "$#" -gt 2 ]; then
+       echo -e "Error: many arguments"
+    else
+       path="$1"
+    fi
+
+    cat "$path" |egrep -v "^${removed} |^  ${removed} |^    ${removed} |^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+
+    if $(sudo -v); then
+        sudo cat "$path" |egrep -v "^${removed}|^  ${removed}|^    ${removed}|^        ${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+    else
+        cat "$path" |egrep -v "^${removed}|^  ${removed}|^    ${removed}|^        ${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+    fi
+}
 
 
 
