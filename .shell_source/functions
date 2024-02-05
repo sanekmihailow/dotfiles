@@ -230,8 +230,6 @@ removeComments() {
        path="$1"
     fi
 
-    cat "$path" |egrep -v "^${removed} |^  ${removed} |^    ${removed} |^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
-
     if $(sudo -v); then
         sudo cat "$path" |egrep -v "^${removed}|^  ${removed}|^    ${removed}|^        ${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
     else
