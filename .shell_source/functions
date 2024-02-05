@@ -219,7 +219,6 @@ removeComments() {
 # or removeComments /path/to/file
     removed='#'
 
-    echo -e "$#"
     if [ "$#" -eq 2 ]; then
        removed="$2"
        path="$1"
