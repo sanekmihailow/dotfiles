@@ -43,13 +43,13 @@ copyHome(){
     done
 
     cp -fr ${curr_dir}/.shell_source ${home_dir}/
-    cp -rf ${curr_dir}/.config/mc ${home_dir}/.config/
+    cp -fr ${curr_dir}/.config/mc ${home_dir}/.config/
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
     chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
     ln -ns $vimless ${home_dir}/.local/bin/vmless
     cp -rf ${curr_dir}/usr/share/grc ${home_dir}/.local/share/
     cp -rf ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
-    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
+#    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
     cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax} ${home_dir}/.vim/
     fc-cache -f -v
@@ -91,4 +91,33 @@ copyRoot(){
         fc-cache -f -v
     fi
 
+}
+
+setPathSudo(){
+    sudopath="/etc/sudoers"
+    
+    if $(sudo -v); then
+        securepath=$(sudo grep -n 'secure_path' ${sudopath} |grep -v '#')
+        num=$(echo $securepath |cut -d ':' -f1)
+
+            if [ -n "$num" ]; then
+                content=$(echo $securepath |awk -F "\"" '{print $2}')
+                change=false
+        
+                check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
+                if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
+
+                check_bin=$(echo $content |grep '\/usr\/local\/bin')
+                if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
+
+                check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
+                if [[ $? != 0 ]]; then content="${content}:${HOME}/.local/bin"; change=true; fi
+                
+                #content="${content}:${HOME}/.local/bin"
+                if [ "$change" = true ]; then    
+                    sudo sed -i "${num}s/^/#/" $sudopath
+                    sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
+                fi    
+            fi
+    fi
 }

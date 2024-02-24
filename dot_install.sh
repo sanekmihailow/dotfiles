@@ -38,7 +38,7 @@ if [ -z $vim_ver ]; then
 else
     mkdir -p ./backup_dir/{user,root}
 
-    if [ -d ${home_dir}/.config ]; then
+    if [ -d ${home_dir}/.config/mc ]; then
         cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
     fi
 
@@ -70,6 +70,7 @@ else
         $(backupHome)
         $(copyHome)
         $(copyHomeRoot)
+        setPathSudo
     elif [[ $choose == 2 ]]; then
         backupRoot
         copyRoot
@@ -81,6 +82,7 @@ else
             else
                 $(backupHome)
                 $(copyHome)
+                $(setPathSudo)
             fi
     else
             echo -e "you choose not found, please try again start script"

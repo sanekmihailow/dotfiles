@@ -121,7 +121,7 @@ scriptformat() {
 #C- color highlight output
 gulimit() { ulimit "$@" |grcat conf.ulimit ; }
 gconfigure() { configure "$@" |grcat conf.configure; }
-se() { /usr/bin/sudo "$@"; }
+se() { /usr/bin/sudo HOME=$HOME "$@"; }
 mmake() { /usr/bin/make "$@" |colorex -c '(?i)making all.*' -y '(?i)making install.*' -R '(?i)error.*' -M '(?i)warning.*'; }
 cconfigure() { ./configure "$@" |colorex -c ' not found' -g ' found' -c ' no' -g ' yes' -R '(?i)error`' -M '(?i)warning' -Y ' (?i)no support'; }
 ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; -g '(?i)done' -r '(?i)failed'; }
