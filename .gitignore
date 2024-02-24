@@ -1,2 +1,7 @@
 /.git/
 /backup_dir/
+.swp
+.swo
+.tar
+.tar.gz
+.gz
