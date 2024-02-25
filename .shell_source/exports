@@ -32,3 +32,5 @@ if [ -z $WhatItPC ]; then
         WhatItPC='LAN_computer'
     fi
 fi
+
+export GREP_COLORS='ms=01;93;44'
