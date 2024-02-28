@@ -11,6 +11,14 @@ PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/s
 #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib"
 
+color_detect=$(tput colors)
+
+if [[ $color_detect -ge 255 ]]; then
+	export GREP_COLORS='ms=09;38;5;226;48;5;232'; else
+	export GREP_COLORS='ms=09;93;44'
+fi
+
+
 WhatItPC="$(ip r |grep -vE 'docker|br-' |grep src |head -n1 |cut -d ' ' -f 9)"
 
 if [ -n $WhatItPC ]; then

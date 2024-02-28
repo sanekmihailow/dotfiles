@@ -139,6 +139,9 @@ sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $*; }
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $*; }
 sys-restart() { sudo bash -c "systemctl restart $*"; sudo systemctl status $*; }
 sys-stat() { sudo bash -c "systemctl status $*"; }
+sys-cat() { sudo bash -c "systemctl cat $*"; }
+sys-enable() { sudo bash -c "systemctl enable $*"; }
+sys-disable() { sudo bash -c "systemctl disable $*"; }
 sysstopstart() { sudo bash -c "sudo systemctl stop $*" && sudo systemctl start $*; sudo systemctl status $*; }
 
 #C- check used memory/or..
@@ -157,6 +160,22 @@ check_swap() {
 }
 
 vime() { xargs sh -c 'vim "$@" < /dev/tty' example; } ## or use "xarg -o vim", #example - any word
+
+ports() {
+    local check_netstat=$(type netstat)
+
+    if $(sudo -v); then
+        if [ -n "$check_netstat" ]
+            then sudo netstat -tulpn |sort -t: -k2 -n
+            else sudo ss -tulpn |sort -t: -k2 -n
+        fi
+    else
+        if [ -n "$check_netstat" ]
+            then netstat -tulpn |sort -t: -k2 -n
+            else ss -tulpn |sort -t: -k2 -n
+        fi
+    fi
+}
 
 allcrontab() {
     red='\e[0;31m'
@@ -191,103 +210,145 @@ allcrontab() {
 
 }
 
+
 checkSizeInDirWithIgnore() {
-    				# example checkSizeInDirWithIgnore var boot
-    #check that args != 0		
-    if [ "$#" -lt 1 ]; then
-        params="-I proc -I sys -I dev";
-    elif [ "$#" -gt 1 ]; then
-        $count = "$#";
-        params=""
-        for i in ${count}; do
-           params+="-I $i ";
-        done
-    else
-        params="-I $1";
+#C- example: checkSizeInDirWithIgnore var boot
+#or	     checkSizeInDirWithIgnore 
+    params=''
+    with=false
+
+    if [ $1 == '--with-proc' ]
+        then with=true
+        else params="-I proc -I sys -I dev"
+    fi
+
+    if [ "$#" -lt 1 ]
+        then params="$params -I mnt "
+        elif [ "$#" -gt 1 ]; then
+
+            if [ "$with" = true ]
+                then item_no=2
+                else item_no=1
+            fi
+
+            count="$#"
+            for ((i=$item_no; i <= $count; i++)); do
+                param="${!i}"
+                params="$params -I $param "
+            done
+
+        else params+=" -I $1"
     fi
 
     list="$(ls -a $params |egrep -v '^(..|.)$')"
-    
+
     if $(sudo -v); then
-        sudo du -sh $list | sort -hr; else
-        du -sh $list | sort -hr
-    fi 
+        echo -e "this directory - \033[1;36m$(pwd)\033[0m"
+        sudo du -sh $list |sort -hr; else
+        du -sh $list      |sort -hr
+    fi
 }
+
  
 removeComments() {
 #C- Used: removeComments /path/to/file '\;'
-#C- removeComments /path/to/file
+#or 	  removeComments /path/to/file
     run=false
     removed='#'
     path="$1"
 
-    if [ "$#" -eq 2 ]; then
-       removed="$2"
-        run=true
-    elif [ "$#" -lt 1 ]; then
+    if [ "$#" -lt 1 ]; then
        echo -e "Error: no arguments, must will be min - 1"
     elif [ "$#" -gt 2 ]; then
        echo -e "Error: too many arguments, must will be max - 2"
     else
-       run=true
+        run=true
+
+        if [ "$#" -eq 2 ]; then
+            if [ "$2" != '' ];  then removed="$2"; fi
+            if [ "$2" != ' ' ]; then removed="$2"; fi
+        fi
     fi
 
     if [ "$run" = true ]; then
         if $(sudo -v); then
-            sudo cat "$path" |egrep -v "^${removed}|^  ${removed}|^    ${removed}|^        ${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+            sudo cat "$path" |egrep -v "^${removed}|^\s?+${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
         else
-            cat "$path" |egrep -v "^${removed}|^  ${removed}|^    ${removed}|^        ${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+            cat "$path" |egrep -v "^${removed}|^\s?+${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
         fi
      fi
 }
 
 egreplessdir() {
-#C- Example: egreplessdir  'struing' /path/to/dir '\string exclude comment'
-#C- egreplessdir  'string pattern' /path/to/dir
+#C- Example: egreplessdir  'struing' /path/to/dir '\string_exclude_comment' '--<param>'
+#or 	     egreplessdir  'string pattern' /path/to/dir
     run=false
     comment='#'
     path="$2"
     pattern="$1"
+    param=''
 
-    if [ "$#" -eq 3 ]; then
-        comment="$3"
-        run=true
-    elif [ "$#" -le 1 ]; then
+    if [ "$#" -le 1 ]; then
        echo -e "Error: too few arguments, must will be min - 2"
-    elif [ "$#" -gt 3 ]; then
-       echo -e "Error: too many arguments, must will be max - 3"
+    elif [ "$#" -gt 4 ]; then
+       echo -e "Error: too many arguments, must will be max - 4"
     else
         run=true
+
+        if [ "$#" -ge 3 ]; then
+            if [ "$3" != '' ];  then comment="$3"; fi
+            if [ "$3" != ' ' ]; then comment="$3"; fi
+        fi
+
+        if [ "$#" -eq 4 ]; then param="$4"; fi
     fi
 
+
     if [ "$run" = true ]; then
-        grep -o ".\{0,150\}${pattern}.\{0,150\}" -ir "$path"  |egrep -v "^${comment}|^  ${comment}|^    ${comment}|^       ${comment}" |grep -i "$pattern"
+
+        if [ "$param" == '--binary' ]; then
+            grep -o ".\{0,120\}${pattern}.\{0,120\}" -ir "$path" |egrep -v "^${comment}|^\s?+${comment}" \
+                            |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern";    else
+            grep -o ".\{0,120\}${pattern}.\{0,120\}" -iIr "$path" |egrep -v "^${comment}|^\s?+${comment}" \
+                            |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern"
+        fi
     fi
 }
 
 egrepless() {
-#C- Example: egrepless  'struing' /path/to/file '\string comment'
-#C- egrepless  'string pattern' /path/to/file
+#C- Example: egrepless  'struing' /path/to/file '\string_comment' '--<param>'
+#or			 egrepless  'string pattern' /path/to/file
     run=false
     comment='#'
     path="$2"
     pattern="$1"
+    param=''
 
-    if [ "$#" -eq 3 ]; then
-        comment="$3"
-        run=true
-    elif [ "$#" -le 1 ]; then
+    if [ "$#" -le 1 ]; then
        echo -e "Error: too few arguments, must will be min - 2"
-    elif [ "$#" -gt 3 ]; then
-       echo -e "Error: too many arguments, must will be max - 3"
+    elif [ "$#" -gt 4 ]; then
+       echo -e "Error: too many arguments, must will be max - 4"
     else
         run=true
+
+        if [ "$#" -ge 3 ]; then
+            if [ "$3" != '' ];  then comment="$3"; fi
+            if [ "$3" != ' ' ]; then comment="$3"; fi
+        fi
+
+        if [ "$#" -eq 4 ]; then param="$4"; fi
     fi
 
+
     if [ "$run" = true ]; then
-        grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path"  |egrep -v "^${comment}|^  ${comment}|^    ${comment}|^       ${comment}" |grep -i "$pattern"
+        if [ "$param" == '--num' ]; then
+            grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path"  |egrep -v "^${comment}|^$\s?+${comment}" |grep -in "$pattern"; else
+            grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path"  |egrep -v "^${comment}|^$\s?+${comment}" \
+                                |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -in "$pattern"
+        fi
     fi
 }
+
 
 diffFiles() {
     diff --color --unified=0 $1 $2
