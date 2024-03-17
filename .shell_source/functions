@@ -354,6 +354,49 @@ diffFiles() {
     diff --color --unified=0 $1 $2
 }
 
+showCountOpenFiles () {
+#C- example: showCountOpenFiles apache2 ## or showCountOpenFiles 781 ## ppid=781
+    if $(sudo -v); then
+        local srv_app=$1
+
+        if [ -n "$srv_app" ]; then input=1 ; else
+            echo -e "\n \033[0;32m please enter service name or parent pid :\033[0m"
+            if read -t 360 -sp "" input; then
+                echo -e "you inputed \n $input\n"
+                local srv_app=$input
+            fi
+        fi
+
+        local check_name="$(echo $srv_app |grep '^.*[A-Za-z].*')"
+        local check_num="$(echo $srv_app |grep '^[0-9]*[0-9]$')"
+
+
+        if [ -n "$check_name" ]; then
+            local Ppid=$(ps -o ppid= -p "$(pidof $srv_app -s)" |tr -d ' ')
+        fi
+
+        if [ -n "$check_num" ]; then local Ppid=$srv_app; fi
+
+        #ppid != 1
+        if [[ "$Ppid" != 1 &&  "$Ppid" != 0 && "$Ppid" =~ ^[0-9]+$ ]]; then
+
+            local list_pid=$(sudo pstree -p "$Ppid" -n |awk -F '|-' '{print $2}' |cut -d '(' -f2 |tr -d '()+' |grep -v '^$')
+            local f=$(sudo ls -l /proc/${Ppid}/fd |wc -l)
+            echo "files opened in Parent pid ${Ppid} - $f"
+            local sum=$(expr 0 + $f)
+
+            for cpid in $list_pid; do
+                local f=$(sudo ls -l /proc/${cpid}/fd 2> /dev/null |wc -l)
+                echo "files opened in child pid ${cpid} - $f"
+                local sum=$(expr $sum + $f)
+            done
+            echo -e "summarize files opened -\033[0;35m $sum \033[0m"
+        else echo -e "\033[1;31m Parent pid dont't be euqal 1/0 or content alphabic symbols;\033[0m ppid =$Ppid; you inputed - $srv_app"
+        fi
+    else echo -e "\033[1;31m You don't have sudo priveleges"
+        fi
+
+}
 
 
 
