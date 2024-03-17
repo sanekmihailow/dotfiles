@@ -11,7 +11,7 @@ PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/s
 #/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 LD_LIBRARY_PATH="$HOME/.local/lib:/lib:/usr/lib:/usr/local/lib"
 
-color_detect=$(tput color)
+color_detect=$(tput colors)
 
 if [[ $color_detect -ge 255 ]]; then
 	export GREP_COLORS='ms=09;38;5;226;48;5;232'; else

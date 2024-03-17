@@ -161,6 +161,22 @@ check_swap() {
 
 vime() { xargs sh -c 'vim "$@" < /dev/tty' example; } ## or use "xarg -o vim", #example - any word
 
+ports() {
+    local check_netstat=$(type netstat)
+
+    if $(sudo -v); then
+        if [ -n "$check_netstat" ]
+            then sudo netstat -tulpn |sort -t: -k2 -n
+            else sudo ss -tulpn |sort -t: -k2 -n
+        fi
+    else
+        if [ -n "$check_netstat" ]
+            then netstat -tulpn |sort -t: -k2 -n
+            else ss -tulpn |sort -t: -k2 -n
+        fi
+    fi
+}
+
 allcrontab() {
     red='\e[0;31m'
     RED='\e[1;31m'

@@ -10,8 +10,8 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-#alias ports="netstat -ntulp"
-alias ports="sudo netstat -tulpn |sort -t: -k2 -n || sudo ss -tulpn |sort -t: -k2 -n"
+alias ports4="sudo netstat -tulpn |grep -w '^[ut].p' |sort -t: -k2 -n"
+alias ports6="sudo netstat -tulpn |grep -w '^[ut].p6' |sort -t: -k2 -n"
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"
@@ -24,7 +24,7 @@ alias vim="vim"
 #alias vime="xargs vim"  ## after exit vim. use "reset" for update window prompt
                          ## use CTRL(SHIFT) + BACKSPACE - del one character
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
-
+alias scrd="screen -Rd"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
