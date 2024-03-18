@@ -14,7 +14,7 @@ if [ $(which netstat) ]
     then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n"
          alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n"
     else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
-         alias ports4="sudo ss -tulpn -6 |sort -t: -k2 -n"
+         alias ports6="sudo ss -tulpn -6 |sort -t: -k2 -n"
 fi
     
 alias used="du -ch -d 1"
