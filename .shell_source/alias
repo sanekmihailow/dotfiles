@@ -25,6 +25,7 @@ alias vim="vim"
                          ## use CTRL(SHIFT) + BACKSPACE - del one character
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
 alias scrd="screen -Rd"
+alias mounts="mount |egrep -v '/sys|/proc|/run|/dev/hugepages|/dev/pts|/dev/mqueue|/snapd/snaps|/docker/overlay|udev|tmpfs' |cut -d ' ' -f 1-5" 
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
