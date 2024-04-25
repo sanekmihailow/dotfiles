@@ -10,8 +10,13 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-alias ports4="sudo netstat -tulpn |grep -w '^[ut].p' |sort -t: -k2 -n"
-alias ports6="sudo netstat -tulpn |grep -w '^[ut].p6' |sort -t: -k2 -n"
+if [ $(which netstat) ]
+    then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n"
+         alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n"
+    else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
+         alias ports6="sudo ss -tulpn -6 |sort -t: -k2 -n"
+fi
+    
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"
@@ -87,6 +92,9 @@ alias gl='git log'
 alias gst='git stash'
 alias gplo='git pull origin master'
 alias gbv='git branch -vv'
+
+#awk
+alias ip_a="ip -a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 
 #grep ---------------------------------------
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"

@@ -102,22 +102,31 @@ setPathSudo(){
 
             if [ -n "$num" ]; then
                 content=$(echo $securepath |awk -F "\"" '{print $2}')
-                change=false
-        
-                check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
-                if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
-
-                check_bin=$(echo $content |grep '\/usr\/local\/bin')
-                if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
-
-                check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
-                if [[ $? != 0 ]]; then content="${content}:${HOME}/.local/bin"; change=true; fi
+				
+				if [ -z "$content" ]; then
+                	content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
+                fi
+        		
+				if [ -n "$content" ]
+					then
+                		change=false
                 
-                #content="${content}:${HOME}/.local/bin"
-                if [ "$change" = true ]; then    
-                    sudo sed -i "${num}s/^/#/" $sudopath
-                    sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
-                fi    
+						check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
+                		if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
+
+                		check_bin=$(echo $content |grep '\/usr\/local\/bin')
+                		if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
+
+                		check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
+                		if [[ $? != 0 ]]; then content="${content}:${HOME}/.local/bin"; change=true; fi
+                
+                		#content="${content}:${HOME}/.local/bin"
+                		if [ "$change" = true ]; then    
+                    		sudo sed -i "${num}s/^/#/" $sudopath
+                    		sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
+                		fi
+					else echo "Secure_path not found"
+				fi
             fi
     fi
 }
