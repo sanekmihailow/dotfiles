@@ -127,22 +127,26 @@ cconfigure() { ./configure "$@" |colorex -c ' not found' -g ' found' -c ' no' -g
 ccolorex() { /usr/bin/colorex "$@" -R '(?i)err' -M '(?i)warn'; -g '(?i)done' -r '(?i)failed'; }
 
 #C- create archive
-function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }         # Creates an archive (*.tar.gz) from given directory
-function makezip() { zip -r "${1%%/}.zip" "$1" ; }                    # Create a ZIP archive of a file or folder.
+function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }   # Creates an archive (*.tar.gz) from given directory
+function makezip() { zip -r "${1%%/}.zip" "$1" ; }              # Create a ZIP archive of a file or folder.
 
 #C- use - cht /ls/
 cht() { /usr/bin/curl cheat.sh/"$@"; }
 
 #C- systemd status
-sys-start() { sudo bash -c "sudo systemctl start $*"; sudo systemctl status $*; }
-sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $*; }
-sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $*; }
-sys-restart() { sudo bash -c "systemctl restart $*"; sudo systemctl status $*; }
-sys-stat() { sudo bash -c "systemctl status $*"; }
+sys-start() { sudo bash -c "sudo systemctl start $*"; sudo systemctl status $* --full --no-pager; }
+sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $* --full --no-pager; }
+sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --full --no-pager; }
+sys-restart() { sudo bash -c "systemctl restart $*" && sleep 1 && sudo systemctl status $* --full --no-pager; }
+sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
 sys-cat() { sudo bash -c "systemctl cat $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
-sysstopstart() { sudo bash -c "sudo systemctl stop $*" && sudo systemctl start $*; sudo systemctl status $*; }
+sysstopstart() { 
+	sudo bash -c "sudo systemctl stop $*" && sleep 1 && 
+	sudo systemctl start $* && sleep 1 && 
+	sudo systemctl status $* --full --no-pager
+}
 
 #C- check used memory/or..
 check_mem_humanreadable() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort -n |tail |column -t; }
@@ -152,7 +156,7 @@ check_swap() {
     for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
         pid=$(echo $dir |cut -d/ -f3)
         cmd=$(ps h -o comm -p $pid)
-        swap=$(grep VmSwap $dir/status 2> /dev/null |awk '{print int($2/1024)}')
+        swap=$(grep VmSwap ${dir}/status 2> /dev/null |awk '{print int($2/1024)}')
         if [ ! -z $swap ] && [ $swap -ne 0 ]; then
             echo "pid: $pid command: $cmd swap: $swap MB"
         fi

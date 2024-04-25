@@ -88,6 +88,9 @@ alias gst='git stash'
 alias gplo='git pull origin master'
 alias gbv='git branch -vv'
 
+#awk
+alias ip_a="ip -a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
+
 #grep ---------------------------------------
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 
