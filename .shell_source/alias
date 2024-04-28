@@ -62,6 +62,20 @@ alias psg='ps -A | grep'
 alias psu='ps aux | grep'
 alias psaux='ps aux |sort -k1,1 -k11,11'
 
+#docker --------------------------
+if [ $(which docker) ]; then
+	if [ $(which jq) ]
+		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
+		else echo "jq not found. please install it before run this alias command"
+	fi
+
+	alias docker_ports-with_names="docker ps --format 'table {{.Names}}\t{{.Ports}}'"
+	alias docker_ports-with_id="docker ps --format 'table {{.ID}}\t{{.Ports}}'"
+	alias docker_names="docker ps --format 'table {{.ID}}\t{{.Names}}'"
+	alias docker_status="docker ps --format 'table {{.Image}}\t{{.Status}}'"
+	alias docker_images="docker ps --format 'table {{.Names}}\t{{.Image}}'"
+fi
+
 #less ---------------------------
 #if [ -f /usr/bin/vless ]; then
 #  alias less="vless"
