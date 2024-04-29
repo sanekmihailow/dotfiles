@@ -43,7 +43,7 @@ copyHome(){
     done
 
     cp -fr ${curr_dir}/.shell_source ${home_dir}/
-    cp -fr ${curr_dir}/.config/mc ${home_dir}/.config/
+    cp -fr ${curr_dir}/.config/mc ${home_dir}/.config/mc
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
     chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
     ln -ns $vimless ${home_dir}/.local/bin/vmless

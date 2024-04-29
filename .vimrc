@@ -3,12 +3,20 @@ runtime! debian.vim
 "------------------------------------- autostart syntax -------------------------------
 
 "log webserver
+au BufRead *nginx/*.log* setf nginx
+
+au BufRead *apache2/*.log* setf httplog
+au BufRead *apache2/*.log* setf httplog
+au BufRead *httpd/*.log* setf httplog
 au BufRead *access.log* setf httplog
 
 "conf asterisk
 au BufNewFile,BufRead *asterisk*/*voicemail.conf* setf asteriskvm
 au BufNewFile,BufRead *asterisk/*.conf* setf asterisk
 au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
+
+"conf log
+au BufNewFile,BufRead *.log* setf log
 
 "--------------------------------------------------------------------------------------
 
@@ -24,7 +32,7 @@ syn match log_comment   '\c\#.*$'
 syn match log_comment   '\c\^#.*$'
 syn match log_comment   '\c\^;.*$'
 syn match log_comment   '\c\^".*$'
-hi link log_comment             Comment
+hi link log_comment     Comment
 
 " ------------------------------------- maps
 nmap <F1> :set autoread<CR>
