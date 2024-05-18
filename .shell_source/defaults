@@ -96,6 +96,8 @@ shopt -s interactive_comments
 shopt -s progcomp
 shopt -s promptvars
 shopt -s sourcepath
+shopt -s histverify                 # use !num - this  get change the command before I run it (executing). (!2)
+shopt -s histreedit                 # reedit a history substitution line if it failed
 
 shopt -s complete_fullquote
 shopt -s globasciiranges
