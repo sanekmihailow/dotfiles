@@ -47,7 +47,7 @@ copyHome(){
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
     chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
     ln -ns $vimless ${home_dir}/.local/bin/vmless
-    cp -rf ${curr_dir}/usr/share/grc ${home_dir}/.local/share/
+    cp -rf ${curr_dir}/usr/share/grc/ ${home_dir}/.local/share/
     cp -rf ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
 #    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
@@ -62,8 +62,13 @@ copyHome(){
 copyHomeRoot(){
     if $(sudo -v); then
         sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
-        sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+
+        if [ -z "$(sudo grep 'source ~/.source-root' /root/.bashrc)" ]; then
+            sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+        fi
+
         sudo sh -c "cp -f ${curr_dir}/.source-root /root/"
+        sudo sh -c "ln -s ${home_dir}/.local/bin /usr/local/local_bin"
     fi
 }
 
@@ -80,7 +85,7 @@ copyRoot(){
     cp -f ${curr_dir}/usr/share/vim/vimXX/colors/* ${vim_path}/colors/ || echo -e "not vim colors"
     cp -f ${curr_dir}/usr/share/vim/vimXX/plugin/* ${vim_path}/plugin/ || echo -e "not vim plugins"
     cp -f ${curr_dir}/usr/share/vim/vimXX/syntax/* ${vim_path}/syntax/ || echo -e "not vim syntax"
-    cp -rf ${curr_dir}/usr/share/grc /usr/local/share/
+    cp -rf ${curr_dir}/usr/share/grc/ /usr/local/share/
     cp -f ${curr_dir}/etc/grc.conf /etc/grc.conf
 
     if [ -d /usr/local/share/fonts ]; then
@@ -95,38 +100,41 @@ copyRoot(){
 
 setPathSudo(){
     sudopath="/etc/sudoers"
-    
+
     if $(sudo -v); then
         securepath=$(sudo grep -n 'secure_path' ${sudopath} |grep -v '#')
         num=$(echo $securepath |cut -d ':' -f1)
 
-            if [ -n "$num" ]; then
-                content=$(echo $securepath |awk -F "\"" '{print $2}')
-				
-				if [ -z "$content" ]; then
-                	content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
-                fi
-        		
-				if [ -n "$content" ]
-					then
-                		change=false
-                
-						check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
-                		if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
+        if [ -n "$num" ]; then
+            content=$(echo $securepath |awk -F "\"" '{print $2}')
 
-                		check_bin=$(echo $content |grep '\/usr\/local\/bin')
-                		if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
+           if [ -z "$content" ]; then
+               content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
+           fi
 
-                		check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
-                		if [[ $? != 0 ]]; then content="${content}:${HOME}/.local/bin"; change=true; fi
-                
-                		#content="${content}:${HOME}/.local/bin"
-                		if [ "$change" = true ]; then    
-                    		sudo sed -i "${num}s/^/#/" $sudopath
-                    		sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
-                		fi
-					else echo "Secure_path not found"
-				fi
-            fi
+           if [ -n "$content" ]
+               then change=false
+
+               check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
+               if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
+
+               check_bin=$(echo $content |grep '\/usr\/local\/bin')
+               if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
+
+               check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
+               if [[ $? != 0 ]]; then content="${content}:/usr/local/local_bin"; change=true; fi
+
+               #content="${content}:${HOME}/.local/bin"
+               if [ "$change" = true ]; then
+                   if [ -z "$(sudo grep 'secure_path.*\/usr\/local\/local_bin' $sudopath)" ]; then
+                       sudo sed -i "${num}s/^/#/" $sudopath
+                       sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
+                   fi
+               fi
+
+               else echo "Secure_path not found"
+
+           fi
+        fi
     fi
 }
