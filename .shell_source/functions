@@ -140,6 +140,7 @@ sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --fu
 sys-restart() { sudo bash -c "systemctl restart $*" && sleep 1 && sudo systemctl status $* --full --no-pager; }
 sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
 sys-cat() { sudo bash -c "systemctl cat $*"; }
+sys-edit() { sudo bash -c "systemctl edit $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
 sysstopstart() { 
@@ -187,30 +188,49 @@ allcrontab() {
     green='\e[0;32m'
     GREEN='\e[1;32m'
     PURPLE='\e[1;35m'
+    YELLOW='\e[22;33m'
     NC='\e[0m'
-
-    for user in $(cut -d':' -f1 /etc/passwd); do
-    	#C - <crontab -l> get data in /var/spool/cron/crontabs/*
-        usercrontab=$(crontab -l -u ${user} 2>/dev/null)
-        if [ -n "${usercrontab}" ]; then
-            echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
-            crontab -l -u ${user} | sed '/ *#/d; /^ *$/d'
-            echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC} ${RED}========${NC}\n"
-        fi
-    done
+        
     cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
+
     for dir in $cron_dir; do
-    	echo -e "----------------- ${PURPLE}Start ${dir} -------------------- ${NC}\n"
-    	for crond in $(ls -L1 $dir); do
-            crondtab=$(cat "${dir}/${crond}" 2>/dev/null | egrep -Ev "^\s*(;|#|$)")
-            if [ -n "${crondtab}" ]; then
-                echo -e "${RED}====== Start ${dir}/ ${NC}${GREEN}${crond}${NC} ${RED}======${NC}"
-                echo "${crondtab}"
-                echo -e "${RED}====== End ${cond} ${NC}${GREEN}${crond}${NC} ${RED}======${NC}\n"
-            fi
-    	done
-        echo -e "----------------- ${PURPLE}End ${dir} -------------------- ${NC}\n"
+    	echo -e "----------------- ${PURPLE}START ${dir} -------------------- ${NC}\n"
+        	for crond in $(ls -L1 $dir); do
+                if $(sudo -v)
+                    then crondtab=$(sudo sh -c "cat ${dir}/${crond} 2>/dev/null" |egrep -Ev "^\s*(;|#|$)")
+                    else crondtab=$(cat "${dir}/${crond}" 2>/dev/null |egrep -Ev "^\s*(;|#|$)")
+                fi
+    
+                if [ -n "${crondtab}" ]; then
+                    echo -e "${RED}====== Start ${dir}/ ${NC}${GREEN}${crond}${NC} ${RED}======${NC}"
+                        echo "${crondtab}"
+                    echo -e "${RED}====== End ${crond} ${NC}${GREEN}${crond}${NC} ${RED}======${NC}\n"
+                fi
+        	done
+        echo -e "----------------- ${PURPLE}END ${dir} -------------------- ${NC}\n"
     done
+    	
+    echo -e "----------------- ${PURPLE}START /etc/crontab -------------------- ${NC}\n"
+        cat /etc/crontab |egrep -Ev "^\s*(;|#|$)"
+    echo -e "----------------- ${PURPLE}END /etc/crontab -------------------- ${NC}\n"
+    
+    echo -e "----------------- ${PURPLE}START users crontab -------------------- ${NC}\n"
+        if $(sudo -v &> /dev/null); then
+            for user in $(cut -d':' -f1 /etc/passwd); do
+                usercrontab=$(sudo sh -c "crontab -l -u ${user} 2>/dev/null")
+    
+                if [ -n "${usercrontab}" ]; then
+                    echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
+                        sudo sh -c "crontab -l -u ${user}" |sed '/ *#/d; /^ *$/d'
+                    echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC} ${RED}========${NC}\n"
+                fi    
+            done
+        else 
+            echo -e "${YELLOW}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${YELLOW}======${NC}"
+                crontab -l |sed '/ *#/d; /^ *$/d'
+            echo -e "${YELLOW}====== End crontab for user ${NC}${GREEN}${user}${NC} ${YELLOW}========${NC}\n"
+        fi   
+    echo -e "----------------- ${PURPLE}END users crontab -------------------- ${NC}\n"
 
 }
 
