@@ -423,6 +423,104 @@ showCountOpenFiles () {
 }
 
 
+myfunctions_aliases () {
+    echo -e '
+HIGHLIGHTS HISTORY SEARCH:
+        hi                  - search with #tag-
+        hh                  - search pattern
+        hhall               - search all pattern
+        hhistory            - search all and highlight
+        hhuniq              - search all uniq pattern
+        hhnumniq            - search all uniq pattern with number
+        hhlastuniq          - search tail uniq pattern
+        hhlastuniq-grep     - search uniq include grep and set number tail
+        history-uniq
+
+SYSTEMD:
+        sys-start
+        sys-stop
+        sys-reload
+        sys-stat
+        sys-cat
+        sys-edit
+        sys-enable
+        sys-disable
+        sysstopstart
+
+PERMANCE CHECK:
+        check_mem
+        check_mem_humanreadable
+        check_mem_procent
+        check_swap
+        allcrontab                  - show all crons
+
+DISK SIZE CHECK:
+        checkSizeInDirWithIgnore    - check size in cur dir with ignore
+        used                        - check size in current dir
+        showfatindir
+
+NET CHECK:
+        ports                       - show all ports listening
+        ports4, ports6
+        cmyip, ip_a
+
+SEARCH:
+        removeComments      - cat and remove comments
+        egreplessdir        - grep -ir
+        egrepless           - grep -i
+        psaux, psu, psg
+        dirtree, stripcomments
+
+DOCKER:
+        docker_all
+        docker_ports-with_names
+        docker_ports-with_id
+        docker_names
+        docker_status
+        docker_images
+
+SYNC:
+       scpresume 
+
+HIGHLIGHTS:
+        gulimit             - highlight ulimit
+        gconfigure          - highlight configure
+        cconfigure          - highlight configure
+        mmake               - highlight make
+        ccolorex            - color error...
+        diffFiles           - color diff
+        err                 - grep -i error...
+
+HIGHLIGHTS grc:
+        blkid_g
+        ...
+
+GIT SHORCUTS:
+        gs, gb, gbv, gp, ga, gl, gd, gdc, glf
+        gr, gpo, gplo, gst
+
+OTHER:
+        incognito
+        extract
+        defcat              - /usr/bin/cat
+        scriptformat        - remove ansci unprintable cahracters
+        se                  - short sudo
+        sq, plz, sr, l1
+        maketar
+        makezip
+        cht                 - search in cheat.sh
+        vime, svi                
+        wdownload, lnn
+        xsc, lnn
+        lla, lss
+        scrd, mounts, supdate
+        sprunge, phpinfo_e
+        speedt, speedt1, speeddown
+        locru, locen
+        lessr
+
+    '
+}    
 
 
 
