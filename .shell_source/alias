@@ -10,7 +10,7 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-if [ $(which netstat) ]
+if [ $(which netstat 2>/dev/null) ]
     then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n"
          alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n"
     else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
@@ -20,7 +20,6 @@ fi
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"
-alias lnn="lnav"
 alias svi="sudo vim"
 alias scp="scp"
 alias xsc="xclip -select clipboard"
@@ -31,6 +30,7 @@ alias vim="vim"
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
 alias scrd="screen -Rd"
 alias mounts="mount |egrep -v '/sys|/proc|/run|/dev/hugepages|/dev/pts|/dev/mqueue|/snapd/snaps|/docker/overlay|udev|tmpfs' |cut -d ' ' -f 1-5" 
+alias showrpminfo="rpm -qpliRsc --scripts --filesbypkg --obsoletes --provides --triggers --conflicts"
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
@@ -60,11 +60,17 @@ alias l='ls -CF'
 #ps ------------------------------
 alias psg='ps -A | grep'
 alias psu='ps aux | grep'
-alias psaux='ps aux |sort -k1,1 -k11,11'
+alias psaux='ps auxww --sort user,pid,command'
+alias psajf='ps axjfww'
+
+#pager ---------------------------
+alias lnn="lnav"
+alias less="less -IN+G --line-num-width=5 --status-col-width=4 --use-color"
+alias defless="/usr/bin/less"
 
 #docker --------------------------
-if [ $(which docker) ]; then
-	if [ $(which jq) ]
+if [ $(which docker 2>/dev/null) ]; then
+	if [ $(which jq 2>/dev/null) ]
 		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
 		else echo "jq not found. please install it before run this alias command"
 	fi
@@ -83,29 +89,31 @@ fi
 
 #dircolors ----------------------------
 if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-  alias dir='dir --color=auto'
-  alias vdir='vdir --color=auto'
-  alias ls='ls --color=auto'
-  alias grep='grep --color=auto'
-  alias fgrep='fgrep --color=auto'
-  alias egrep='egrep --color=auto'
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
 fi
 
 #git  -------------------------------
-alias gpo='git push origin master'
-alias gp='git pull'
-alias gs='git status'
-alias gd='git diff'
-alias gr='git reflog'
-alias glf='git ls-files'
-alias ga='git add'
-alias gb='git br'
-alias gdc='git diff --cached'
-alias gl='git log'
-alias gst='git stash'
-alias gplo='git pull origin master'
-alias gbv='git branch -vv'
+if [ $(which git 2>/dev/null) ]; then
+    alias gpo='git push origin master'
+    alias gp='git pull'
+#    alias gs='git status'
+    alias gd='git diff'
+    alias gr='git reflog'
+    alias glf='git ls-files'
+    alias ga='git add .'
+    alias gb='git br'
+    alias gdc='git diff --cached'
+    alias gl='git log'
+    alias gst='git stash'
+    alias gplo='git pull origin master'
+    alias gbv='git branch -vv'
+fi    
 
 #awk
 alias ip_a="ip -a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
@@ -114,7 +122,7 @@ alias ip_a="ip -a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 
 # grc --------------------------------
-if [ $(which grc) ]; then
+if [ $(which grc 2>/dev/null) ]; then
   alias ant_g="grc --colour=auto ant"
   alias blkid_g="grc --colour=auto blkid"
   alias configure_g="grc --colour=auto ./configure"
@@ -194,7 +202,7 @@ if [ $(which grc) ]; then
  fi
 
 #vim --------------------------------
-if [ -f /usr/local/bin/vimcat ]; then
+if [ $(which vimcat 2>/dev/null) ]; then
   alias cat_g="vimcat "
   alias vi="vim "
 fi
