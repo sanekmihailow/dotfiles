@@ -116,90 +116,48 @@ if [ $(which git 2>/dev/null) ]; then
 fi    
 
 #awk
-alias ip_a="ip -a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
+alias ip_a="ip a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 
 #grep ---------------------------------------
 alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
 
 # grc --------------------------------
 if [ $(which grc 2>/dev/null) ]; then
-  alias ant_g="grc --colour=auto ant"
-  alias blkid_g="grc --colour=auto blkid"
-  alias configure_g="grc --colour=auto ./configure"
-  alias cvs_g="grc --colour=auto cvs"
-  alias df_g="grc --colour=auto df"
-  alias diff_g="grc --colour=auto diff"
-  alias dig_g="grc --colour=auto dig"
-  alias dnf_g="grc --colour=auto dnf"
-  alias docker_g-machinels="grc --colour=auto docker-machinels"
-  alias dockerimages_g="grc --colour=auto dockerimages"
-  alias dockerinfo_g="grc --colour=auto dockerinfo"
-  alias dockernetwork_g="grc --colour=auto dockernetwork"
-  alias dockerps_g="grc --colour=auto dockerps"
-  alias dockerpull_g="grc --colour=auto dockerpull"
-  alias dockersearch_g="grc --colour=auto dockersearch"
-  alias dockerversion_g="grc --colour=auto dockerversion"
-  alias du_g="grc --colour=auto du"
-  alias env_g="grc --colour=auto env"
-  alias esperanto_g="grc --colour=auto esperanto"
-  alias fdisk_g="grc --colour=auto fdisk"
-  alias findmnt_g="grc --colour=auto findmnt"
-  alias free_g="grc --colour=auto free"
-  alias gcc_g="grc --colour=auto gcc"
-  alias getfacl_g="grc --colour=auto getfacl"
-  alias getsebool_g="grc --colour=auto getsebool"
-  alias id_g="grc --colour=auto id"
-  alias ifconfig_g="grc --colour=auto ifconfig"
-  alias iostat_sar_g="grc --colour=auto iostat_sar"
-  alias ip_g="grc --colour=auto ip"
-  alias ipaddr_g="grc --colour=auto ipaddr"
-  alias ipneighbor_g="grc --colour=auto ipneighbor"
-  alias iproute_g="grc --colour=auto iproute"
-  alias iptables_g="grc --colour=auto iptables"
-  alias iwconfig_g="grc --colour=auto iwconfig"
-  alias jobs_g="grc --colour=auto jobs"
-  alias last_g="grc --colour=auto last"
-  alias ldap_g="grc --colour=auto ldap"
-  alias log_g="grc --colour=auto log"
-  alias lsattr_g="grc --colour=auto lsattr"
-  alias lsblk_g="grc --colour=auto lsblk"
-  alias lsmod_g="grc --colour=auto lsmod"
-  alias lsof_g="grc --colour=auto lsof"
-  alias lspci_g="grc --colour=auto lspci"
-  alias make_g="grc --colour=auto make"
-  alias mount_g="grc --colour=auto mount"
-  alias mtr_g="grc --colour=auto mtr"
-  alias mvn_g="grc --colour=auto mvm"
-  alias netstat_g="grc --colour=auto netstat"
-  alias nmap_g="grc --colour=auto nmap"
-  alias ntpdate_g="grc --colour=auto ntpdate"
-  alias php_g="grc --colour=auto php"
-  alias ping_g="grc --colour=auto ping"
-  alias ping2_g="grc --colour=auto ping2"
-  alias proftpd_g="grc --colour=auto proftpd"
-  alias ps_g="grc --colour=auto ps"
-  alias pv_g="grc --colour=auto pv"
-  alias semanageboolean_g="grc --colour=auto semanageboolean"
-  alias semanagefcontext_g="grc --colour=auto semanagefcontext"
-  alias semanageuser_g="grc --colour=auto semanageuser"
-  alias sensors_g="grc --colour=auto sensors"
-  alias showmount_g="grc --colour=auto showmount"
-  alias sql_g="grc --colour=auto sql"
-  alias ss_g="grc --colour=auto ss"
-  alias stat_g="grc --colour=auto stat"
-  alias sysctl_g="grc --colour=auto sysctl"
-  alias systemctl_g="grc --colour=auto systemctl"
-  alias tail_g="grc --colour=auto tail"
-  alias tcpdump_g="grc --colour=auto tcpdump"
-  alias traceroute_g="grc --colour=auto traceroute"
-  alias tune2fs_g="grc --colour=auto tune2fs"
-  alias uptime_g="grc --colour=auto uptime"
-  alias vmstat_g="grc --colour=auto vmstat"
-  alias wdiff_g="grc --colour=auto wdiff"
-  alias whois_g="grc --colour=auto whois"
-  alias ls_g="grc --colour=auto ls"
-  alias ulimit_g="grc --colour=auto ulimit"
- fi
+  grc_list='blkid cvs df diff dnf du id last log tail sql
+    docker-machinels dockerimages dockerinfo dockernetwork 
+    dockerps dockerpull dockersearch dockerversion
+    esperanto fdisk findmnt free gcc netstat nmap ss configure
+    ifconfig iwconfig ip ipaddr ipneighbor iproute 
+    iptables iostat_sar tcpdump dig stat sysctl systemctl 
+    lsblk lsmod lsof lspci make mount showmount
+    ntpdate proftpd ps pv sensors traceroute tune2fs
+    semanageboolean semanagefcontext semanageuser 
+    getfacl getsebool lsattr ldap 
+    vmstat wdiff whois ls ulimit
+  '
+    
+   # if $(sudo -v 2>/dev/null); then
+   #     
+   #     for alias_grc in $grc_list; do
+   #         alias ${alias_grc}="sudo grc -es --colour=auto $alias_grc"
+   #     done
+   # else     
+   #     
+        for alias_grc in $grc_list; do
+            alias ${alias_grc}="grc -es --colour=auto $alias_grc"
+        done
+   # fi
+    
+    alias env="grc -es --colour=auto env"
+    alias ping="grc -es --colour=auto ping"
+    alias ping2="grc -es --colour=auto ping2"
+    alias uptime="grc -es --colour=auto uptime"
+    #alias jobs="grc -es --colour=auto jobs"
+    alias mtr="grc -es --colour=auto mtr"
+    alias sql="grc -es --colour=auto sql"
+    alias mvn="grc -es --colour=auto mvn"
+    
+fi
 
 #vim --------------------------------
 if [ $(which vimcat 2>/dev/null) ]; then

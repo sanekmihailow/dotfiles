@@ -43,20 +43,21 @@ copyHome(){
     done
 
     cp -fr ${curr_dir}/.shell_source ${home_dir}/
-    cp -fr ${curr_dir}/.config/mc ${home_dir}/.config/mc
+    if [ ! -d ${home_dir}/.config/mc ]; then mkdir -p ${home_dir}/.config/mc; fi
+    cp -fr ${curr_dir}/.config/mc/* ${home_dir}/.config/mc/
+
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
     chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
-    ln -ns $vimless ${home_dir}/.local/bin/vmless
-    cp -rf ${curr_dir}/usr/share/grc/ ${home_dir}/.local/share/
+    ln -ns $vimless ${home_dir}/.local/bin/vimless
+
+    if [ ! -d ${home_dir}/.local/share/grc ]; then mkdir -p ${home_dir}/.local/share/grc; fi
+    cp -rf ${curr_dir}/usr/share/grc/* ${home_dir}/.local/share/grc/
     cp -rf ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
 #    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
     cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax} ${home_dir}/.vim/
     fc-cache -f -v
 
-#    if [ -z $(which mc) ]; then
-#        cp -rf /.config/mc ./config/
-#    fi
 }
 
 copyHomeRoot(){
@@ -80,7 +81,7 @@ copyRoot(){
     cp -fr ${curr_dir}/.shell_source /root
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} /usr/local/bin/
     chmod +x /usr/local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
-    ln -ns $vimless /usr/local/bin/vmless
+    ln -ns $vimless /usr/local/bin/vimless
 
     cp -f ${curr_dir}/usr/share/vim/vimXX/colors/* ${vim_path}/colors/ || echo -e "not vim colors"
     cp -f ${curr_dir}/usr/share/vim/vimXX/plugin/* ${vim_path}/plugin/ || echo -e "not vim plugins"
@@ -88,13 +89,9 @@ copyRoot(){
     cp -rf ${curr_dir}/usr/share/grc/ /usr/local/share/
     cp -f ${curr_dir}/etc/grc.conf /etc/grc.conf
 
-    if [ -d /usr/local/share/fonts ]; then
-        cp -f ${curr_dir}/usr/local/share/fonts/* /usr/local/share/fonts/
-    else
-        mkdir -p /usr/local/share/fonts &&
-        cp -f ${curr_dir}/usrl/local/share/fonts/* /usr/local/share/fonts/
-        fc-cache -f -v
-    fi
+    if [ ! -d /usr/local/share/fonts ]; then mkdir -p /usr/local/share/fonts; fi
+    cp -f ${curr_dir}/usrl/local/share/fonts/* /usr/local/share/fonts/
+    fc-cache -f -v
 
 }
 
