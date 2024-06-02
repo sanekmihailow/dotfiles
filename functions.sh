@@ -12,7 +12,7 @@ backupHome(){
     fi
 
     tar -cf "backcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
+        echo -e "\n\033[0;32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
 }
 
 backupRoot(){
@@ -30,7 +30,7 @@ backupRoot(){
     cp -rf /usr/local/bin ./backup_dir
 
     tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-        echo -e "\n\033[32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
+        echo -e "\n\033[0;32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
 }
 
 copyHome(){
@@ -96,11 +96,13 @@ copyRoot(){
 }
 
 setPathSudo(){
-    sudopath="/etc/sudoers"
+    local sudopath="/etc/sudoers"
 
     if $(sudo -v); then
-        securepath=$(sudo grep -n 'secure_path' ${sudopath} |grep -v '#')
-        num=$(echo $securepath |cut -d ':' -f1)
+        local securepath=$(sudo grep -n 'secure_path' ${sudopath} |grep -v '#')
+        local num=$(echo $securepath |cut -d ':' -f1)
+        local sudo_user=$(sudo sh -c 'echo $SUDO_USER')
+        
 
         if [ -n "$num" ]; then
             content=$(echo $securepath |awk -F "\"" '{print $2}')
@@ -118,8 +120,10 @@ setPathSudo(){
                check_bin=$(echo $content |grep '\/usr\/local\/bin')
                if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
 
-               check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
-               if [[ $? != 0 ]]; then content="${content}:/usr/local/local_bin"; change=true; fi
+               if [ -n "$sudo_user" ]; then
+                   check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
+                   if [[ $? != 0 ]]; then content="${content}:/usr/local/local_bin"; change=true; fi
+               fi
 
                #content="${content}:${HOME}/.local/bin"
                if [ "$change" = true ]; then

@@ -74,18 +74,18 @@ else
     elif [[ $choose == 2 ]]; then
         backupRoot
         copyRoot
+        $(setPathSudo)
     elif [[ $choose == 3 ]]; then
 
-            if [ -e /root/.source-root ]; then
-                $(backupRoot)
-                $(copyRoot)
-            else
-                $(backupHome)
-                $(copyHome)
-                $(setPathSudo)
-            fi
+        if [ -e /root/.source-root ]; then
+            $(backupRoot)
+            $(copyRoot)
+        else
+            $(backupHome)
+            $(copyHome)
+        fi
     else
-            echo -e "you choose not found, please try again start script"
+        echo -e "you choose not found, please try again start script"
         exit 1
     fi
 
@@ -100,10 +100,10 @@ else
 fi
 
 
-if [ "$current_user" = "root" ]; then
-    source ${home_dir}/.source-root; else
+#if [ "$current_user" = "root" ]; then
+#    source ${home_dir}/.source-root; else
     source ${home_dir}/.source-user
-fi    
+#fi    
 
 echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0

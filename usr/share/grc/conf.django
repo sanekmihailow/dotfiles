@@ -1,0 +1,54 @@
+# this configuration file is suitable for displaying Django logs
+
+# Default color gray
+regexp=\w+
+colours="\033[38;5;20m"
+count=more
+=====
+# Ignore healthy healthchecks
+regexp=^.* "GET / HTTP/1.1" 200 \d+ "-" "GoogleHC/1.0"$
+skip=yes
+=====
+# Simplify Firefox UA
+regexp=\"Mozilla[^"]*(Firefox[^\s]*)\"$
+replace=\1
+=====
+# Simplify Safari UA
+regexp=\"Mozilla[^"]*Version.* (Safari[^"]*)\"$
+replace=\1
+=====
+# Simplify Opera UA
+regexp=\"Mozilla[^"]*OPR([^"]*)\"$
+replace=Opera \1
+=====
+# Simplify Chrome UA
+regexp=\"Mozilla[^"]*KHTML, like Gecko\) ([^\s]*)[^"]*\"$
+replace=\1
+=====
+# Date
+regexp=\[(\d{2}/\w{3}/\d{4}):(\d{2}:\d{2}:\d{2}) (\+\d{4})\]
+colours=blue, blue, cyan
+count=once
+======
+# HTTP query
+regexp="(\w+) (/[^ ]+) HTTP/1.1" (\d{3}) \d+ "([^ \"]*)"
+colours="\033[38;5;20m", green, green, yellow, magenta
+count=once
+=======
+# Success status
+regexp=HTTP/1.1" (2\d{2})
+colours="\033[38;5;20m" , green
+=======
+# Client/Server errors
+regexp=HTTP/1.1" ([45]\d{2} .*)
+colours="\033[38;5;20m", red
+======
+# custom logs
+regexp=^[^\d]{1,3}[^\.][^\d]{1,3}[^\.][^\d]{1,3}[^\.][^\d]{1,3}.*$
+colours=bold yellow
+count=more
+======
+# ip number
+regexp=\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}
+colours=bold magenta
+count=more
