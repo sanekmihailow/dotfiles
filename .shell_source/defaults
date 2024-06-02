@@ -52,9 +52,9 @@ HISTSIZE=5000000
 HISTFILESIZE=5000000
 HISTTIMEFORMAT="%F %H:%M:%S "
 #ignore only at start command not pipe command
-IGNORESUDO='sudo ls:sudo ll:sudo ll -a:sudo ls -[la]:sudo lla *:sudo ls -la:sudo cat:sudo du -s*:sudo df -h:sudo vim:sudo vi:sudo stat:sudo less:sudo more:sudo nano'
+IGNORESUDO='sudo ls:sudo ll:sudo ll -a:sudo ls -[la]:sudo lla *:sudo ls -la:sudo cat:sudo du -s*:sudo df -h:sudo vi:sudo stat:sudo less:sudo more:sudo nano'
 IGNORESE='se ls:se ll:se ll -a:se ls -[la]:se lla *:se ls -la:se cat:se du -s*:se df -h:se vim:se vi:se stat:se less:se more:se nano'
-IGNOREMY="cheat *:incognito:err *:vless:cmyip:hh:hi *:hhistory:hhall *:hhuniq *:hhlastuniq:hhlastuniq-grep:locru:locen:lessr:showfatindir:extract *:se:maketar *:makezip *:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore:ll:lla *:ll -a"
+IGNOREMY="cheat *:incognito:err *:vless:cmyip:hh:hi *:hhistory:hhall *:hhuniq *:hhlastuniq *:hhlastuniq-grep *:hhnumuniq *:hhistory-uniq:history-uniq:locru:locen:lessr:showfatindir:extract *:se:maketar *:makezip *:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore:ll:lla *:ll -a:scrd:psaux:psaux *:psajx:psajx *:myfunctions_aliases:myfunctions_aliases *"
 IGNOREGIT="git status:git st:git ls-files:git branch:git br:git log:git branch -vv:git diff:git diff *:git add *:git a:git remote:gs:gd:gl:glf:ga:gb:gbv"
 IGNOREDEF='ls:ls -l:ls -la:ps aux:ps auxe:pstree:exit:pwd:history:history *:dir:tree:clear:man *:vim:vi:dirtree:screen:screen -[rR]*:tmux:tmux -a*:df -h:df -hT:du -s*:less:more:cat:stat:nano:tee:uptime:top:htop:netstat:netstat -ntulp*:lsof:[bf]g'
 IGNOREREG='?:??:???:????:?????:[ \t]*'
