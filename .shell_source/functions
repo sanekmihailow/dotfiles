@@ -8,42 +8,68 @@ highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csp
 # $user: vim /etc/apt/source.list #tag-vim_source-list
 # $user: hi vim
 # install colorex or delete string the end
-hhgrepv='"^grep.*\|^(\|hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr|hhnumniq)"'
-hhlocalgrepv="^(hi\|hh\|hhall\|history\|hhistory\|hhuniq\|plz\|sr\|hhnumniq)"
+hhgrepv='(grep.*|hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-grep|hhlastuniq|hhistory-uniq) '
+hhgrepvfirst='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|grep|hhlastuniq-grep|hhlastuniq|hhistory-uniq)'
+hhlocalgrepv='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-grep|hhlastuniq|hhisrtory-uniq)' 
 
 #search for tag-
 hi() {
-    history | grep --color=always "tag-$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
+    if [ $(which colorex 2>/dev/null) ] 
+        then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9]'
+        else history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
+    fi    
 }
 
 # search for all history and show 50 last
 hh() {
-    history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |tail -n50 |colorex -B '^....[0-9]'
+    if [ $(which colorex 2>/dev/null) ] 
+        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9]'
+        else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
+    fi    
 }
 
 # search all history to master word
 hhall() {
-    history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]'
+    if [ $(which colorex 2>/dev/null) ]
+        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]'
+        else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |grep '^....[0-9]'
+    fi    
 }
 
 # search all history and highlight special command
 hhistory() {
-    history |grep -v "${hhgrepv}" |grep -wv "grep.*" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -Y ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+    if [ $(which colorex 2>/dev/null) ]; then 
+        history |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -B ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+    else history |grep --color=always -wvE "${hhgrepv}" |grep '^....[0-9]' 
+    fi
 }
 
 # serach uniq word
 hhuniq() {
-    history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++"
+    if [ $(which colorex 2>/dev/null) ]; then 
+        history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+    else
+        history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++"
+    fi
 }    
 
 # search last uniq word from your past line numbers
+# Example: hhlastuniq 50
 hhlastuniq() {
-    history |tail -n "$1" |grep -v "${hhgrepv}" |grep -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+    if [ $(which colorex 2>/dev/null) ]; then 
+        history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+    else
+        history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++"
+    fi
 }
 
 #C- use hhlastuniq-grep <50>
 hhlastuniq-grep() {
-    history |tail -n "$1" |grep -v "${hhlocalgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|'
+    if [ $(which colorex 2>/dev/null) ]; then
+        history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}"  |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+    else
+        history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}" |awk "!a[\$0]++"
+    fi
 }
 
 # serach uniq word and nummber command
@@ -51,20 +77,28 @@ hhlastuniq-grep() {
 # 	example : hhnumuniq bash
 # 	output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 
-hhnumniq() {
+hhnumuniq() {
     declare -A unnumber
     len="$(hhuniq "$@" |wc -l)"
-    criterion="$(history | grep --color=none -i "$@" |grep --color=none -v "${hhgrepv}" |grep --color=none -wv "grep.*" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed 's/^\s\s\s\s\s\s\s\s//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"
-    listprevent="$(history | grep --color=always -i "$@" |grep -v "${hhgrepv}" |grep -wv "grep.*" |sed 's/^\s\s\s\s//g' |awk "!a[\$0]++")"
+    criterion="$(history | grep --color=none -i "$@" |grep --color=none -wv "${hhgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"    
+    listprevent="$(history | grep --color=always -i "$@" |grep -wv "${hhgrepv}" |sed -E 's/^\s{4}//g' |awk "!a[\$0]++")"
 
     for i in $(seq $len); do
-    str=$(echo "$criterion" |sed "$i!d")
-    idx="$i"
-    unnumber["$idx"]="${str:0}"
-    idnumber="${unnumber[$idx]}"
-    change="$(echo "$idnumber" |awk -v sec="$1.*" '{ $1="";  print sec$0; }')"
-    echo -e "$listprevent" |grep "${change}" |tail -n1
+        str=$(echo "$criterion" |sed "$i!d")
+        idx="$i"
+        unnumber["$idx"]="${str:0}"
+        idnumber="${unnumber[$idx]}"
+        change="$(echo "$idnumber" |awk -v sec="$1.*" '{ $1="";  print sec$0; }')"
+        echo -e "$listprevent" |/usr/bin/grep "${change}" |tail -n1
     done
+}
+
+hhistory-uniq() {
+    if [ $(which colorex 2>/dev/null) ]; then 
+        history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}"  |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+    else 
+        history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}" |awk "!a[\$0]++"
+    fi
 }
 
 ##### --histrory search END-- #####
@@ -114,7 +148,7 @@ defcat() {
 # remove unprintable characters for output utilit "script"
 # use - scriptformat input_file output_file
 scriptformat() {
-	defaultcat=$(which cat)
+	defaultcat=$(which cat |grep 'cat' |grep -v '^alias' )
 	${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
 }
 
@@ -431,9 +465,10 @@ HIGHLIGHTS HISTORY SEARCH:
         hhall               - search all pattern
         hhistory            - search all and highlight
         hhuniq              - search all uniq pattern
-        hhnumniq            - search all uniq pattern with number
+        hhnumuniq           - search all uniq pattern with number
         hhlastuniq          - search tail uniq pattern
         hhlastuniq-grep     - search uniq include grep and set number tail
+        hhistory-uniq       - searh hithlight uniq include grep
         history-uniq
 
 SYSTEMD:
@@ -516,8 +551,7 @@ OTHER:
         scrd, mounts, supdate
         sprunge, phpinfo_e
         speedt, speedt1, speeddown
-        locru, locen
-        lessr
+        locru, locen, lessr
 
     '
 }    

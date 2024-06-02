@@ -1,0 +1,23 @@
+# Network DEFAULT
+regexp=\bdefault\b
+colours=on_green bold black
+-
+# IP
+regexp=\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}
+colours=magenta
+-
+# Mask
+regexp=(?<=255)((\.0)+)
+colours=bold magenta
+-
+# all host
+regexp=0\.0\.0\.0
+colours=bright_black
+-
+# Flags
+regexp=\b[UHGRDMAC!]+\b
+colours=yellow
+-
+# iface
+regexp=(?<=\d\s)\b[-\w\d]+$
+colours=cyan

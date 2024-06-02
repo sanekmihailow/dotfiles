@@ -10,7 +10,7 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-if [ $(which netstat 2>/dev/null) ]
+if [ $(which netstat |grep 'netstat' |grep -v '^alias' > /dev/null ) ]
     then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n"
          alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n"
     else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
@@ -69,7 +69,7 @@ alias less="less -IN+G --line-num-width=5 --status-col-width=4 --use-color"
 alias defless="/usr/bin/less"
 
 #docker --------------------------
-if [ $(which docker 2>/dev/null) ]; then
+if [ $(which docker |grep 'docker' |grep -v '^alias' 2>/dev/null) ]; then
 	if [ $(which jq 2>/dev/null) ]
 		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
 		else echo "jq not found. please install it before run this alias command"
@@ -99,7 +99,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 #git  -------------------------------
-if [ $(which git 2>/dev/null) ]; then
+if [ $(which git |grep 'git' |grep -v '^alias' 2>/dev/null) ]; then
     alias gpo='git push origin master'
     alias gp='git pull'
 #    alias gs='git status'
