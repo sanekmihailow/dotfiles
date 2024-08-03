@@ -2,7 +2,7 @@
 
 #aliases  ========================================
 
-alias sq="sudo "
+#alias sq="sudo "
 alias sudo="sudo "
 alias plz='sudo "$BASH" -c "$(cat $HOME/.bash_history |grep -v '^#' |grep -v '^plz' |grep -v '^history' |grep -v '^sr' |grep -v '^sq' |grep -v '^hh' |grep -v 'hi' |grep -v bash_history |tail -n1)"'
 alias sr='sudo "$BASH" -c "$(history -p !!)"'
@@ -69,8 +69,8 @@ alias less="less -IN+G --line-num-width=5 --status-col-width=4 --use-color"
 alias defless="/usr/bin/less"
 
 #docker --------------------------
-if [ $(which docker |grep 'docker' |grep -v '^alias' 2>/dev/null) ]; then
-	if [ $(which jq 2>/dev/null) ]
+if [ $(which docker |grep 'docker' |grep -v '^alias' > /dev/null 2>&1) ]; then
+	if [ $(which jq > /dev/null 2>&1) ]
 		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
 		else echo "jq not found. please install it before run this alias command"
 	fi
@@ -139,7 +139,7 @@ if [ $(which grc 2>/dev/null) ]; then
    # if $(sudo -v 2>/dev/null); then
    #     
    #     for alias_grc in $grc_list; do
-   #         alias ${alias_grc}="sudo grc -es --colour=auto $alias_grc"
+   #         alias ${alias_grc}="sudo -E grc -es --colour=auto $alias_grc"
    #     done
    # else     
    #     

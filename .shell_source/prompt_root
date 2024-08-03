@@ -27,9 +27,23 @@ if [ -n "$force_color_prompt" ]; then
 fi
  
 if [ "$color_prompt" = yes ]; then
-PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_LIGHTGREEN}\n#----------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC ${fg_lightblue}\$(git_getbranch)${reset_NC} \$(git_getorigin) \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${bg_LIGHTRED}\u${reset_NC}${fg_LIGHTRED}@${reset_NC}${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTRED}\\$ ${reset_NC}"
+    PS1="\`if [ \$? = 0 ]; then echo -e \"${fg_green} \xE2\x9C\x85 ${reset_NC}\"; else echo -e \"${fg_red} \xE2\x9D\x8C ${reset_NC}\"; fi\` "
+    PS1+="${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_dimyellow}\n#----------------${reset_NC}"
+    PS1+="${fg_lightgray}(\H)${reset_NC} "
+    PS1+="${fg_1}\#-[\$(if [ \${MC_SID} ]; then echo -e \"${fg_LIGHTBLUE}\xF0\x9F\x92\xBE${reset_NC}\"; fi)\d]${reset_NC} "
+    PS1+="$fg_lightgray[$WhatItPC]$reset_NC "
+    PS1+="${fg_lightblue}\$(git_getbranch)${reset_NC}"
+    PS1+="\$(if [ \${HOME} != '/root' ]; then printf %b ${fg_red} '\xF0\x9F\x8F\xA0' ${reset_NC}; fi) "
+    PS1+="\$(git_getorigin) $(move_cursor_to_end_line) \n ${fg_dimyellow}\t${reset_NC} "
+    PS1+="${fg_lightyellow}j=\j${reset_NC} "
+    PS1+="${bg_LIGHTRED}\u${reset_NC}"
+    PS1+="${fg_LIGHTRED}@${reset_NC}"
+    PS1+="${fg_CYAN}\h${reset_NC}: "
+    PS1+="${fg_LIGHTBLUE}\w${reset_NC}"
+    PS1+="\n \n "
+    PS1+="${fg_LIGHTRED}\\$ ${reset_NC}"
 else
-PS1="\`if [ \$? = 0 ]; then echo ${fg_green} ^_^ ${reset_NC}; else echo ${fg_red} O_O ${reset_NC}; fi\` ${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_LIGHTGREEN}\n#----------------${reset_NC} ${fg_lightgray}(\H)${reset_NC} ${fg_1}\#-[\d]${reset_NC} $fg_lightgray[$WhatItPC]$reset_NC ${fg_lightblue}\$(git_getbranch)${reset_NC} \$(git_getorigin) \n ${fg_dimyellow}\t${reset_NC} ${fg_lightyellow}j=\j${reset_NC} ${bg_LIGHTRED}\u${reset_NC}${fg_LIGHTRED}@${reset_NC}${fg_CYAN}\h${reset_NC}: ${fg_LIGHTBLUE}\w${reset_NC}\n \n ${fg_LIGHTRED}\\$ ${reset_NC}"
+    PS1="(\H) #-[\d] \t j=\j \u@\h: \w| "
 fi
  
 unset color_prompt force_color_prompt
