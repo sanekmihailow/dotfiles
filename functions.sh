@@ -55,7 +55,7 @@ copyHome(){
     cp -rf ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
 #    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
-    cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax} ${home_dir}/.vim/
+    cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax,swap} ${home_dir}/.vim/
     fc-cache -f -v
 
 }

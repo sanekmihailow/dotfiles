@@ -275,7 +275,7 @@ checkSizeInDirWithIgnore() {
     params=''
     with=false
 
-    if [ $1 == '--with-proc' ]
+    if [ $1 = '--with-proc' ]
         then with=true
         else params="-I proc -I sys -I dev"
     fi
@@ -364,7 +364,7 @@ egreplessdir() {
 
     if [ "$run" = true ]; then
 
-        if [ "$param" == '--binary' ]; then
+        if [ "$param" = '--binary' ]; then
             grep -o ".\{0,120\}${pattern}.\{0,120\}" -ir "$path" |egrep -v "^${comment}|^\s?+${comment}" \
                             |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern";    else
             grep -o ".\{0,120\}${pattern}.\{0,120\}" -iIr "$path" |egrep -v "^${comment}|^\s?+${comment}" \

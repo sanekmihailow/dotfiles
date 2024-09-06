@@ -5,3 +5,7 @@
 *.tar
 *.tar.gz
 *.gz
+*.bak
+*.un~
+
+
