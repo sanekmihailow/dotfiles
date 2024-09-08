@@ -45,6 +45,7 @@ copyHome(){
     cp -fr ${curr_dir}/.shell_source ${home_dir}/
     if [ ! -d ${home_dir}/.config/mc ]; then mkdir -p ${home_dir}/.config/mc; fi
     cp -fr ${curr_dir}/.config/mc/* ${home_dir}/.config/mc/
+    cp -fr ${curr_dir}/.config/nvim ${home_dir}/.config/
 
     cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
     chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}

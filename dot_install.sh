@@ -41,6 +41,9 @@ else
     if [ -d ${home_dir}/.config/mc ]; then
         cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
     fi
+    if [ -d ${home_dir}/.config/nvim ]; then
+        cp -rf $HOME/.config/nvim ${curr_dir}/backup_dir/
+    fi
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
