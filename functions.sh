@@ -57,8 +57,7 @@ copyHome(){
 #    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rf ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
     cp -rf ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax,swap} ${home_dir}/.vim/
-    fc-cache -f -v
-
+    if [ -n "$(which fc-cache 2> /dev/null)" ]; then fc-cache -f -v; fi
 }
 
 copyHomeRoot(){
@@ -92,8 +91,7 @@ copyRoot(){
 
     if [ ! -d /usr/local/share/fonts ]; then mkdir -p /usr/local/share/fonts; fi
     cp -f ${curr_dir}/usrl/local/share/fonts/* /usr/local/share/fonts/
-    fc-cache -f -v
-
+    if [ -n "$(which fc-cache 2> /dev/null)" ]; then fc-cache -f -v; fi
 }
 
 setPathSudo(){
@@ -108,35 +106,35 @@ setPathSudo(){
         if [ -n "$num" ]; then
             content=$(echo $securepath |awk -F "\"" '{print $2}')
 
-           if [ -z "$content" ]; then
-               content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
-           fi
+            if [ -z "$content" ]; then
+                content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
+            fi
 
-           if [ -n "$content" ]
-               then change=false
+            if [ -n "$content" ]
+                then change=false
 
-               check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
-               if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
+                    check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
+                    if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
 
-               check_bin=$(echo $content |grep '\/usr\/local\/bin')
-               if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
+                    check_bin=$(echo $content |grep '\/usr\/local\/bin')
+                    if [[ $? != 0 ]]; then content="${content}:/usr/local/bin"; change=true; fi
 
-               if [ -n "$sudo_user" ]; then
-                   check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
-                   if [[ $? != 0 ]]; then content="${content}:/usr/local/local_bin"; change=true; fi
-               fi
+                    if [ -n "$sudo_user" ]; then
+                        check_homebin=$(echo $content |grep "${home_dir}/.local/bin")
+                        if [[ $? != 0 ]]; then content="${content}:/usr/local/local_bin"; change=true; fi
+                    fi
 
-               #content="${content}:${HOME}/.local/bin"
-               if [ "$change" = true ]; then
-                   if [ -z "$(sudo grep 'secure_path.*\/usr\/local\/local_bin' $sudopath)" ]; then
-                       sudo sed -i "${num}s/^/#/" $sudopath
-                       sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
-                   fi
-               fi
+                    #content="${content}:${HOME}/.local/bin"
+                    if [ "$change" = true ]; then
+                        if [ -z "$(sudo grep 'secure_path.*\/usr\/local\/local_bin' $sudopath)" ]; then
+                            sudo sed -i "${num}s/^/#/" $sudopath
+                            sudo sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
+                        fi
+                    fi
 
-               else echo "Secure_path not found"
-
-           fi
+                 else 
+                    echo -e "\n\033[0;31m Secure_path not found \033[0m" 
+            fi
         fi
     fi
 }

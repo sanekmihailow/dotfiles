@@ -14,7 +14,7 @@ hhlocalgrepv='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-
 
 #search for tag-
 hi() {
-    if [ $(which colorex > /dev/null 2>&1) ] 
+    if [ -n "$(which colorex 2> /dev/null)" ] 
         then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9] |sed -E "s/$/\n/g"'
         else history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi    
@@ -22,7 +22,7 @@ hi() {
 
 # search for all history and show 50 last
 hh() {
-    if [ $(which colorex > /dev/null 2>&1) ] 
+    if [ -n "$(which colorex 2> /dev/null)" ] 
         then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi    
@@ -30,7 +30,7 @@ hh() {
 
 # search all history to master word
 hhall() {
-    if [ $(which colorex > /dev/null 2>&1) ]
+    if [ -n "$(which colorex 2> /dev/null)" ]
         then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |grep '^....[0-9]'
     fi    
@@ -38,7 +38,7 @@ hhall() {
 
 # search all history and highlight special command
 hhistory() {
-    if [ $(which colorex > /dev/null 2>&1) ]; then 
+    if [ -n "$(which colorex 2> /dev/null)" ]; then 
         history |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -B ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else history |grep --color=always -wvE "${hhgrepv}" |grep '^....[0-9]' 
     fi
@@ -46,7 +46,7 @@ hhistory() {
 
 # serach uniq word
 hhuniq() {
-    if [ $(which colorex > /dev/null 2>&1) ]; then 
+    if [ -n "$(which colorex 2> /dev/null)" ]; then 
         history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else
         history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++"
@@ -56,7 +56,7 @@ hhuniq() {
 # search last uniq word from your past line numbers
 # Example: hhlastuniq 50
 hhlastuniq() {
-    if [ $(which colorex > /dev/null 2>&1) ]; then 
+    if [ -n "$(which colorex 2> /dev/null)" ]; then 
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++"
@@ -65,7 +65,7 @@ hhlastuniq() {
 
 #C- use hhlastuniq-grep <50>
 hhlastuniq-grep() {
-    if [ $(which colorex > /dev/null 2>&1) ]; then
+    if [ -n "$(which colorex 2> /dev/null)" ]; then
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}"  |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}" |awk "!a[\$0]++"
@@ -79,22 +79,22 @@ hhlastuniq-grep() {
 
 hhnumuniq() {
     declare -A unnumber
-    len="$(hhuniq "$@" |wc -l)"
-    criterion="$(history | grep --color=none -i "$@" |grep --color=none -wv "${hhgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"    
-    listprevent="$(history | grep --color=always -i "$@" |grep -wv "${hhgrepv}" |sed -E 's/^\s{4}//g' |awk "!a[\$0]++")"
+    local len="$(hhuniq "$@" |wc -l)"
+    local criterion="$(history | grep --color=none -i "$@" |grep --color=none -wv "${hhgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"    
+    local listprevent="$(history | grep --color=always -i "$@" |grep -wv "${hhgrepv}" |sed -E 's/^\s{4}//g' |awk "!a[\$0]++")"
 
     for i in $(seq $len); do
-        str=$(echo "$criterion" |sed "$i!d")
-        idx="$i"
+        local str=$(echo "$criterion" |sed "$i!d")
+        local idx="$i"
         unnumber["$idx"]="${str:0}"
-        idnumber="${unnumber[$idx]}"
-        change="$(echo "$idnumber" |awk -v sec="$1.*" '{ $1="";  print sec$0; }')"
+        local idnumber="${unnumber[$idx]}"
+        local change="$(echo "$idnumber" |awk -v sec="$1.*" '{ $1="";  print sec$0; }')"
         echo -e "$listprevent" |/usr/bin/grep "${change}" |tail -n1
     done
 }
 
 hhistory-uniq() {
-    if [ $(which colorex > /dev/null 2>&1) ]; then 
+    if [ -n "$(which colorex 2> /dev/null)" ]; then 
         history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}"  |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else 
         history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}" |awk "!a[\$0]++"
@@ -148,7 +148,7 @@ defcat() {
 # remove unprintable characters for output utilit "script"
 # use - scriptformat input_file output_file
 scriptformat() {
-	defaultcat=$(which cat |grep 'cat' |grep -v '^alias' )
+	local defaultcat=$(which cat |grep 'cat' |grep -v '^alias' )
 	${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
 }
 
@@ -178,7 +178,7 @@ sys-edit() { sudo bash -c "systemctl edit $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
 sysstopstart() { 
-	sudo bash -c "sudo systemctl stop $*" && sleep 1 && 
+	sudo bash -c "systemctl stop $*" && sleep 1 && 
 	sudo systemctl start $* && sleep 1 && 
 	sudo systemctl status $* --full --no-pager
 }
@@ -189,9 +189,9 @@ check_mem_procent() { ps -e -o pid,user,%mem,command --sort %mem; }
 check_mem() { ps -e -o pid,vsz,comm= | sort -n -k 2; }
 check_swap() {
     for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
-        pid=$(echo $dir |cut -d/ -f3)
-        cmd=$(ps h -o comm -p $pid)
-        swap=$(grep VmSwap ${dir}/status 2> /dev/null |awk '{print int($2/1024)}')
+        local pid=$(echo $dir |cut -d/ -f3)
+        local cmd=$(ps h -o comm -p $pid)
+        local swap=$(grep VmSwap ${dir}/status 2> /dev/null |awk '{print int($2/1024)}')
         if [ ! -z $swap ] && [ $swap -ne 0 ]; then
             echo "pid: $pid command: $cmd swap: $swap MB"
         fi
@@ -217,15 +217,15 @@ ports() {
 }
 
 allcrontab() {
-    red='\e[0;31m'
-    RED='\e[1;31m'
-    green='\e[0;32m'
-    GREEN='\e[1;32m'
-    PURPLE='\e[1;35m'
-    YELLOW='\e[22;33m'
-    NC='\e[0m'
+    local red='\e[0;31m'
+    local RED='\e[1;31m'
+    local green='\e[0;32m'
+    local GREEN='\e[1;32m'
+    local PURPLE='\e[1;35m'
+    local YELLOW='\e[22;33m'
+    local NC='\e[0m'
         
-    cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
+    local cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
 
     for dir in $cron_dir; do
     	echo -e "----------------- ${PURPLE}START ${dir} -------------------- ${NC}\n"
@@ -251,7 +251,7 @@ allcrontab() {
     echo -e "----------------- ${PURPLE}START users crontab -------------------- ${NC}\n"
         if $(sudo -v &> /dev/null); then
             for user in $(cut -d':' -f1 /etc/passwd); do
-                usercrontab=$(sudo sh -c "crontab -l -u ${user} 2>/dev/null")
+                local usercrontab=$(sudo sh -c "crontab -l -u ${user} 2>/dev/null")
     
                 if [ -n "${usercrontab}" ]; then
                     echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
@@ -272,9 +272,8 @@ allcrontab() {
 checkSizeInDirWithIgnore() {
 #C- example: checkSizeInDirWithIgnore var boot
 #or	     checkSizeInDirWithIgnore 
-    params=''
-    with=false
-
+    local params=''
+    local with=false
     if [ $1 = '--with-proc' ]
         then with=true
         else params="-I proc -I sys -I dev"
@@ -289,17 +288,15 @@ checkSizeInDirWithIgnore() {
                 else item_no=1
             fi
 
-            count="$#"
+            local count="$#"
             for ((i=$item_no; i <= $count; i++)); do
                 param="${!i}"
                 params="$params -I $param "
             done
-
         else params+=" -I $1"
     fi
 
-    list="$(ls -a $params |egrep -v '^(..|.)$')"
-
+    local list="$(ls -a $params |egrep -v '^(..|.)$')"
     if $(sudo -v); then
         echo -e "this directory - \033[1;36m$(pwd)\033[0m"
         sudo du -sh $list |sort -hr; else
@@ -311,9 +308,9 @@ checkSizeInDirWithIgnore() {
 removeComments() {
 #C- Used: removeComments /path/to/file '\;'
 #or 	  removeComments /path/to/file
-    run=false
-    removed='#'
-    path="$1"
+    local run=false
+    local removed='#'
+    local path="$1"
 
     if [ "$#" -lt 1 ]; then
        echo -e "Error: no arguments, must will be min - 1"
@@ -340,11 +337,11 @@ removeComments() {
 egreplessdir() {
 #C- Example: egreplessdir  'struing' /path/to/dir '\string_exclude_comment' '--<param>'
 #or 	     egreplessdir  'string pattern' /path/to/dir
-    run=false
-    comment='#'
-    path="$2"
-    pattern="$1"
-    param=''
+    local run=false
+    local comment='#'
+    local path="$2"
+    local pattern="$1"
+    local param=''
 
     if [ "$#" -le 1 ]; then
        echo -e "Error: too few arguments, must will be min - 2"
@@ -363,7 +360,6 @@ egreplessdir() {
 
 
     if [ "$run" = true ]; then
-
         if [ "$param" = '--binary' ]; then
             grep -o ".\{0,120\}${pattern}.\{0,120\}" -ir "$path" |egrep -v "^${comment}|^\s?+${comment}" \
                             |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern";    else
@@ -376,11 +372,11 @@ egreplessdir() {
 egrepless() {
 #C- Example: egrepless  'struing' /path/to/file '\string_comment' '--<param>'
 #or			 egrepless  'string pattern' /path/to/file
-    run=false
-    comment='#'
-    path="$2"
-    pattern="$1"
-    param=''
+    local run=false
+    local comment='#'
+    local path="$2"
+    local pattern="$1"
+    local param=''
 
     if [ "$#" -le 1 ]; then
        echo -e "Error: too few arguments, must will be min - 2"
@@ -421,7 +417,7 @@ showCountOpenFiles () {
             echo -e "\n \033[0;32m please enter service name or parent pid :\033[0m"
             if read -t 360 -sp "" input; then
                 echo -e "you inputed \n $input\n"
-                local srv_app=$input
+                srv_app=$input
             fi
         fi
 
@@ -433,7 +429,7 @@ showCountOpenFiles () {
             local Ppid=$(ps -o ppid= -p "$(pidof $srv_app -s)" |tr -d ' ')
         fi
 
-        if [ -n "$check_num" ]; then local Ppid=$srv_app; fi
+        if [ -n "$check_num" ]; then Ppid=$srv_app; fi
 
         #ppid != 1
         if [[ "$Ppid" != 1 &&  "$Ppid" != 0 && "$Ppid" =~ ^[0-9]+$ ]]; then
@@ -444,16 +440,19 @@ showCountOpenFiles () {
             local sum=$(expr 0 + $f)
 
             for cpid in $list_pid; do
-                local f=$(sudo ls -l /proc/${cpid}/fd 2> /dev/null |wc -l)
+                f=$(sudo ls -l /proc/${cpid}/fd 2> /dev/null |wc -l)
                 echo "files opened in child pid ${cpid} - $f"
-                local sum=$(expr $sum + $f)
+                sum=$(expr $sum + $f)
             done
-            echo -e "summarize files opened -\033[0;35m $sum \033[0m"
-        else echo -e "\033[1;31m Parent pid dont't be euqal 1/0 or content alphabic symbols;\033[0m ppid =$Ppid; you inputed - $srv_app"
-        fi
-    else echo -e "\033[1;31m You don't have sudo priveleges"
-        fi
 
+            echo -e "summarize files opened -\033[0;35m $sum \033[0m"
+
+        else 
+            echo -e "\033[1;31m Parent pid dont't be euqal 1/0 or content alphabic symbols;\033[0m ppid =$Ppid; you inputed - $srv_app"
+        fi
+    else  
+        echo -e "\033[1;31m You don't have sudo priveleges"
+    fi
 }
 
 rm () {
@@ -469,7 +468,8 @@ rm () {
                 then /bin/rm -rf "$@"
                 else echo "Cancel"
             fi
-        else echo "Cancel"
+        else 
+            echo "Cancel"
         fi
     else
         /bin/rm "$@"

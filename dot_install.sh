@@ -21,7 +21,7 @@ if [ ! -d ${curr_dir}/.shell_source ]; then
 fi
 
 if [ -z $vim_ver ]; then
-    echo -e "\033[31m try's of install package vim \033[0m"
+    echo -e "\033[0;31m try's of install package vim \033[0m"
     rhel="$(echo $os_family| grep 'rhel')"
     debian="$(echo $os_family| grep 'debian')"
 
@@ -30,8 +30,8 @@ if [ -z $vim_ver ]; then
     elif [ -z $debian ]; then
         sudo apt install vim || sudo apt-get install vim
     else
-        echo -e "\033[31m - unsuccessfully try \033[0m \n"
-        echo -e "\033[31m Please install vim first \033[0m \n"
+        echo -e "\033[0;31m - unsuccessfully try \033[0m \n"
+        echo -e "\033[0;31m Please install vim first \033[0m \n"
         exit 1
     fi
 
@@ -105,8 +105,9 @@ fi
 
 #if [ "$current_user" = "root" ]; then
 #    source ${home_dir}/.source-root; else
-    source ${home_dir}/.source-user
+    . ${home_dir}/.source-user
 #fi    
 
+echo -e "\n \033[1;36m USE source ~/.source-user\n \033[0m"
 echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0

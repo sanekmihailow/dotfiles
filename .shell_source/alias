@@ -34,19 +34,19 @@ alias showrpminfo="rpm -qpliRsc --scripts --filesbypkg --obsoletes --provides --
 
 #update all OS --------------------------------
 ### update: update and upgrade all of your packages!
-if [ ! -z "$(which brew > /dev/null 2>&1)" ];       then
+if [ ! -z "$(which brew 2> /dev/null)" ];       then
   alias supdate="brew update && brew upgrade"
-elif [ ! -z "$(which pacman > /dev/null 2>&1)" ];   then
+elif [ -n "$(which pacman 2> /dev/null)" ];   then
   alias supdate="sudo pacman -Syyu"
-elif [ ! -z "$(which apt > /dev/null 2>&1)" ];      then
-  alias supdate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
-elif [ ! -z "$(which apt-get > /dev/null 2>&1)" ];  then
-  alias supdate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
-elif [ ! -z "$(which dnf > /dev/null 2>&1)" ];      then
-  alias supdate="sudo dnf upgrade"
-elif [ ! -z "$(which yum > /dev/null 2>&1)" ];      then
-  alias supdate="sudo yum update"
-elif [ ! -z "$(which zypper > /dev/null 2>&1)" ];   then
+elif [ -n "$(which apt 2> /dev/null)" ];      then
+  aliasundate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
+elif [ -n "$(which apt-get 2> /dev/null)" ];  then
+  aliasundate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
+elif [ -n "$(which dnf 2> /dev/null)" ];      then
+  aliasundate="sudo dnf upgrade"
+elif [ -n "$(which yum 2> /dev/null)" ];      then
+  aliasundate="sudo yum update"
+elif [ -n "$(which zypper 2> /dev/null)" ];   then
   alias supdate="sudo zypper update"
 fi
 
@@ -69,8 +69,8 @@ alias less="less -IN+G --line-num-width=5 --status-col-width=4 --use-color"
 alias defless="/usr/bin/less"
 
 #docker --------------------------
-if [ $(which docker |grep 'docker' |grep -v '^alias' > /dev/null 2>&1) ]; then
-	if [ $(which jq > /dev/null 2>&1) ]
+if [ $(which docker |grep 'docker' |grep -v '^alias' 2> /dev/null) ]; then
+	if [ -n $(which jq 2> /dev/null) ]
 		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
 		else echo "jq not found. please install it before run this alias command"
 	fi
@@ -100,7 +100,7 @@ fi
 
 #git  -------------------------------
 if [ $(which git |grep 'git' |grep -v '^alias' 2>/dev/null) ]; then
-    alias gpo='git push origin master'
+    alias gpo='git push origin main'
     alias gp='git pull'
 #    alias gs='git status'
     alias gd='git diff'

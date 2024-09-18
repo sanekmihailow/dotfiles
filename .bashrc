@@ -6,8 +6,8 @@ color_prompt=yes
 #homeuser="$(find /home/ -name ".bash_history" 2>/dev/null |awk -F"/" '{print $3}' |grep 'you_user' |head -n1)"
 
 ############### source
-       #source /home/$homeuser/.start-screen #if you have trouble with rsync or scp -> comment this line
-       source $HOME/.source-user
+#source /home/$homeuser/.start-screen #if you have trouble with rsync or scp -> comment this line
+source $HOME/.source-user
 
 complete -cf se
 #setxkbmap -option caps:none
