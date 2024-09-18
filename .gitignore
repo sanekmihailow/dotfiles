@@ -5,7 +5,7 @@
 *.tar
 *.tar.gz
 *.gz
-*.bak
+*.bak*
 *.un~
 
 

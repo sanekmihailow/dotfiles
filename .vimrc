@@ -21,7 +21,13 @@ au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
 au BufNewFile,BufRead *.log* setf log
 
 " yaml
-autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 expandtab ai
+autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 expandtab ai foldmethod=indent nofoldenable | normal! zR'
+
+execute "set <M-x>=\ex"
+execute "set <M-z>=\ez"
+let &t_EI = "\e[1 q"
+let &t_SI = "\e[5 q"
+let &t_SR = "\e[4 q"
 " ------------- }
 
 
@@ -108,17 +114,22 @@ function! MyFoldMapping()
         execute "normal! f".l:context
     endif
 
-    " Выполняем маппинг в зависимости от найденного контекста
-    if l:context == '<'
-        execute "normal! zfa<"
-    elseif l:context == '['
-        execute "normal! zfa["
-    elseif l:context == '('
-        execute "normal! zfa("
-    elseif l:context == '{'
-        execute "normal! zfa{"
+    " Выполняем маппинг в зависимости от найденного контекста и foldmethod
+    if &foldmethod ==# 'indent'
+        execute "normal! za"
     else
-        execute "normal! zfa!"
+        " Для foldmethod=manual используем zfa
+        if l:context == '<'
+            execute "normal! zfa<"
+        elseif l:context == '['
+            execute "normal! zfa["
+        elseif l:context == '('
+            execute "normal! zfa("
+        elseif l:context == '{'
+            execute "normal! zfa{"
+        else
+            execute "normal! zfa!"
+        endif
     endif
 endfunction
 
@@ -184,6 +195,9 @@ nnoremap <C-s> "sy
 nnoremap <C-p> "sp
 nnoremap <C-n> :exec &nu==&rnu? "set nornu!" : "set rnu!"<cr>
 
+nnoremap <M-x> "_dd
+nnoremap <M-z> "_D
+
 nnoremap YY y$
     "-- central searching
 nnoremap n nzz
@@ -225,6 +239,9 @@ vnoremap <S-Down> :m '>+1<CR>gv=gv
 vnoremap <S-Up> :m '<-2<CR>gv=gv
     "-- translate
 vmap <C-t> <Leader>t
+
+vnoremap <M-x> "_dd
+
     "-- tabs and carriage return to the start
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
@@ -303,6 +320,7 @@ set nomodeline secure
 "#set cursorline    "show highlight line cursor  
 "#set cursorcolumn  "show higloght column cursor
 hi CursorLine cterm=bold ctermbg=236
+set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
 "-- color
 set t_Co=256

@@ -27,9 +27,9 @@ keymap("n", "<C-l>", "<C-w>>", { noremap = true, silent = true })
 keymap('n', '<C-x>', ':lua req_func.my_toggle_line_numbers()<CR>', { noremap = true, silent = true })
     --keymap('n', '<C-x>', ':lua require("core.functions").toggle_line_numbers()<CR>', { noremap = true}) 
     -- use it withoiut global variable req_func
-vim.api.nvim_set_keymap('n', '<C-s>', '"sy', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-p>', '"sp', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
+keymap('n', '<C-s>', '"sy', { noremap = true, silent = true })
+keymap('n', '<C-p>', '"sp', { noremap = true, silent = true })
+keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
 
 keymap("n", "YY", "y$", { noremap = true })
 keymap("n", "x", '"_x', { noremap = true, silent = true })

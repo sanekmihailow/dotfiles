@@ -27,9 +27,12 @@ keymap("n", "<C-l>", "<C-w>>", { noremap = true, silent = true })
 keymap('n', '<C-x>', ':lua req_func.my_toggle_line_numbers()<CR>', { noremap = true, silent = true })
     --keymap('n', '<C-x>', ':lua require("core.functions").toggle_line_numbers()<CR>', { noremap = true}) 
     -- use it withoiut global variable req_func
-vim.api.nvim_set_keymap('n', '<C-s>', '"sy', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-p>', '"sp', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
+keymap('n', '<C-s>', '"sy', { noremap = true, silent = true })
+keymap('n', '<C-p>', '"sp', { noremap = true, silent = true })
+keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
+
+keymap('n', '<M-x>', '"_dd', { noremap = true, silent = true })
+keymap('n', '<M-z>', '"_D', { noremap = true, silent = true })
 
 keymap("n", "YY", "y$", { noremap = true })
 keymap("n", "x", '"_x', { noremap = true, silent = true })
@@ -41,17 +44,17 @@ keymap("n", "N", "Nzz", { noremap = true, silent = true })
 keymap("n", "o", "o<Esc>", { noremap = true, silent = true })
 keymap("n", "O", "O<Esc>", { noremap = true, silent = true })
     -- manage tabs
-keymap.set("n", "<Leader>to", ":tabnew<CR>")    -- open new tab
-keymap.set("n", "<Leader>tx", ":tabclose<CR>")  -- close current tab
-keymap.set("n", "<Leader>tn", ":tabn<CR>")      --  go to next tab
-keymap.set("n", "<Leader>tp", ":tabp<CR>")      --  go to previous tab
-keymap.set("n", "<Leader>tl", ":tabs<CR>")      --  tab lists
-    -- manage buffers
-keymap.set("n", "<Leader>bo", ":new<CR>")       -- open new tab (analog <C-w>s)
-keymap.set("n", "<Leader>bd", ":bdelete<CR>")   -- close current tab
-keymap.set("n", "<Leader>bn", ":bn<CR>")        --  go to next tab
-keymap.set("n", "<Leader>bp", ":bp<CR>")        --  go to previous tab
-keymap.set("n", "<Leader>bl", ":buffers<CR>")   --  list buffer
+keymap("n", "<Leader>to", ":tabnew<CR>", { noremap = true, silent = true })    -- open new tab
+keymap("n", "<Leader>tx", ":tabclose<CR>", { noremap = true, silent = true })  -- close current tab
+keymap("n", "<Leader>tn", ":tabn<CR>", { noremap = true, silent = true })      --  go to next tab
+keymap("n", "<Leader>tp", ":tabp<CR>", { noremap = true, silent = true })      --  go to previous tab
+keymap("n", "<Leader>tl", ":tabs<CR>", { noremap = true, silent = true })      --  tab lists
+    --age buffers
+keymap("n", "<Leader>bo", ":new<CR>", { noremap = true, silent = true })       -- open new tab (analog <C-w>s)
+keymap("n", "<Leader>bd", ":bdelete<CR>", { noremap = true, silent = true })   -- close current tab
+keymap("n", "<Leader>bn", ":bn<CR>", { noremap = true, silent = true })        --  go to next tab
+keymap("n", "<Leader>bp", ":bp<CR>", { noremap = true, silent = true })        --  go to previous tab
+keymap("n", "<Leader>bl", ":buffers<CR>", { noremap = true, silent = true })   --  list buffer
 
 
 --------------------- INSERT MODE map --------------------- 
