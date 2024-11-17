@@ -173,10 +173,11 @@ sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $* --full -
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --full --no-pager; }
 sys-restart() { sudo bash -c "systemctl restart $*" && sleep 1 && sudo systemctl status $* --full --no-pager; }
 sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
-sys-cat() { sudo bash -c "systemctl cat $*"; }
-sys-edit() { sudo bash -c "systemctl edit $*"; }
+sys-cat() { sudo bash -c "systemctl cat $* --full --no-pager";" }
+sys-edit() { sudo bash -c "sudo EDITOR=vim systemctl edit $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
+sys-daemon() { sudo bash -c "systemctl daemon-reload"; }
 sysstopstart() { 
 	sudo bash -c "systemctl stop $*" && sleep 1 && 
 	sudo systemctl start $* && sleep 1 && 
@@ -274,7 +275,7 @@ checkSizeInDirWithIgnore() {
 #or	     checkSizeInDirWithIgnore 
     local params=''
     local with=false
-    if [ $1 = '--with-proc' ]
+    if [ "$1" = '--with-proc' ]
         then with=true
         else params="-I proc -I sys -I dev"
     fi
@@ -296,9 +297,9 @@ checkSizeInDirWithIgnore() {
         else params+=" -I $1"
     fi
 
-    local list="$(ls -a $params |egrep -v '^(..|.)$')"
+    local list="$(ls -a $params |egrep -v '^(\.\.|\.)$')"
     if $(sudo -v); then
-        echo -e "this directory - \033[1;36m$(pwd)\033[0m"
+        echo -e "this directory - \033[1;36m $(pwd) \033[0m"
         sudo du -sh $list |sort -hr; else
         du -sh $list      |sort -hr
     fi
