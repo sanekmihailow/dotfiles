@@ -173,7 +173,7 @@ sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $* --full -
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --full --no-pager; }
 sys-restart() { sudo bash -c "systemctl restart $*" && sleep 1 && sudo systemctl status $* --full --no-pager; }
 sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
-sys-cat() { sudo bash -c "systemctl cat $* --full --no-pager";" }
+sys-cat() { sudo bash -c "systemctl cat $* --full --no-pager"; }
 sys-edit() { sudo bash -c "sudo EDITOR=vim systemctl edit $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
@@ -456,7 +456,7 @@ showCountOpenFiles () {
     fi
 }
 
-rm () {
+rm() {
     if [[ "$*" == *"-rf"* ]]; then
         local all_arg="$@"
         echo "Do you really want to Totally/Fully delete/remove the directory/ies 'rm -rf'? (y/n)"
@@ -477,13 +477,28 @@ rm () {
     fi
 }
 
-function move_cursor_to_end_line {
+function move_cursor_to_end_line () {
     local columns=$(tput cols)      #get length line
     local preend=$(( $columns - 8 ))
     echo "\033[${preend}G"
 }
 
-
+function show_new_files() {
+#(%c)
+    if [ -z "$1" ]; 
+        then local minits=60
+        else local minits=${1}
+    fi        
+   
+    sudo find / -type d  \( -path '/proc' -o -path '/dev' -o -path '/sys' \
+                        -o -path '/var/log/*' -o -path '/var/lib/docker/*' \
+                        -o -path '/mnt' \
+                    \) -prune \
+                    -o -type f -cmin -${minits} \
+                    -printf '%Td-%Tm-%TY %TH:%TM %s\t %p %m %u:%g [%i] \n' \
+    |awk '{ $3 = "\t"substr(($3/1024), 1, 4) "k""\t"; $4=$4 "\t " ; print }' \
+    |sort -k1.7,1.10r -k1.4,1.5r -k1.1,1.2r -k2.1r -k2.2r -k2.4r -k2.5r
+}
 
 myfunctions_aliases () {
     echo -e '
