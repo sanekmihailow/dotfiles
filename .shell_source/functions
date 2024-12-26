@@ -500,6 +500,194 @@ function show_new_files() {
     |sort -k1.7,1.10r -k1.4,1.5r -k1.1,1.2r -k2.1r -k2.2r -k2.4r -k2.5r
 }
 
+functions docker_inspect() {
+#docker inspect with 
+    if [ $(which docker |grep 'docker' |grep -v '^alias' 2> /dev/null) ]; then
+        if [ -n $(which jq |grep -v '^alias' 2> /dev/null) ]; then
+            docker inspect "$1" \
+            |jq -r '
+            .[0] | {
+                Id,
+                MergedDir: (if .GraphDriver.Data.MergedDir
+                    then (.GraphDriver.Data.MergedDir  )
+                    else "MergedDir: NOT EXIST"
+                end),
+                Path,
+
+                Args: (if has("Args")
+                    then (.Args |join("\n ") )
+                    else "Args: NOT EXIST"
+                end),
+
+                RestartCount,
+                Restarting: .State.Restarting,
+                OOMKilled: .State.OOMKilled,
+                Dead: .State.Dead,
+
+                    LogConfig: (if .HostConfig.LogConfig
+                        then (.HostConfig.LogConfig )
+                        else "LogConfig: NOT EXIST"
+                    end),
+
+                    NetworkMode: (if .HostConfig.NetworkMode
+                        then (.HostConfig.NetworkMode )
+                        else "NetworkMode: NOT EXIST"
+                    end),
+
+                NetworkSettings: (if .NetworkSettings
+                    then (.NetworkSettings  )
+                    else "NetworkSettings: NOT EXIST"
+                end),
+
+                    Labels: (if .Config.Labels
+                        then (.Config.Labels  )
+                        else "Labels: NOT EXIST"
+                    end),
+
+                    PortBindings: (if .HostConfig.PortBindings
+                        then (.HostConfig.PortBindings )
+                        else "PortBindings: NOT EXIST"
+                    end),
+
+                Health: (if has(".State.Health")
+                    then (.State.Health |join("\n ") )
+                    else "Health: NOT EXIST"
+                end),
+
+                    RestartPolicy: (if .HostConfig.RestartPolicy
+                        then (.HostConfig.RestartPolicy )
+                        else "RestartPolicy: NOT EXIST"
+                    end),
+                    CapAdd: (if .HostConfig.CapAdd
+                        then (.HostConfig.CapAdd )
+                        else "CapAdd: NOT EXIST"
+                    end),
+                    CapDrop: (if .HostConfig.CapDrop
+                        then (.HostConfig.CapDrop )
+                        else "CapDrop: NOT EXIST"
+                    end),
+                    CgroupnsMode: (if .HostConfig.CgroupnsMode
+                        then (.HostConfig.CgroupnsMode )
+                        else "CgroupnsMode: NOT EXIST"
+                    end),
+                    Cgroup: (if .HostConfig.Cgroup
+                        then (.HostConfig.Cgroup )
+                        else "Cgroup: NOT EXIST"
+                    end),
+                    CgroupParent: (if .HostConfig.CgroupParent
+                        then (.HostConfig.CgroupParent )
+                        else "CgroupParent: NOT EXIST"
+                    end),
+                    Dns: (if .HostConfig.Dns
+                        then (.HostConfig.Dns )
+                        else "Dns: NOT EXIST"
+                    end),
+                    DnsOptions: (if .HostConfig.DnsOptions
+                        then (.HostConfig.DnsOptions )
+                        else "DnsOptions: NOT EXIST"
+                    end),
+                    DnsSearch: (if .HostConfig.DnsSearch
+                        then (.HostConfig.DnsSearch )
+                        else "DnsSearch: NOT EXIST"
+                    end),
+                    Memory: (if .HostConfig.Memory
+                        then (.HostConfig.Memory )
+                        else "Memory: NOT EXIST"
+                    end),
+                    MemorySwap: (if .HostConfig.MemorySwap
+                        then (.HostConfig.MemorySwap )
+                        else "MemorySwap: NOT EXIST"
+                    end),
+                    OomKillDisable: (if .HostConfig.OomKillDisable
+                        then (.HostConfig.LogConfig )
+                        else "LogConfig: NOT EXIST"
+                    end),
+                    PidsLimit: (if .HostConfig.PidsLimit
+                        then (.HostConfig.PidsLimit )
+                        else "PidsLimit: NOT EXIST"
+                    end),
+                    Ulimits: (if .HostConfig.Ulimits
+                        then (.HostConfig.Ulimits )
+                        else "Ulimits: NOT EXIST"
+                    end),
+                    Runtime: (if .HostConfig.Runtime
+                        then (.HostConfig.Runtime )
+                        else "Runtime: NOT EXIST"
+                    end),
+                    Binds: (if .HostConfig.Binds
+                        then (.HostConfig.Binds )
+                        else "Binds: NOT EXIST"
+                    end),
+
+                Mounts: (if .Mounts
+                    then (.Mounts  )
+                    else "Mounts: NOT EXIST"
+                end),
+
+                    Image: (if .Config.Image
+                        then (.Config.Image  )
+                        else "Image: NOT EXIST"
+                    end),
+                    ExposedPorts: (if .Config.ExposedPorts
+                        then (.Config.ExposedPorts )
+                        else "ExposedPorts: NOT EXIST"
+                    end),
+                    Domainname: (if .Config.Domainname
+                        then (.Config.Domainname )
+                        else "Domainname: NOT EXIST"
+                    end),
+                    User: (if .Config.User
+                        then (.Config.User  )
+                        else "User: NOT EXIST"
+                    end),
+                    AttachStdin: (if .Config.AttachStdin
+                        then (.Config.AttachStdin  )
+                        else "AttachStdin: NOT EXIST"
+                    end),
+                    AttachStdout: (if .Config.AttachStdout
+                        then (.Config.AttachStdout  )
+                        else "AttachStdout: NOT EXIST"
+                    end),
+                    AttachStderr: (if .Config.AttachStderr
+                        then (.Config.AttachStderr  )
+                        else "AttachStderr: NOT EXIST"
+                    end),
+                    Env: (if .Config.Env
+                        then (.Config.Env  )
+                        else "Env: NOT EXIST"
+                    end),
+                    Cmd: (if .Config.Cmd
+                        then (.Config.Cmd  )
+                        else "Cmd: NOT EXIST"
+                    end),
+                    Healthcheck: (if .Config.Healthcheck
+                        then (.Config.Healthcheck  )
+                        else "Healthcheck: NOT EXIST"
+                    end),
+                    Volumes: (if .Config.Volumes
+                        then (.Config.Volumes  )
+                        else "Volumes: NOT EXIST"
+                    end),
+                    WorkingDir: (if .Config.WorkingDir
+                        then (.Config.WorkingDir  )
+                        else "WorkingDir: NOT EXIST"
+                    end),
+                    Entrypoint: (if .Config.Entrypoint
+                        then (.Config.Entrypoint  )
+                        else "Entrypoint: NOT EXIST"
+                    end),
+
+            }
+            | if has("Restarting") then . else . + {Restarting: "NOT EXIST"} end
+            | tostring
+            ' \
+            |jq |grep -v 'NOT EXIST'
+
+        fi
+    fi
+
+}
+
 myfunctions_aliases () {
     echo -e '
 HIGHLIGHTS HISTORY SEARCH:
