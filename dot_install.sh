@@ -22,8 +22,8 @@ fi
 
 if [ -z $vim_ver ]; then
     echo -e "\033[0;31m try's of install package vim \033[0m"
-    rhel="$(echo $os_family| grep 'rhel')"
-    debian="$(echo $os_family| grep 'debian')"
+    rhel="$(echo $os_family   |grep 'rhel')"
+    debian="$(echo $os_family |grep 'debian')"
 
     if [ -z $rhel ]; then
         sudo yum install vim || sudo dnf install vim
@@ -39,11 +39,14 @@ else
     mkdir -p ./backup_dir/{user,root}
 
     if [ -d ${home_dir}/.config/mc ]; then
-        cp -rf $HOME/.config/mc ${curr_dir}/backup_dir/
+        cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/ || \
+        sudo sh -c "cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/"
     fi
     if [ -d ${home_dir}/.config/nvim ]; then
-        cp -rf $HOME/.config/nvim ${curr_dir}/backup_dir/
+        cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/ || \
+        sudo sh -c "cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/"
     fi
+    chown -R $current_user: ${home_dir}/.config/{mc,nvim}/
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
