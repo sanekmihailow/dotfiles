@@ -116,7 +116,7 @@ if [ $(which git |grep 'git' |grep -v '^alias' 2>/dev/null) ]; then
 fi    
 
 # kubernetes  -------------------------------
-if [ $((whereis kubectl |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
+if [ -n $(whereis kubectl |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
     alias ku='kubectl '
 fi
 
