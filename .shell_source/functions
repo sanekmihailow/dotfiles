@@ -688,6 +688,17 @@ function docker_inspect() {
 
 }
 
+function docker_log() {
+#docker inspect log output
+    if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
+        if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
+            docker inspect "$1" \
+                | jq -r '.[0].State.Health.Log[].Output'
+        fi
+    fi
+}
+
+
 myfunctions_aliases () {
     echo -e '
 HIGHLIGHTS HISTORY SEARCH:
