@@ -77,9 +77,10 @@ if [ $(which docker |grep 'docker' |grep -v '^alias' 2> /dev/null) ]; then
 
 	alias docker_ports-with_names="docker ps --format 'table {{.Names}}\t{{.Ports}}'"
 	alias docker_ports-with_id="docker ps --format 'table {{.ID}}\t{{.Ports}}'"
-	alias docker_names="docker ps --format 'table {{.ID}}\t{{.Names}}'"
+	alias docker_names="docker ps --format 'table {{.ID}}\t{{.Names}}' |sed 1d |sort -k2"
 	alias docker_status="docker ps --format 'table {{.Image}}\t{{.Status}}'"
 	alias docker_images="docker ps --format 'table {{.Names}}\t{{.Image}}'"
+	alias docker_ps="docker ps -a | awk 'NR == 1 || ($7 !~ /Up/ && $8 !~ /Up/)' && docker ps |egrep ' seconds| About a minute'"
 fi
 
 # less ---------------------------
@@ -124,7 +125,8 @@ fi
 alias ip_a="ip a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 
 # grep ---------------------------------------
-alias err="egrep --color -w 'ERROR|SEVERE|WARN|Exception'"
+alias err="egrep -i --color -w 'ERROR|SEVERE|WARN|Exception|failed|ignoring|deprecated|not found|unable to connect|does not exist'"
+alias errdbg="egrep --color -w 'ERROR|ERR|SEVERE|WARNING|WARN|DEBUG|DBG'"
 
 # grc --------------------------------
 if [ $(which grc 2>/dev/null) ]; then
