@@ -59,8 +59,16 @@ cmd('hi CursorLine cterm=bold ctermbg=236')
 opt.termguicolors = true
 
 
--- MISC OTHER
+-- backup
 opt.undofile = true                                -- create .un~ file tghat save all undo history (even if you exit the editor)
+opt.undodir = "~/.vim/swap/undo/"                  --  keep undo files out of file dir
+opt.directory = "~/.vim/swap/swp/"                 --  keep unsaved changes away from file dir
+opt.backupdir = "~/.vim/swap/backup/"              --  backups also should not go to git
+opt.writebackup = true                             --  keep unsaved changes away from file dir
+--opt.backupcopy = "yes"                             --  disable create new inode file after saving edit (use same inode before editing)
+
+
+-- MISC OTHER
 opt.encoding = 'utf-8'
 opt.list = false                                   -- hide noreadable character and spaces or tabulations
 opt.listchars = { eol = '$', tab = '» ', trail = '·', extends = '→', precedes = '←', nbsp = '␣' }
@@ -72,9 +80,7 @@ opt.secure = true
 opt.splitright = true                              -- vertical split вправо
 opt.splitbelow = true                              -- horizontal split вниз
 --opt.clipboard:append("unnamedplus") 
-
-
-vim.opt.mouse = 'nv'
+opt.mouse = 'nv'
 
 
 

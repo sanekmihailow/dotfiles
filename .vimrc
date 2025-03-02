@@ -296,16 +296,20 @@ set wildmenu
 set wildmode=list:longest                   " Make wildmenu behave like similar to Bash completion.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
+"-- Backup edit files options
+set undofile
+set undodir=~/.vim/swap/undo/                   " keep undo files out of file dir
+set directory=~/.vim/swap/swp/                  " keep unsaved changes away from file dir
+set backupdir=~/.vim/swap/backup/               " backups also should not go to git
+set writebackup
+"set backupcopy=yes                             " disable create new inode file after saving edit (use same inode before editing)
+
 "-- create notexist dirs (creating in exist directory not home)
 "call MyEnsureDirExists("~/.vim/swap/undo/")
 "call MyEnsureDirExists("~/.vim/swap/swp/")
 "call MyEnsureDirExists("~/.vim/swap/backup/")
 
 "-- MISC OTHER
-set undofile
-set undodir=~/.vim/swap/undo/                   " keep undo files out of file dir
-set directory=~/.vim/swap/swp/                  " keep unsaved changes away from file dir
-set backupdir=~/.vim/swap/backup/               " backups also should not go to git
 scriptencoding utf-8
 set encoding=utf-8
 set nolist                                  " hide noreadable character and spaces or tabulations
