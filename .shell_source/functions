@@ -15,7 +15,7 @@ hhlocalgrepv='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-
 #search for tag-
 hi() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
-        then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9] |sed -E "s/$/\n/g"'
+        then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9] |sed -E "s/$/\n/g"'
         else history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi    
 }
@@ -23,7 +23,7 @@ hi() {
 # search for all history and show 50 last
 hh() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
-        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -B '^....[0-9]'
+        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi    
 }
@@ -31,7 +31,7 @@ hh() {
 # search all history to master word
 hhall() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]
-        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]'
+        then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |colorex -b '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |grep '^....[0-9]'
     fi    
 }
@@ -39,7 +39,7 @@ hhall() {
 # search all history and highlight special command
 hhistory() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then 
-        history |grep -wvE "${hhgrepv}" |colorex -B '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -B ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
+        history |grep -wvE "${hhgrepv}" |colorex -b '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -B ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else history |grep --color=always -wvE "${hhgrepv}" |grep '^....[0-9]' 
     fi
 }
@@ -693,11 +693,25 @@ function docker_log() {
     if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
             docker inspect "$1" \
-                | jq -r '.[0].State.Health.Log[].Output'
+            | jq -r '.[0].State.Health.Log[].Output'
+
+            echo -e "==================== LOGS for ${1} =====================: \n\n"
+            docker logs --details -f "$1"                
         fi
     fi
 }
 
+docker_exec() {
+#docker exec to container
+    if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
+        if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
+            docker exec -it $1 zsh 2>&1  > /dev/null || \
+            docker exec -it $1 bash 2>&1 > /dev/null || \
+            echo -e "start from bash \n\n" && docker exec -it $1 ash 2>&1 /dev/null || \
+            echo -e "start from sh \n\n"   && docker exec -it $1 sh
+        fi
+    fi
+}
 
 myfunctions_aliases () {
     echo -e '
