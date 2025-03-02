@@ -111,6 +111,7 @@ fi
     . ${home_dir}/.source-user
 #fi    
 
-echo -e "\n \033[1;36m USE source ~/.source-user\n \033[0m"
+echo -e "\n USE:\n
+\033[1;36m source ~/.source-user\n \033[0m"
 echo -e "\n \033[1;36m EXIT\n \033[0m"
 exit 0

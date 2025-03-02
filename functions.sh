@@ -2,17 +2,17 @@
 date_time="$(date +%Y-%m-%d_%H-%M-%S)"
 
 backupHome(){
+    local sudo_used=''
 
     for conf in $backup_user; do
         cp -rpf ${home_dir}/$conf ./backup_dir/user/ 2> /dev/null
     done
 
     if [[ $EUID -ne 0 ]]; then
-        cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null
-    else 
         if $(sudo -v); then
-            sudo sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
+           sudo_used='sudo' 
         fi
+        $sudo_used sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
     fi        
 
     tar -cf "backcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
@@ -97,13 +97,12 @@ copyRoot(){
 
 setPathSudo(){
     local sudopath="/etc/sudoers"
+    local sudo_used=''
 
     if [[ $EUID -ne 0 ]]; then 
-        local sudo_used=''
-    else     
         if $(sudo -v); 
-            then  local sudo_used='sudo'
-            esle  local sudo_used='no'
+            then sudo_used='sudo'
+            else sudo_used='no'
         fi
     fi    
     
