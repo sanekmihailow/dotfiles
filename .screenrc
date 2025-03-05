@@ -15,7 +15,7 @@ bind ^[ copy
 #copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
 #^ - meta ( alt or esc or ctrl)
 
-defscrollback 200024
+defscrollback 200000024
 bind ^k
 bind ^\
 bind \\ quit

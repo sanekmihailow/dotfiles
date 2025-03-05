@@ -51,11 +51,10 @@ elif [ -n "$(which zypper 2> /dev/null)" ];   then
 fi
 
 # ls -------------------------------
-alias lss='ls --sort=extension --color=auto'
-alias ll='ls -lh'
-alias lla='ls -lah'
-alias la='ls -A'
-alias l='ls -CF'
+alias lss='ls -lAF --group-directories-first --sort=extension --color=auto'
+alias ll='ls -lAtF --group-directories-first'
+alias lla='ls -lAhF --group-directories-first'
+alias l='ls -CF --group-directories-first'
 
 # ps ------------------------------
 alias psg='ps -A | grep'
@@ -125,8 +124,10 @@ fi
 alias ip_a="ip a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 
 # grep ---------------------------------------
-alias err="egrep -i --color -w 'ERROR|SEVERE|WARN|Exception|failed|ignoring|deprecated|not found|unable to connect|does not exist'"
-alias errdbg="egrep --color -w 'ERROR|ERR|SEVERE|WARNING|WARN|DEBUG|DBG'"
+alias err="egrep -i --color -w 'error|severe|warning|fatal|critical|exception|failed|failure|invalid|ignoring|deprecated|expired|unreachable|exited|not found|no database|no migrations|not permitted|no cksum|no sha defined|does not exist|unable to connect|could not create' |sed 's/$/\n/'"
+alias errdbg="egrep --color -w 'ERROR|ERR|SVR|SEVERE|WARNING|WARN|CRITICAL|CRIT|DEPRECATED|FATAL|DEBUG|DBG' |sed 's/$/\n/'"
+alias succ="egrep -iw --color '(success)(.*) |ok'"
+aleas succdbg=""
 
 # grc --------------------------------
 if [ $(which grc 2>/dev/null) ]; then
