@@ -74,8 +74,8 @@ hhlastuniq-grep() {
 
 # serach uniq word and nummber command
 # search better thought first word in commnad
-# 	example : hhnumuniq bash
-# 	output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
+#     example : hhnumuniq bash
+#     output - 1847  2019-08-28 18:35:53 bash /var/www/vtigercrm-SPAsteriskConnector/bin/start.sh
 
 hhnumuniq() {
     declare -A unnumber
@@ -148,8 +148,8 @@ defcat() {
 # remove unprintable characters for output utilit "script"
 # use - scriptformat input_file output_file
 scriptformat() {
-	local defaultcat=$(whereis cat |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')
-	${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
+    local defaultcat=$(whereis cat |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')
+    ${defaultcat} $1 | perl -pe 's/\e([^\[\]]|\[.*?[a-zA-Z]|\].*?\a)//g' | col -bp > $2
 }
 
 #C- color highlight output
@@ -179,9 +179,9 @@ sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
 sys-daemon() { sudo bash -c "systemctl daemon-reload"; }
 sysstopstart() { 
-	sudo bash -c "systemctl stop $*" && sleep 1 && 
-	sudo systemctl start $* && sleep 1 && 
-	sudo systemctl status $* --full --no-pager
+    sudo bash -c "systemctl stop $*" && sleep 1 && 
+    sudo systemctl start $* && sleep 1 && 
+    sudo systemctl status $* --full --no-pager
 }
 
 #C- check used memory/or..
@@ -229,8 +229,8 @@ allcrontab() {
     local cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
 
     for dir in $cron_dir; do
-    	echo -e "----------------- ${PURPLE}START ${dir} -------------------- ${NC}\n"
-        	for crond in $(ls -L1 $dir); do
+        echo -e "----------------- ${PURPLE}START ${dir} -------------------- ${NC}\n"
+            for crond in $(ls -L1 $dir); do
                 if $(sudo -v)
                     then crondtab=$(sudo sh -c "cat ${dir}/${crond} 2>/dev/null" |egrep -Ev "^\s*(;|#|$)")
                     else crondtab=$(cat "${dir}/${crond}" 2>/dev/null |egrep -Ev "^\s*(;|#|$)")
@@ -241,10 +241,10 @@ allcrontab() {
                         echo "${crondtab}"
                     echo -e "${RED}====== End ${crond} ${NC}${GREEN}${crond}${NC} ${RED}======${NC}\n"
                 fi
-        	done
+            done
         echo -e "----------------- ${PURPLE}END ${dir} -------------------- ${NC}\n"
     done
-    	
+        
     echo -e "----------------- ${PURPLE}START /etc/crontab -------------------- ${NC}\n"
         cat /etc/crontab |egrep -Ev "^\s*(;|#|$)"
     echo -e "----------------- ${PURPLE}END /etc/crontab -------------------- ${NC}\n"
@@ -272,7 +272,7 @@ allcrontab() {
 
 checkSizeInDirWithIgnore() {
 #C- example: checkSizeInDirWithIgnore var boot
-#or	     checkSizeInDirWithIgnore 
+#or         checkSizeInDirWithIgnore 
     local params=''
     local with=false
     if [ "$1" = '--with-proc' ]
@@ -308,7 +308,7 @@ checkSizeInDirWithIgnore() {
  
 removeComments() {
 #C- Used: removeComments /path/to/file '\;'
-#or 	  removeComments /path/to/file
+#or       removeComments /path/to/file
     local run=false
     local removed='#'
     local path="$1"
@@ -337,7 +337,7 @@ removeComments() {
 
 egreplessdir() {
 #C- Example: egreplessdir  'struing' /path/to/dir '\string_exclude_comment' '--<param>'
-#or 	     egreplessdir  'string pattern' /path/to/dir
+#or          egreplessdir  'string pattern' /path/to/dir
     local run=false
     local comment='#'
     local path="$2"
@@ -372,7 +372,7 @@ egreplessdir() {
 
 egrepless() {
 #C- Example: egrepless  'struing' /path/to/file '\string_comment' '--<param>'
-#or			 egrepless  'string pattern' /path/to/file
+#or             egrepless  'string pattern' /path/to/file
     local run=false
     local comment='#'
     local path="$2"
@@ -485,19 +485,113 @@ function move_cursor_to_end_line () {
 
 function show_new_files() {
 #(%c)
-    if [ -z "$1" ]; 
-        then local minits=60
-        else local minits=${1}
-    fi        
-   
-    sudo find / -type d  \( -path '/proc' -o -path '/dev' -o -path '/sys' \
-                        -o -path '/var/log/*' -o -path '/var/lib/docker/*' \
-                        -o -path '/mnt' \
+    local change_time=true
+    local sort_name=true
+    local no_create=false
+    local modify_time=false
+    local sort_time=false
+
+    local minits=60
+    local DATE="$(date +%F)"
+    local TIME="$(date +%Hh-%Mm-%Ss)"
+    local out_path="/tmp/new_files/${DATE}"
+    local print_args=''
+    local sort_args=''
+    local sudo_used=''
+    local comamnd_output=''
+    local new_cat=''
+    local echo_console=''
+
+
+    if [ -z "$1" ]; then
+        if [[ "$1" =~ ^[0-9]+$ ]]; then
+            minits=${1}
+        fi
+    fi
+       
+    if [[ $EUID -ne 0 ]]; then 
+        if $(sudo -v); 
+            then sudo_used='sudo'
+        fi
+    fi
+
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            --no-create) no_create=true ;;
+            --modify-time) modify_time=true; change_time=false ;;
+            --sort-time) sort_time=true; sort_name=false ;;
+            *) 
+                #ignore
+                ;;
+        esac
+        shift
+    done
+
+    if $change_time; then
+        print_args="%Cd-%Cm-%CY %CH:%CM:%CS %s\t %p %m %u:%g [%i]\n"
+    elif $modify_time; then
+        print_args="%Td-%Tm-%TY %TH:%TM %s\t %p %m %u:%g [%i]\n"
+    fi
+
+    if $sort_name; then
+        sort_args="-k4"
+    elif $sort_time; then
+        sort_args="-k1.7,1.10r -k1.4,1.5r -k1.1,1.2r -k2.1r -k2.2r -k2.4r -k2.5r -k2.7r -k2.8r -k2.10r -k2.11r -k2.12r"
+    fi
+
+    if $no_create; then
+        command_output="cat"
+    else
+        if [ ! -d ${out_path} ]; then
+            mkdir -p ${out_path}
+        fi
+
+        check_tee=$(type -P tee)
+        if [[ $? == 0 ]]; 
+            then new_cat='tee '
+            else new_cat='cat > '
+        fi
+        command_output="$new_cat ${out_path}/changed_from_${TIME}_last_${minits}_min"
+        echo_console="saved output in ${out_path}/changed_from_${TIME}_last_${minits}_min"
+    fi
+
+    ${sudo_used} find / -type d  \( -path '/proc' -o -path '/dev' -o -path '/sys' \
+                        -o -path '/var/lib/docker' -o -path '/mnt' \
                     \) -prune \
                     -o -type f -cmin -${minits} \
-                    -printf '%Td-%Tm-%TY %TH:%TM %s\t %p %m %u:%g [%i] \n' \
-    |awk '{ $3 = "\t"substr(($3/1024), 1, 4) "k""\t"; $4=$4 "\t " ; print }' \
-    |sort -k1.7,1.10r -k1.4,1.5r -k1.1,1.2r -k2.1r -k2.2r -k2.4r -k2.5r
+                    -printf "${print_args}" \
+    |awk '{ 
+        $2 = substr($2, 1, 12);
+        if (length($3) >= 3 && length($3) < 6) {
+           $3 = sprintf("\t%.2fkb\t", $3/1024); 
+        } else if (length($3) >= 6 && length($3) < 10) {
+           $3 = sprintf("\t%.2fmb\t", $3/1024/1024);
+        } else if (length($3) >= 10 && length($3) < 13) { 
+           $3 = sprintf("\t%.2fgb\t", $3/1024/1024/1024);
+        } else if (length($3) >= 13) {
+           $3 = sprintf("\t%.2ftb\t", $3/1024/1024/1024/1024);
+        } else {
+           $3 = "\t"$3 "b""\t";
+        }
+        $4=$4 "\t " ;
+        print 
+    }' \
+    |sort ${sort_args} \
+    |eval "$( echo ${command_output} )"
+
+    echo -e "\n\033[0;32m ${echo_console} \033[0m"
+
+#| **Sort Key**      | **Description**                                                                     |
+#|-------------------|-------------------------------------------------------------------------------------|
+#| `-k1.7,1.10r`     | Reverse sort by characters 7 to 10 in the first column                              |
+#| `-k1.4,1.5r`      | Reverse sort by characters 4 to 5 in the first column                               |
+#| `-k1.1,1.2r`      | Reverse sort by characters 1 to 2 in the first column                               |
+#| `-k2.1r`          | Reverse sort by the 1st character of the second column                              |
+#| `-k2.2r`          | Reverse sort by the 2nd character of the second column                              |
+#| `-k2.4r`          | Reverse sort by the 4th character of the second column                              |
+#| `-k2.5r`          | Reverse sort by the 5th character of the second column                              |
+#....
+
 }
 
 function docker_inspect() {
