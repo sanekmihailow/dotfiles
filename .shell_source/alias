@@ -127,7 +127,7 @@ alias ip_a="ip a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 alias err="egrep -i --color -w 'error|severe|warning|fatal|critical|exception|failed|failure|invalid|ignoring|deprecated|expired|unreachable|exited|not found|no database|no migrations|not permitted|no cksum|no sha defined|does not exist|unable to connect|could not create' |sed 's/$/\n/'"
 alias errdbg="egrep --color -w 'ERROR|ERR|SVR|SEVERE|WARNING|WARN|CRITICAL|CRIT|DEPRECATED|FATAL|DEBUG|DBG' |sed 's/$/\n/'"
 alias succ="egrep -iw --color '(success)(.*) |ok'"
-aleas succdbg=""
+alias succdbg=""
 
 # grc --------------------------------
 if [ $(which grc 2>/dev/null) ]; then
@@ -206,6 +206,24 @@ alias locen='export LC_MESSAGES=C'
 
 alias lessr="less --raw-control-chars"
 alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
+
+       #foreground jobs
+alias fg1="fg 1"
+alias fg2="fg 2"
+alias fg3="fg 3"
+alias fg4="fg 4"
+alias fg5="fg 5"
+alias fg6="fg 6"
+alias fg7="fg 7"
+alias fg8="fg 8"
+alias fg9="fg 9"
+alias fg10="fg 10"
+alias fg11="fg 11"
+alias fg12="fg 12"
+alias fg13="fg 13"
+alias fg14="fg 14"
+alias fg15="fg 15"
+alias jobs="jobs -l"
 
 #------------------------------ comment ----------------------
 #mount ---------------------------------------
