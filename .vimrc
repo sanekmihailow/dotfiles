@@ -11,17 +11,15 @@ colorscheme sm
 "log webserver
 au BufRead *nginx/*.log*,*nginx/*_log* setf nginx
 au BufRead *apache2/*.log*,*apache2/*.log*,*httpd/*.log*,*access.log* setf httplog
-
 "conf asterisk
 au BufNewFile,BufRead *asterisk*/*voicemail.conf* setf asteriskvm
 au BufNewFile,BufRead *asterisk/*.conf* setf asterisk
 au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
-
 "conf log
 au BufNewFile,BufRead *.log* setf log
 
 " yaml
-autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 expandtab ai foldmethod=indent nofoldenable | normal! zR'
+autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 et ai si foldmethod=indent nofoldenable | normal! zR'
 
 execute "set <M-x>=\ex"
 execute "set <M-z>=\ez"
@@ -208,7 +206,6 @@ nnoremap O O<esc>
     "-- don't save in register
 nnoremap <silent> x "_x
 nnoremap <silent> r "_r
-
     "-- higlight space
 nmap <Leader><C-y> :highligh Spaces ctermbg=DarkGrey guibg=DarkGrey<CR>
 nmap <Leader><C-u> :call matchadd('Spaces', '\s\+')<CR>
@@ -250,7 +247,7 @@ vnoremap <silent> < <gv
 " ------- Command mode map ------- 
     " in cli mode use :ww
 cmap <C-w><C-w> %!sudo tee %
-       "cmap ww :w !sudo sh -c "cat > %"
+"cmap ww :w !sudo sh -c "cat > %"
     " in cli mode use :ctrl+nn
 cmap <C-n><C-n> echo expand('%:p')
 " ------------- }
@@ -268,7 +265,7 @@ set incsearch                               " use incremental search for show di
 
 "-- TAB/INDENT
 set backspace=indent,eol,start              " use for remove indents, line breaks, symbols
-set expandtab ts=4 sw=4 sts=4 expandtab ai  " use 4 spaces for indents(tabs)
+set tabstop=4 shiftwidth=4 softtabstop=4 expandtab autoindent smartindent  " use 4 spaces for indents(tabs)
 set copyindent                              " copy the previous indentation on autoindenting (wan nocpyindent)
 set wrap
 
@@ -312,9 +309,9 @@ set writebackup
 "-- MISC OTHER
 scriptencoding utf-8
 set encoding=utf-8
-set nolist                                  " hide noreadable character and spaces or tabulations
+set nolist                                      " hide noreadable character and spaces or tabulations
 set listchars=eol:$,tab:»\ ,trail:·,extends:>,precedes:<,nbsp:␣
-set history=10000                           " lines history saved
+set history=10000                               " lines history saved
 set timeoutlen=800
 set noautochdir
 set nomodeline secure
@@ -341,8 +338,9 @@ if filereadable("/etc/vim/vimrc.local")
 endif
 
 "--------------------------------------- screen title
-if &term == "screen"
-  let &titlestring = "vim(" . expand("%:t") . ")"
+if &term =~ "screen"
+    let &titlestring = "vim(" . expand("%:t") . ")"
+    set notermguicolors
 "  set t_ts=^[k
 "  set t_fs=^[\
 "  set title

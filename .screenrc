@@ -9,7 +9,7 @@ escape ``   #- my prefix tilda <~>
 #new buffer
         # showkeys -a #command for know value button keyboard
 
-bind [ paste .                                                                                                                                                                                                     
+bind [ paste .
 bind ^[ copy
 
 #copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
@@ -23,11 +23,13 @@ bind K kill
 bind I login on
 bind O login off
 bind } history
-termcapinfo vt100 dl=5\E[M
+term screen-256color
 hardstatus off
-termcapinfo xterm*|rxvt*|kterm*|Eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007
-termcapinfo xterm*|linux*|rxvt*|Eterm* OP
-termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+termcapinfo vt100 dl=5\E[M                                                                  #set terminal vt100 can delete 5 line at a time
+termcapinfo xterm*|linux*|rxvt*|kterm*|Eterm*|eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007 OP    #configures window header support this terminals
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'                                    #add 256 color
+termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'                                    #Resets terminal settings on startup
+termcapinfo xterm* ti@:te@                                                                  #disable terminal initialization and deinitialization.
 defnonblock on
 
 backtick 0 1 1 tail -n1 $HOME/.bash_history

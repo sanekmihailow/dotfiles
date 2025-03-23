@@ -15,8 +15,10 @@ opt.incsearch = true                               -- use incremental search for
 opt.backspace = "indent,eol,start"                 -- use for remove indents, line breaks, symbols
 opt.tabstop = 4                                    -- 4 spaces for tabs (prettier default)
 opt.shiftwidth = 4                                 -- 4 spaces for indent width
+opt.softtabstop = 4                                -- 4 spaces for 
 opt.expandtab = true                               -- expand tab to spaces
 opt.autoindent = true                              -- copy indent from current line when starting new one
+opt.smartindent = true                             -- copy indent from current line when starting new one
 opt.copyindent = true                              -- copy the previous indentation on autoindenting (wan nocpyindent)
 opt.wrap = true
 
@@ -50,7 +52,7 @@ opt.wildignore = '*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx'
 
 
 -- cursor
-opt.cursorline = true                              -- highlight the current cursor line
+--#opt.cursorline = true                           -- highlight the current cursor line
 --#opt.cursorcolumn = true
 cmd('hi CursorLine cterm=bold ctermbg=236')
 
@@ -83,4 +85,9 @@ opt.splitbelow = true                              -- horizontal split вниз
 opt.mouse = 'nv'
 
 
-
+-- Screen title
+if string.match(vim.env.TERM or "", "screen") then
+    opt.titlestring = "vim(" .. vim.fn.expand("%:t") .. ")"
+    opt.termguicolors = false
+    cmd("set t_Co=256")
+end
