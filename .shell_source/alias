@@ -52,14 +52,18 @@ fi
 
 # ls -------------------------------
 alias lss='ls -lAF --group-directories-first --sort=extension --color=auto'
-alias ll='ls -lAtF --group-directories-first'
+alias ll='ls -ltF --group-directories-first'
 alias lla='ls -lAhF --group-directories-first'
+alias llt='ls -lAhtF'
 alias l='ls -CF --group-directories-first'
+alias tailn='tail -n35 '
+alias headn='head -n35 '
 
 # ps ------------------------------
 alias psg='ps -A | grep'
 alias psu='ps aux | grep'
 alias psaux='ps auxww --sort user,pid,command'
+alias psauxx="ps auxww --sort user,pid,command |egrep -v '\[[a-z].*\]'"
 alias psajf='ps axjfww'
 
 # pager ---------------------------
@@ -124,9 +128,9 @@ fi
 alias ip_a="ip a |awk '/(veth|br)-/ {found=1} !found; /^(veth|br)-/ {found=0}'"
 
 # grep ---------------------------------------
-alias err="egrep -i --color -w 'error|severe|warning|fatal|critical|exception|failed|failure|invalid|ignoring|deprecated|expired|unreachable|exited|not found|no database|no migrations|not permitted|no cksum|no sha defined|does not exist|unable to connect|could not create' |sed 's/$/\n/'"
-alias errdbg="egrep --color -w 'ERROR|ERR|SVR|SEVERE|WARNING|WARN|CRITICAL|CRIT|DEPRECATED|FATAL|DEBUG|DBG' |sed 's/$/\n/'"
-alias succ="egrep -iw --color '(success)(.*) |ok'"
+alias err="egrep --color -iC1 -w 'error|severe|warning|fatal|critical|exception|failed|failure|invalid|ignoring|deprecated|expired|unreachable|exited|not found|no database|no migrations|not permitted|no cksum|no sha defined|does not exist|unable to connect|could not create' |sed 's/$/\n/'"
+alias errdbg="egrep --color -C1 -w 'ERROR|ERR|SVR|SEVERE|WARNING|WARN|CRITICAL|CRIT|DEPRECATED|FATAL|DEBUG|DBG'          |sed 's/$/\n/'"
+alias succ="egrep --color -iC1 -w '(success)(.*) |ok'"
 alias succdbg=""
 
 # grc --------------------------------
