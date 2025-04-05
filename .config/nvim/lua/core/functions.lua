@@ -103,5 +103,44 @@ M.my_fold_mapping = function()
 end
 
 
+M.vcut_to_q = function()
+    local vmapx_reg = fn.getreg('"')  -- save current register ""
+    vim.cmd('normal! gv"qx')  -- save cut to register "q
+    fn.setreg('"', vmapx_reg) -- restore register ""
+end
+
+M.vcut_to_qq = function()
+    local vmapx_reg = fn.getreg('"')
+    vim.cmd('normal! gv"qX')  -- save cut to register "q
+    fn.setreg('"', vmapx_reg)
+end
+
+M.vcut_to_w = function()
+    local vmapc_reg = fn.getreg('"')  -- save current register ""
+    vim.cmd('normal! gv"wc')  -- save cut to register "w
+    fn.setreg('"', vmapc_reg) -- restore register ""
+    vim.cmd('startinsert')
+end
+
+M.vcut_to_ww = function()
+    local vmapc_reg = fn.getreg('"')
+    vim.cmd('normal! gv"wC')  -- save cut to register "w
+    fn.setreg('"', vmapc_reg)
+    vim.cmd('startinsert')
+end
+
+M.ccut_to_w = function()
+    local nmapc_reg = fn.getreg('"')
+    vim.cmd('normal! "wciw')  -- save cut to register "w
+    fn.setreg('"', nmapc_reg) 
+    vim.cmd('startinsert')
+end
+
+M.ccut_to_ww = function()
+    local nmapc_reg = fn.getreg('"')
+    vim.cmd('normal! "wciW')  -- save cut to register "w
+    fn.setreg('"', nmapc_reg)
+    vim.cmd('startinsert')
+end
 
 return M

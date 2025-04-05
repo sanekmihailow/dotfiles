@@ -19,7 +19,12 @@ au BufNewFile,BufRead *asterisk/*.ael* setf asterisk
 au BufNewFile,BufRead *.log* setf log
 
 " yaml
-autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 et ai si foldmethod=indent nofoldenable | normal! zR'
+"augroup FileTypeFolding
+"    autocmd!
+"    autocmd FileType yaml,yml setlocal expandtab ts=2 sw=2 sts=2 expandtab ai foldmethod=indent nofoldenable execute 'normal! zR'
+"    autocmd FileType * if &filetype != 'yaml' && &filetype != 'yml' | setlocal foldmethod=manual nofoldenable | endif
+"augroup END
+autocmd FileType yaml,yml setlocal ts=2 sw=2 sts=2 et ai si foldmethod=indent nofoldenable | normal! zR'
 
 execute "set <M-x>=\ex"
 execute "set <M-z>=\ez"
@@ -197,6 +202,9 @@ nnoremap <M-x> "_dd
 nnoremap <M-z> "_D
 
 nnoremap YY y$
+    " restore previous buffer \"" AND save cutted to buffer "w
+nnoremap ciw :<C-U>let save_nmapc = @"<CR>"wciw<Esc>:let @" = save_nmapc<CR>a
+nnoremap ciW :<C-U>let save_nmapc = @"<CR>"wciW<Esc>:let @" = save_nmapc<CR>a
     "-- central searching
 nnoremap n nzz
 nnoremap N Nzz
@@ -206,7 +214,7 @@ nnoremap O O<esc>
     "-- don't save in register
 nnoremap <silent> x "_x
 nnoremap <silent> r "_r
-    "-- higlight space
+    "-- highlight space
 nmap <Leader><C-y> :highligh Spaces ctermbg=DarkGrey guibg=DarkGrey<CR>
 nmap <Leader><C-u> :call matchadd('Spaces', '\s\+')<CR>
     "-- manage tabs
@@ -227,6 +235,12 @@ nnoremap <Leader>bl :bp<CR>             " list buffer
 inoremap <silent> <F12> <C-O>:set spell!<cr>
     "-- atocomplete shortcut
 inoremap <S-Tab> <C-n>
+    "-- move row on X axes
+inoremap <C-]> <C-o>>><ESC>i
+inoremap <C-l> <C-o><<<ESC>i
+    "-- move row on Y axes
+inoremap <silent> <C-j> <Esc>:m .+1<CR>==gi
+inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
 
 
 " ------- Visual mode map ------- 
@@ -236,16 +250,26 @@ vnoremap <S-Down> :m '>+1<CR>gv=gv
 vnoremap <S-Up> :m '<-2<CR>gv=gv
     "-- translate
 vmap <C-t> <Leader>t
-
-vnoremap <M-x> "_dd
+    "-- remove selected to black hole (don't save in register)
+vnoremap <M-x> "_d
 
     "-- tabs and carriage return to the start
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
+    " restore previous buffer \"" AND save cutted to buffer "q
+vnoremap <silent> x :<C-U>let save_vmapx = @"<CR>gv"qx:let @" = save_vmapx<CR>
+vnoremap <silent> X :<C-U>let save_vmapx = @"<CR>gv"qX:let @" = save_vmapx<CR>
+    " restore previous buffer \"" AND save cutted to buffer "w
+vnoremap <silent> c :<C-U>let save_vmapc = @"<CR>gv"wc<Esc>:let @" = save_vmapc<CR>a
+vnoremap <silent> C :<C-U>let save_vmapc = @"<CR>gv"wC<Esc>:let @" = save_vmapc<CR>a
+
+"vnoremap d "qd<Esc>
+" clear buffer \""
+"vnoremap y "qy:let @"=""<CR>
 
 
 " ------- Command mode map ------- 
-    " in cli mode use :ww
+    " in cli mode use :ctrl+ww
 cmap <C-w><C-w> %!sudo tee %
 "cmap ww :w !sudo sh -c "cat > %"
     " in cli mode use :ctrl+nn
@@ -260,13 +284,13 @@ set nocompatible                            " use all powerfull vim
 "-- SEARCH 
 set ignorecase                              " in search mode - ignore case word
 set smartcase                               " in search mode - not ignore upperCase
-set hlsearch                                " in search mode - higlight search word
+set hlsearch                                " in search mode - highlight search word
 set incsearch                               " use incremental search for show display result as you type each character  
 
 "-- TAB/INDENT
 set backspace=indent,eol,start              " use for remove indents, line breaks, symbols
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab autoindent smartindent  " use 4 spaces for indents(tabs)
-set copyindent                              " copy the previous indentation on autoindenting (wan nocpyindent)
+set copyindent                              " copy the previous indentation on autoindenting (wan nocopyindent)
 set wrap
 
 "-- APPEARANCE
@@ -282,7 +306,7 @@ set iminsert=0                              " start insert mode in english layou
 set imsearch=0                              " start search mode in english layout
 
 "-- STATUS
-set showcmd                                 " show commandline
+set showcmd                                 " show command line
 set showmode                                " show status mode
 set ruler                                   " use show status line in down right panel
 
@@ -309,7 +333,7 @@ set writebackup
 "-- MISC OTHER
 scriptencoding utf-8
 set encoding=utf-8
-set nolist                                      " hide noreadable character and spaces or tabulations
+set nolist                                      " hide no readable character and spaces or tabulations
 set listchars=eol:$,tab:»\ ,trail:·,extends:>,precedes:<,nbsp:␣
 set history=10000                               " lines history saved
 set timeoutlen=800
@@ -319,7 +343,7 @@ set nomodeline secure
 
 "-- cursor
 "#set cursorline    "show highlight line cursor  
-"#set cursorcolumn  "show higloght column cursor
+"#set cursorcolumn  "show highlight column cursor
 hi CursorLine cterm=bold ctermbg=236
 set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 
