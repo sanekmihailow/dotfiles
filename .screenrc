@@ -4,18 +4,18 @@ vbell_msg ""
 hardstatus on
 #---------------------------------------------------------------------------------------------
 
-#escape ^aa #- def prefix
+# escape ^aa #- def prefix
 escape ``   #- my prefix tilda <~>
-#new buffer
+# new buffer
         # showkeys -a #command for know value button keyboard
 
 bind [ paste .
 bind ^[ copy
 
-#copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
-#^ - meta ( alt or esc or ctrl)
+# copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
+# ^ - meta ( alt or esc or ctrl)
 
-defscrollback 200000024
+defscrollback 3999999
 bind ^k
 bind ^\
 bind \\ quit
@@ -29,7 +29,8 @@ termcapinfo vt100 dl=5\E[M                                                      
 termcapinfo xterm*|linux*|rxvt*|kterm*|Eterm*|eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007 OP    #configures window header support this terminals
 termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'                                    #add 256 color
 termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'                                    #Resets terminal settings on startup
-termcapinfo xterm* ti@:te@                                                                  #disable terminal initialization and deinitialization.
+# if END and HOME don't work in terminal comment under line
+#termcapinfo xterm* ti@:te@                                                                  #disable terminal initialization and deinitialization.
 defnonblock on
 
 backtick 0 1 1 tail -n1 $HOME/.bash_history
