@@ -23,7 +23,8 @@ bind K kill
 bind I login on
 bind O login off
 bind } history
-term screen-256color
+# this setting breaks ctrl + all arrow in vim
+#W- term screen-256color
 hardstatus off
 termcapinfo vt100 dl=5\E[M                                                                  #set terminal vt100 can delete 5 line at a time
 termcapinfo xterm*|linux*|rxvt*|kterm*|Eterm*|eterm* hs:ts=\E]0;:fs=\007:ds=\E]0;\007 OP    #configures window header support this terminals
