@@ -203,8 +203,8 @@ nnoremap <M-z> "_D
 
 nnoremap YY y$
     " restore previous buffer \"" AND save cutted to buffer "w
-nnoremap ciw :<C-U>let save_nmapc = @"<CR>"wciw<Esc>:let @" = save_nmapc<CR>a
-nnoremap ciW :<C-U>let save_nmapc = @"<CR>"wciW<Esc>:let @" = save_nmapc<CR>a
+nnoremap ciw :<C-U>let save_nmapc = @"<CR>"wciw<Esc>:let @" = save_nmapc<CR>i
+nnoremap ciW :<C-U>let save_nmapc = @"<CR>"wciW<Esc>:let @" = save_nmapc<CR>i
     "-- central searching
 nnoremap n nzz
 nnoremap N Nzz

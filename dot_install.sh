@@ -20,6 +20,13 @@ if [ ! -d ${curr_dir}/.shell_source ]; then
     mv ${curr_dir}/shell_source ${curr_dir}/.shell_source;
 fi
 
+if [[ $EUID -ne 0 ]]; then 
+    if $(sudo -v); 
+        then sudo_sudo='sudo'
+        else sudo_sudo=''
+    fi
+fi    
+
 if [ -z $vim_ver ]; then
     echo -e "\033[0;31m try's of install package vim \033[0m"
     rhel="$(echo $os_family   |grep 'rhel')"
@@ -37,14 +44,14 @@ if [ -z $vim_ver ]; then
 
 else
     mkdir -p ./backup_dir/{user,root}
-
     if [ -d ${home_dir}/.config/mc ]; then
         cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/ || \
-        sudo sh -c "cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/"
+        ${sudo_sudo} sh -c "cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/"
     fi
+
     if [ -d ${home_dir}/.config/nvim ]; then
         cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/ || \
-        sudo sh -c "cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/"
+        ${sudo_sudo} sh -c "cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/"
     fi
     chown -R $current_user: ${home_dir}/.config/{mc,nvim}/
 

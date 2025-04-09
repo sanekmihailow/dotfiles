@@ -15,7 +15,9 @@ bind ^[ copy
 # copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
 # ^ - meta ( alt or esc or ctrl)
 
-defscrollback 3999999
+# more buffer size equal less new window (2999999 - 7 window max)
+# 999999 equal 15 window max
+defscrollback 999999
 bind ^k
 bind ^\
 bind \\ quit

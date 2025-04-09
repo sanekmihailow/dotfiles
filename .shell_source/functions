@@ -799,12 +799,13 @@ docker_exec() {
 #docker exec to container
     if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
-            docker exec -it $1 zsh 2>&1  > /dev/null || \
-            docker exec -it $1 bash 2>&1 > /dev/null || \
-            echo -e "start from bash \n\n" && docker exec -it $1 ash 2>&1 /dev/null || \
-            echo -e "start from sh \n\n"   && docker exec -it $1 sh
+            docker exec -it $1 /usr/bin/env zsh  || \
+            docker exec -it $1 /usr/bin/env bash || \
+            docker exec -it $1 /usr/bin/env ash  || \
+            docker exec -it $1 /usr/bin/env sh
         fi
     fi
+    
 }
 
 myfunctions_aliases () {

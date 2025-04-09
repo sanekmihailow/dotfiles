@@ -16,15 +16,20 @@ if [ $(which netstat |grep 'netstat' |grep -v '^alias' > /dev/null ) ]
     else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
          alias ports6="sudo ss -tulpn -6 |sort -t: -k2 -n"
 fi
-    
+
+if [ $(which nvim |grep -w 'nvim' |grep -v '^alias' > /dev/null) ]; then
+    vi=nvim; vim=nvim
+elif [ $(which vim |grep -w 'vim' |grep -v '^alias' > /dev/null) ]; then
+    vi=vim
+fi    
+
 alias used="du -ch -d 1"
 alias wdownload="wget --random-wait -r -p --no-parent -e robots=off -U mozilla"         ### USAGE - wdownload https://data.gov
 alias cmyip="curl icanhazip.com"
-alias svi="sudo vim"
+alias svi="sudo vi"
 alias scp="scp"
 alias xsc="xclip -select clipboard"
 # in centos use vimx
-alias vim="vim"
 #alias vime="xargs vim"  ## after exit vim. use "reset" for update window prompt
                          ## use CTRL(SHIFT) + BACKSPACE - del one character
                          ## use META(ESC,ALT) + BACKSPACE - del to first backsslash (/)
@@ -175,11 +180,8 @@ fi
 #vim --------------------------------
 if [ $(which vimcat 2>/dev/null) ]; then
   alias cat_g="vimcat "
-  alias vi="vim "
 fi
 
-#[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
-#alias ve="vi "
 
 
 #other -----------------------------------------
@@ -238,3 +240,6 @@ alias jobs="jobs -l"
 #alias plz='sudo "$BASH" -c "$(history -p !!)"'              #also as "sr"
 #alias plz="fc -l -1 | cut -d' ' -f2- | xargs sudo"          #inside screen starts lags from "xargs"
 #alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"
+
+#[ ! -x /usr/bin/vim ] && alias vim="vi" && echo -e "$red vim is not installed.\e[m  aliasing vim to vi" || alias vi="vim";
+#alias ve="vi "
