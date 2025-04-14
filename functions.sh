@@ -33,6 +33,7 @@ backupRoot(){
 }
 
 copyHome(){
+    local check_fc_cache=$(type -P fc-cache)
     mkdir -p ${home_dir}/{.local,.vim,.grc} > /dev/null
     if [ ! -d ${home_dir}/.lcoal/bin ];         then mkdir -p ${home_dir}/.local/bin; fi
     if [ ! -d ${home_dir}/.local/share/fonts ]; then mkdir -p ${home_dir}/.local/share/fonts; fi
@@ -57,7 +58,7 @@ copyHome(){
 #    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
     cp -rfp ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
     cp -rfp ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax,swap} ${home_dir}/.vim/
-    if [ -n "$(which fc-cache 2> /dev/null)" ]; then fc-cache -f -v > /dev/null; fi
+    if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
     chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/
     chown -R $current_user: ${home_dir}/{.shell_source,.grc,.local}/
 }
@@ -76,6 +77,8 @@ copyHomeRoot(){
 }
 
 copyRoot(){
+    local check_fc_cache=$(type -P fc-cache)
+
     for conf in $conf_files; do
         cp -fr ${curr_dir}/$conf ${home_dir}/
     done
@@ -93,7 +96,7 @@ copyRoot(){
 
     if [ ! -d /usr/local/share/fonts ]; then mkdir -p /usr/local/share/fonts; fi
     cp -f ${curr_dir}/usrl/local/share/fonts/* /usr/local/share/fonts/
-    if [ -n "$(which fc-cache 2> /dev/null)" ]; then fc-cache -f -v; fi
+    if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
 }
 
 setPathSudo(){

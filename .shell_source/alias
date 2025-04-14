@@ -10,16 +10,21 @@ alias l1="history| tail -n2 |head -n1 |awk '{\$1=\"\";print}'"
 alias history-uniq="hhistory |awk '{\$1=\$2=\$3=\$4=\"\"; print \$0}' |sed 's/^\s\s\s\s//g' |awk '!a[\$0]++'"
     #or use (работает cовсем криво)
     #alias history-uniq="hhistory |cut -d ' ' -f6-100 |awk '!a[\$0]++'"
-if [ $(which netstat |grep 'netstat' |grep -v '^alias' > /dev/null ) ]
-    then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n"
-         alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n"
-    else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n"
-         alias ports6="sudo ss -tulpn -6 |sort -t: -k2 -n"
+
+    
+check_al_netstat=$(type -P netstat)
+if [ -n "${check_al_netstat}" ]
+    then alias ports4="sudo netstat -tulpn -4 |sort -t: -k2 -n -u"
+         alias ports6="sudo netstat -tulpn -6 |sort -t: -k2 -n -u"
+    else alias ports4="sudo ss -tulpn -4 |sort -t: -k2 -n -u"
+         alias ports6="sudo ss -tulpn -6 |sort -t: -k2 -n -u"
 fi
 
-if [ $(which nvim |grep -w 'nvim' |grep -v '^alias' > /dev/null) ]; then
+check_al_nvim=$(type -P nvim)
+check_al_vim=$(type -P vim)
+if [ -n "${check_al_nvim}" ]; then
     vi=nvim; vim=nvim
-elif [ $(which vim |grep -w 'vim' |grep -v '^alias' > /dev/null) ]; then
+elif [ -n "${check_al_vim}" ]; then
     vi=vim
 fi    
 
@@ -39,20 +44,18 @@ alias showrpminfo="rpm -qpliRsc --scripts --filesbypkg --obsoletes --provides --
 
 # update all OS --------------------------------
 ### update: update and upgrade all of your packages!
-if [ ! -z "$(which brew 2> /dev/null)" ];       then
-  alias supdate="brew update && brew upgrade"
-elif [ -n "$(which pacman 2> /dev/null)" ];   then
-  alias supdate="sudo pacman -Syyu"
-elif [ -n "$(which apt 2> /dev/null)" ];      then
-  aliasundate="sudo apt update && sudo apt upgrade && sudo apt full-upgrade"
-elif [ -n "$(which apt-get 2> /dev/null)" ];  then
-  aliasundate ="sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade"
-elif [ -n "$(which dnf 2> /dev/null)" ];      then
-  aliasundate="sudo dnf upgrade"
-elif [ -n "$(which yum 2> /dev/null)" ];      then
-  aliasundate="sudo yum update"
-elif [ -n "$(which zypper 2> /dev/null)" ];   then
-  alias supdate="sudo zypper update"
+check_al_brew=$(type -P brew)
+check_al_pacman=$(type -P pacman)
+check_al_apt=$(type -P apt)
+check_al_yum=$(type -P yum)
+check_al_dnf=$(type -P dnf)
+check_al_zypper=$(type -P zypper)
+if   [ -n "${check_al_brew}" ]; then alias supdate="brew update && brew upgrade"
+elif [ -n "${check_al_pacman}" ]; then alias supdate="sudo pacman -Syyu"
+elif [ -n "${check_al_apt}" ]; then alias sundate="sudo apt  update && sudo apt upgrade && sudo apt dist-upgrade"
+elif [ -n "${check_al_yum}" ]; then alias sundate="sudo yum update"
+elif [ -n "${check_al_dnf}" ]; then alias sundate="sudo dnf upgrade"
+elif [ -n "${check_al_zypper}" ]; then alias supdate="sudo zypper update"
 fi
 
 # ls -------------------------------
@@ -77,8 +80,10 @@ alias less="less -IN+G --line-num-width=5 --status-col-width=4 --use-color"
 alias defless="/usr/bin/less"
 
 # docker --------------------------
-if [ $(which docker |grep 'docker' |grep -v '^alias' 2> /dev/null) ]; then
-	if [ -n $(which jq 2> /dev/null) ]
+check_al_docker=$(type -P docker)
+check_al_jq=$(type -P jq)
+if [ -n "${check_al_docker}" ]; then
+	if [ -n "${check_al_jq}" ]
 		then alias docker_all="docker ps --no-trunc --format '{{json .}}' |jq"
 		else echo "jq not found. please install it before run this alias command"
 	fi
@@ -108,7 +113,8 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # git  -------------------------------
-if [ $(which git |grep 'git' |grep -v '^alias' 2>/dev/null) ]; then
+check_al_git=$(type -P git)
+if [ -n "${check_al_git}" ]; then
     alias gpo='git push origin main'
     alias gp='git pull'
 #    alias gs='git status'
@@ -139,7 +145,8 @@ alias succ="egrep --color -iC1 -w '(success)(.*) |ok'"
 alias succdbg=""
 
 # grc --------------------------------
-if [ $(which grc 2>/dev/null) ]; then
+check_al_grc=$(type -P grc)
+if [ -n "${check_al_grc}" ]; then
     grc_list='blkid cvs df diff dnf du id last log tail sql
       docker-machinels dockerimages dockerinfo dockernetwork 
       dockerps dockerpull dockersearch dockerversion
@@ -178,7 +185,8 @@ if [ $(which grc 2>/dev/null) ]; then
 fi
 
 #vim --------------------------------
-if [ $(which vimcat 2>/dev/null) ]; then
+check_al_vimcat
+if [ -n "${check_al_vimcat}" ]; then
   alias cat_g="vimcat "
 fi
 

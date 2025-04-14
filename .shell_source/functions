@@ -503,7 +503,7 @@ function show_new_files() {
     local echo_console=''
 
 
-    if [ -z "$1" ]; then
+    if [ -n "$1" ]; then
         if [[ "$1" =~ ^[0-9]+$ ]]; then
             minits=${1}
         fi
@@ -865,6 +865,9 @@ DOCKER:
         docker_names
         docker_status
         docker_images
+        docker_exec
+        docker_log
+        docker_inspect
 
 SYNC:
        scpresume 

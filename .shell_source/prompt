@@ -27,7 +27,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
  
 if [ "$color_prompt" = yes ]; then
-    PS1="\`if [ \$? = 0 ]; then echo -e \"${fg_green} \xE2\x9C\x85 ${reset_NC}\"; else echo -e \"${fg_red} \xE2\x9D\x8C ${reset_NC}\"; fi\` "
+    PS1=" $(move_cursor_to_end_line) \`if [ \$? = 0 ]; then echo -e \"${fg_green} \xE2\x9C\x85 ${reset_NC}\"; else echo -e \"${fg_red} \xE2\x9D\x8C ${reset_NC}\"; fi\` "
     PS1+="${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#----------------${reset_NC}"
     PS1+="${fg_lightgray}(\H)${reset_NC} "
     PS1+="${fg_1}\#-[\$(if [ \${MC_SID} ]; then echo -e \"${fg_LIGHTBLUE}\xF0\x9F\x92\xBE${reset_NC}\"; fi)\d]${reset_NC} "
