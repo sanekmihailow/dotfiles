@@ -1,0 +1,33 @@
+_systemctl_complete_custom() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts=$(systemctl list-units --all --type=service --no-pager --no-legend | awk '{print $1}')
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+}
+
+complete -F _systemctl_complete_custom sys-start
+complete -F _systemctl_complete_custom sys-stop
+complete -F _systemctl_complete_custom sys-reload
+complete -F _systemctl_complete_custom sys-restart
+complete -F _systemctl_complete_custom sy-stat
+complete -F _systemctl_complete_custom sys-cat
+complete -F _systemctl_complete_custom sys-edit
+complete -F _systemctl_complete_custom sys-enable
+complete -F _systemctl_complete_custom sys-disable
+complete -F _systemctl_complete_custom sysstopstart
+
+
+_docker_complete_custom() {
+    local cur opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts=$(docker ps --format '{{.Names}}')
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+}
+
+complete -F _docker_complete_custom docker_inspect
+complete -F _docker_complete_custom docker_log
+complete -F _docker_complete_custom docker_exec
+
+
