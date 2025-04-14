@@ -1,8 +1,7 @@
+##### --histrory search START-- ######
 highlightsudo='se|sq|sudo'
 highlightcom='vim|ssh|chown|chmod|configure|ls|sed|grep|mc'
 highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csplit|wc|sum|uniq|comm|ptx|tsort|cut|paste|join|tr|expand|unexpand|ls|dir|vdir|dircolors|cp|dd|mv|rm|shred|link|ln|mkdir|mkfifo|mknod|readlink|rmdir|unlink|chown|chmod|chgrp|touch|df|du|stat|sync|truncate|echo|printf|test|expr|tee|basename|dirname|pathchk|mktemp|realpath|pwd|logname|whoami|id|groups|users|who|date|arch|nproc|uname|hostname|hostid|uptime|chcon|runcon|chroot|env|nice|nohup|stdbuf|timeout|kill|pkill|sleep|factor|numfmt|seq|source'
-
-##### --histrory search START-- ######
 
 ## example search with tag :
 # $user: vim /etc/apt/source.list #tag-vim_source-list
@@ -487,9 +486,13 @@ function show_new_files() {
 #(%c)
     local change_time=true
     local sort_name=true
+    local root_tree=true
+    local no_shares=true
     local no_create=false
     local modify_time=false
     local sort_time=false
+    local curr_dir=false
+    local include_all_dirs=false
 
     local minits=60
     local DATE="$(date +%F)"
@@ -501,6 +504,9 @@ function show_new_files() {
     local comamnd_output=''
     local new_cat=''
     local echo_console=''
+    local start_exclude_path="-path /tmp/d313d4379asgdgs"
+    local exclude_path=''
+    local exclude_shares="-o -path /mnt"
 
 
     if [ -n "$1" ]; then
@@ -515,11 +521,16 @@ function show_new_files() {
         fi
     fi
 
+        # check parameters
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             --no-create) no_create=true ;;
             --modify-time) modify_time=true; change_time=false ;;
             --sort-time) sort_time=true; sort_name=false ;;
+            --dir) curr_dir=true; root_tree=false ;;
+            --exclude=*) exclude="${1#*=}" ;;
+            --share) no_shares=false ;;
+            --all) include_all_dirs=true; no_shares=true ;;
             *) 
                 #ignore
                 ;;
@@ -527,25 +538,63 @@ function show_new_files() {
         shift
     done
 
+        # show that time
     if $change_time; then
         print_args="%Cd-%Cm-%CY %CH:%CM:%CS %s\t %p %m %u:%g [%i]\n"
     elif $modify_time; then
         print_args="%Td-%Tm-%TY %TH:%TM %s\t %p %m %u:%g [%i]\n"
     fi
 
+        # sort options
     if $sort_name; then
         sort_args="-k4"
     elif $sort_time; then
         sort_args="-k1.7,1.10r -k1.4,1.5r -k1.1,1.2r -k2.1r -k2.2r -k2.4r -k2.5r -k2.7r -k2.8r -k2.10r -k2.11r -k2.12r"
     fi
 
+        # exclude options
+    if [ -n "$exclude" ]; then
+        for i in ${exclude}; do
+            exclude_path="${exclude_path} -o -path ${i}"
+        done
+    fi    
+
+        # search path
+    if $root_tree; then
+        search_path='/'
+    elif $curr_dir; then
+        search_path='.'
+    fi
+
+        # show all paths
+    if $include_all_dirs; then
+        exclude_def=""
+    else
+        exclude_def="-o -path /proc
+            -o -path /sys
+            -o -path /dev
+            -o -path /run
+            -o -path /var/lib/docker
+            -o -path */.git
+        "
+    fi
+
+        # exclude share fs in paths
+    if $no_shares; then
+        shares="$(df -hT |egrep 'cifs|nfs|9p' |awk '{print $7}')"
+        if [ -n "$shares" ]; then
+            for i in ${shares}; do
+                exclude_shares="${exclude_shares} -o -path ${i}"
+            done
+        fi    
+    else exclude_shares=''
+    fi
+
+        # don't create log
     if $no_create; then
         command_output="cat"
     else
-        if [ ! -d ${out_path} ]; then
-            mkdir -p ${out_path}
-        fi
-
+        if [ ! -d ${out_path} ]; then mkdir -p ${out_path}; fi
         check_tee=$(type -P tee)
         if [[ $? == 0 ]]; 
             then new_cat='tee '
@@ -555,8 +604,8 @@ function show_new_files() {
         echo_console="saved output in ${out_path}/changed_from_${TIME}_last_${minits}_min"
     fi
 
-    ${sudo_used} find / -type d  \( -path '/proc' -o -path '/dev' -o -path '/sys' \
-                        -o -path '/var/lib/docker' -o -path '/mnt' \
+    ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} ${exclude_def} \
+                        ${exclude_shares} ${exclude_path} \
                     \) -prune \
                     -o -type f -cmin -${minits} \
                     -printf "${print_args}" \
@@ -578,7 +627,6 @@ function show_new_files() {
     }' \
     |sort ${sort_args} \
     |eval "$( echo ${command_output} )"
-
     echo -e "\n\033[0;32m ${echo_console} \033[0m"
 
 #| **Sort Key**      | **Description**                                                                     |
