@@ -84,8 +84,8 @@ mcview_eof=
 skin=xoria256
 
 filepos_max_saved_entries=1024
-
-safe_overwrite=false
+safe_overwrite=true
+shadows=true
 
 [Layout]
 message_visible=1
@@ -111,6 +111,7 @@ source_codepage=Other_8_bit
 autodetect_codeset=
 clipboard_store=
 clipboard_paste=
+spell_language=en
 
 [Colors]
 base_color=black:nomal=black,default:selected=white,blue

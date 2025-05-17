@@ -202,17 +202,13 @@ vime() { xargs sh -c 'vim "$@" < /dev/tty' example; } ## or use "xarg -o vim", #
 
 ports() {
     local check_netstat=$(type netstat)
+    local sudo_used=''
 
-    if $(sudo -v); then
-        if [ -n "$check_netstat" ]
-            then sudo netstat -tulpn |sort -t: -k2 -n
-            else sudo ss -tulpn |sort -t: -k2 -n
-        fi
-    else
-        if [ -n "$check_netstat" ]
-            then netstat -tulpn |sort -t: -k2 -n
-            else ss -tulpn |sort -t: -k2 -n
-        fi
+    if $(sudo -v); then sudo_used='sudo'; fi    
+
+    if [ -n "$check_netstat" ]
+        then ${sudo_used} netstat -tulpn |sort -t: -k2 -n
+        else ${sudo_used} ss -tulpn |sort -t: -k2 -n |sed -E 's/users:\(\(([^,]+),pid=([0-9]+).*?\)\).*/users:(\1, pid=\2)/'
     fi
 }
 
@@ -646,7 +642,11 @@ function docker_inspect() {
 #docker inspect with 
     if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then 
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
-            docker inspect "$1" \
+
+            local sudo_used=''
+            if $(sudo -v); then sudo_used='sudo'; fi
+
+            ${sudo_used} docker inspect "$1" \
             |jq -r '
             .[0] | {
                 Id,
@@ -834,11 +834,15 @@ function docker_log() {
 #docker inspect log output
     if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
-            docker inspect "$1" \
+
+            local sudo_used=''
+            if $(sudo -v); then sudo_used='sudo'; fi
+
+            ${sudo_used} docker inspect "$1" \
             | jq -r '.[0].State.Health.Log[].Output'
 
             echo -e "==================== LOGS for ${1} =====================: \n\n"
-            docker logs --details -f "$1"                
+            ${sudo_used} docker logs --details -f "$1"                
         fi
     fi
 }
@@ -847,10 +851,14 @@ docker_exec() {
 #docker exec to container
     if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
-            docker exec -it $1 /usr/bin/env zsh  || \
-            docker exec -it $1 /usr/bin/env bash || \
-            docker exec -it $1 /usr/bin/env ash  || \
-            docker exec -it $1 /usr/bin/env sh
+
+            local sudo_used=''
+            if $(sudo -v); then sudo_used='sudo'; fi
+
+            ${sudo_used} docker exec -it $1 zsh  || \
+            ${sudo_used} docker exec -it $1 bash || \
+            ${sudo_used} docker exec -it $1 ash  || \
+            ${sudo_used} docker exec -it $1 sh
         fi
     fi
     
