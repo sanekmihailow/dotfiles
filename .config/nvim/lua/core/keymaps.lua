@@ -26,8 +26,7 @@ keymap("n", "<C-l>", "<C-w>>", { noremap = true, silent = true })
 keymap('n', '<C-x>', ':lua req_func.my_toggle_line_numbers()<CR>', { noremap = true, silent = true })
     --keymap('n', '<C-x>', ':lua require("core.functions").toggle_line_numbers()<CR>', { noremap = true}) 
     -- use it withoiut global variable req_func
-keymap('n', '<C-s>', '"sy', { noremap = true, silent = true })
-keymap('n', '<C-p>', '"sp', { noremap = true, silent = true })
+keymap('n', '<C-s>', '":w', { noremap = true, silent = true })
 keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
 
 keymap('n', '<M-x>', '"_dd', { noremap = true, silent = true })
@@ -47,14 +46,14 @@ keymap("n", "N", "Nzz", { noremap = true, silent = true })
 keymap("n", "o", "o<Esc>", { noremap = true, silent = true })
 keymap("n", "O", "O<Esc>", { noremap = true, silent = true })
     -- manage tabs
-keymap("n", "<Leader>to", ":tabnew<CR>", { noremap = true, silent = true })    -- open new tab
-keymap("n", "<Leader>tx", ":tabclose<CR>", { noremap = true, silent = true })  -- close current tab
+keymap("n", "<Leader>tc", ":tabnew<CR>", { noremap = true, silent = true })    -- open new tab
+keymap("n", "<Leader>tk", ":tabclose<CR>", { noremap = true, silent = true })  -- close current tab
 keymap("n", "<Leader>tn", ":tabn<CR>", { noremap = true, silent = true })      --  go to next tab
 keymap("n", "<Leader>tp", ":tabp<CR>", { noremap = true, silent = true })      --  go to previous tab
 keymap("n", "<Leader>tl", ":tabs<CR>", { noremap = true, silent = true })      --  tab lists
     -- manage buffers
-keymap("n", "<Leader>bo", ":new<CR>", { noremap = true, silent = true })       -- open new tab (analog <C-w>s)
-keymap("n", "<Leader>bd", ":bdelete<CR>", { noremap = true, silent = true })   -- close current tab
+keymap("n", "<Leader>bc", ":new<CR>", { noremap = true, silent = true })       -- open new tab (analog <C-w>s)
+keymap("n", "<Leader>bk", ":bdelete<CR>", { noremap = true, silent = true })   -- close current tab
 keymap("n", "<Leader>bn", ":bn<CR>", { noremap = true, silent = true })        --  go to next tab
 keymap("n", "<Leader>bp", ":bp<CR>", { noremap = true, silent = true })        --  go to previous tab
 keymap("n", "<Leader>bl", ":buffers<CR>", { noremap = true, silent = true })   --  list buffer

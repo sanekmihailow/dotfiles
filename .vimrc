@@ -194,8 +194,7 @@ noremap <c-h> <c-w>>
 noremap <c-l> <c-w><    
 
 nnoremap <C-x> :call MyToggleNumbers()<CR>
-nnoremap <C-s> "sy
-nnoremap <C-p> "sp
+nnoremap <C-s> :w
 nnoremap <C-n> :exec &nu==&rnu? "set nornu!" : "set rnu!"<cr>
 
 nnoremap <M-x> "_dd
@@ -218,14 +217,14 @@ nnoremap <silent> r "_r
 nmap <Leader><C-y> :highligh Spaces ctermbg=DarkGrey guibg=DarkGrey<CR>
 nmap <Leader><C-u> :call matchadd('Spaces', '\s\+')<CR>
     "-- manage tabs
-nnoremap <Leader>to :tabnew<CR>         " open new tab
-nnoremap <Leader>tx :tabclose<CR>       " close current tab
+nnoremap <Leader>tc :tabnew<CR>         " open new tab
+nnoremap <Leader>tk :tabclose<CR>       " close current tab
 nnoremap <Leader>tn :tabn<CR>           " go to next tab
 nnoremap <Leader>tp :tabp<CR>           " go to previous tab
 nnoremap <Leader>tl :tabs<CR>           " tab lists
     "-- manage buffers
-nnoremap <Leader>bo :new<CR>            " open new window
-nnoremap <Leader>bd :bdelete<CR>        " close current buffer
+nnoremap <Leader>bc :new<CR>            " open new window
+nnoremap <Leader>bk :bdelete<CR>        " close current buffer
 nnoremap <Leader>bn :bn<CR>             " go to next buffer
 nnoremap <Leader>bp :bp<CR>             " go to previous buffer    
 nnoremap <Leader>bl :bp<CR>             " list buffer

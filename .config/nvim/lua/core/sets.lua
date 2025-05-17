@@ -1,6 +1,7 @@
 -- ~/.config/nvim/lua/core/sets.lua
 local opt = vim.opt
 local cmd = vim.cmd
+local fs = vim.fs
 
 opt.compatible = false
 
@@ -62,11 +63,12 @@ opt.termguicolors = true
 
 
 -- backup
-opt.undofile = true                                -- create .un~ file tghat save all undo history (even if you exit the editor)
-opt.undodir = "~/.vim/swap/undo/"                  --  keep undo files out of file dir
-opt.directory = "~/.vim/swap/swp/"                 --  keep unsaved changes away from file dir
-opt.backupdir = "~/.vim/swap/backup/"              --  backups also should not go to git
-opt.writebackup = true                             --  keep unsaved changes away from file dir
+opt.undofile = true                                  -- create .un~ file tghat save all undo history (even if you exit the editor)
+    -- # https://github.com/neovim/neovim/issues/15720
+opt.undodir =   fs.normalize('~/.nvim/swap/undo/')   --  keep undo files out of file dir
+opt.directory = fs.normalize('~/.nvim/swap/swp/')    --  keep unsaved changes away from file dir
+opt.backupdir = fs.normalize('~/.nvim/swap/backup/') --  backups also should not go to git
+opt.writebackup = true                               --  keep unsaved changes away from file dir
 --opt.backupcopy = "yes"                             --  disable create new inode file after saving edit (use same inode before editing)
 
 
