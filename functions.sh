@@ -13,7 +13,7 @@ backupHome(){
            sudo_used='sudo' 
         fi
         $sudo_used sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
-    fi        
+    fi
 
     tar -cf "backcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
     echo -e "\n\033[0;32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
@@ -34,30 +34,27 @@ backupRoot(){
 
 copyHome(){
     local check_fc_cache=$(type -P fc-cache)
-    mkdir -p ${home_dir}/{.local,.vim,.grc} > /dev/null
-    if [ ! -d ${home_dir}/.lcoal/bin ];         then mkdir -p ${home_dir}/.local/bin; fi
-    if [ ! -d ${home_dir}/.local/share/fonts ]; then mkdir -p ${home_dir}/.local/share/fonts; fi
 
     for conf in $conf_files; do
         cp -fr ${curr_dir}/$conf ${home_dir}/
     done
 
-    cp -fr ${curr_dir}/.shell_source ${home_dir}/
-    if [ ! -d ${home_dir}/.config/mc ]; then mkdir -p ${home_dir}/.config/mc; fi
-    cp -fr ${curr_dir}/.config/mc/* ${home_dir}/.config/mc/
-    check_nvim=$(type -P nvim)
-    if [[ $? == 0 ]]; then cp -fr ${curr_dir}/.config/nvim ${home_dir}/.config/; fi
+    cp -frp ${curr_dir}/.shell_source ${home_dir}/
+    cp -frp ${curr_dir}/.config ${home_dir}/
+    cp -frp ${curr_dir}/.local ${home_dir}/
+    cp -rfp ${curr_dir}/.grc ${home_dir}/
+    cp -rfp ${curr_dir}/.vim ${home_dir}/
+    cp -rfp ${curr_dir}/.nvim ${home_dir}/
 
-    cp -fp ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} ${home_dir}/.local/bin/
-    chmod +x ${home_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
+    check_nvim=$(type -P nvim)
+    if [[ $? != 0 ]]; then 
+        rm -rf ${home_dir}/.config/.nvim
+        rm -rf ${home_dir}/.nvim
+    fi
+
+    chmod +x ${home_dir}/.local/bin/*
     ln -ns $vimless ${home_dir}/.local/bin/vimless
 
-    if [ ! -d ${home_dir}/.local/share/grc ]; then mkdir -p ${home_dir}/.local/share/grc; fi
-    cp -rfp ${curr_dir}/usr/share/grc/* ${home_dir}/.local/share/grc/
-    cp -rfp ${curr_dir}/etc/grc.conf  ${home_dir}/.grc/grc.conf
-#    if $(sudo -v); then sudo cp -rf ${curr_dir}/usr/share/grc /usr/local/share; fi
-    cp -rfp ${curr_dir}/usr/local/share/fonts ${home_dir}/.local/share/
-    cp -rfp ${curr_dir}/usr/share/vim/vimXX/{colors,plugin,syntax,swap} ${home_dir}/.vim/
     if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
     chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/
     chown -R $current_user: ${home_dir}/{.shell_source,.grc,.local}/
@@ -83,19 +80,19 @@ copyRoot(){
         cp -fr ${curr_dir}/$conf ${home_dir}/
     done
 
-    cp -fr ${curr_dir}/.shell_source /root
-    cp -f ${curr_dir}/usr/bin/{vimcat,colorex,grc,grcat,tmux-sessions} /usr/local/bin/
+    cp -fr ${curr_dir}/.shell_source /root/
+    cp -f ${curr_dir}/.local/bin/{vimcat,colorex,grc,grcat,tmux-sessions} /usr/local/bin/
     chmod +x /usr/local/bin/{vimcat,colorex,grc,grcat,tmux-sessions}
     ln -ns $vimless /usr/local/bin/vimless
 
-    cp -f ${curr_dir}/usr/share/vim/vimXX/colors/* ${vim_path}/colors/ || echo -e "not vim colors"
-    cp -f ${curr_dir}/usr/share/vim/vimXX/plugin/* ${vim_path}/plugin/ || echo -e "not vim plugins"
-    cp -f ${curr_dir}/usr/share/vim/vimXX/syntax/* ${vim_path}/syntax/ || echo -e "not vim syntax"
-    cp -rf ${curr_dir}/usr/share/grc/ /usr/local/share/
-    cp -f ${curr_dir}/etc/grc.conf /etc/grc.conf
+    cp -f ${curr_dir}/.vim/colors/* ${vim_path}/colors/ || echo -e "not vim colors"
+    cp -f ${curr_dir}/.vim/plugin/* ${vim_path}/plugin/ || echo -e "not vim plugins"
+    cp -f ${curr_dir}/.vim/syntax/* ${vim_path}/syntax/ || echo -e "not vim syntax"
+    cp -rf ${curr_dir}/.local/share/grc /usr/local/share/
+    cp -f ${curr_dir}/.grc/grc.conf /etc/grc.conf
 
     if [ ! -d /usr/local/share/fonts ]; then mkdir -p /usr/local/share/fonts; fi
-    cp -f ${curr_dir}/usrl/local/share/fonts/* /usr/local/share/fonts/
+    cp -f ${curr_dir}/.local/share/fonts/* /usr/local/share/fonts/
     if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
 }
 
