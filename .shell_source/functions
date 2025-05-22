@@ -501,8 +501,9 @@ function show_new_files() {
     local new_cat=''
     local echo_console=''
     local start_exclude_path="-path /tmp/d313d4379asgdgs"
-    local exclude_path=''
+    local exclude_paths=''
     local exclude_shares="-o -path /mnt"
+    local exclude=''
 
 
     if [ -n "$1" ]; then
@@ -551,7 +552,7 @@ function show_new_files() {
         # exclude options
     if [ -n "$exclude" ]; then
         for i in ${exclude}; do
-            exclude_path="${exclude_path} -o -path ${i}"
+            exclude_paths="${exclude_paths} -o -path ${i}"
         done
     fi    
 
@@ -601,7 +602,7 @@ function show_new_files() {
     fi
         
     ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} ${exclude_def} \
-                        ${exclude_shares} ${exclude_path} \
+                        ${exclude_shares} ${exclude_paths} \
                     \) -prune \
                     -o -type f -cmin -${minits} \
                     -printf "${print_args}" \
@@ -639,7 +640,7 @@ function show_new_files() {
 }
 
 show_changed_files() {
-    local path='.'
+    local search_path='.'
     local start_exclude_path="-path /tmp/d313d4379asgdgs"
     local exclude_paths=''
     local sudo_used=''
@@ -647,12 +648,13 @@ show_changed_files() {
     local iso_format='long-iso'
     local nocolumn=false
     local column="eval column -t"
+    local exclude=''
 
     if [ -n "$1" ]; then
         if [[ "$1" != 'help' ]] \
         && [[ "$1" != '--help' ]] \
         && [[ "$1" != '-h' ]]
-            then path=${1}
+            then search_path=${1}
         fi
     fi
 
@@ -661,13 +663,14 @@ show_changed_files() {
             then sudo_used='sudo'
         fi
     fi
-    
+ 
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             --head=[0-9]*) row_lenght="${1#*=}" ;;
             --lenght=[0-9]*) row_lenght="${1#*=}" ;;
             --nocolumn) nocolumn=true ;;
             --date-format=*) iso_format="${1#*=}" ;;
+            --exclude=*) exclude="${1#*=}" ;;
             *) 
                 #ignore
                 ;;
@@ -679,7 +682,17 @@ show_changed_files() {
         column="eval sed 's/ /\t/'"
     fi
 
-    ${sudo_used} find ${path} -type f -exec stat -c '%Z %n' {} \; \
+        #exclude options
+    if [ -n "$exclude" ]; then
+        for i in ${exclude}; do
+            echo $i
+            exclude_paths="${exclude_paths} -o -path ${i}"
+        done
+    fi    
+
+    ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} \
+                    ${exclude_paths} \) -prune \
+                    -o -type f -exec stat -c '%Z %n' {} \; \
     |sort -nr |head -n${row_lenght} |cut -d' ' -f2- \
     |${sudo_used} xargs -I{} ls -lhtc --time-style=${iso_format} -- {} \
 	|${column}
