@@ -599,7 +599,7 @@ function show_new_files() {
         command_output="$new_cat ${out_path}/changed_from_${TIME}_last_${minits}_min"
         echo_console="saved output in ${out_path}/changed_from_${TIME}_last_${minits}_min"
     fi
-
+        
     ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} ${exclude_def} \
                         ${exclude_shares} ${exclude_path} \
                     \) -prune \
@@ -637,6 +637,54 @@ function show_new_files() {
 #....
 
 }
+
+show_changed_files() {
+    local path='.'
+    local start_exclude_path="-path /tmp/d313d4379asgdgs"
+    local exclude_paths=''
+    local sudo_used=''
+    local row_lenght=25
+    local iso_format='long-iso'
+    local nocolumn=false
+    local column="eval column -t"
+
+    if [ -n "$1" ]; then
+        if [[ "$1" != 'help' ]] \
+        && [[ "$1" != '--help' ]] \
+        && [[ "$1" != '-h' ]]
+            then path=${1}
+        fi
+    fi
+
+    if [[ $EUID -ne 0 ]]; then 
+        if $(sudo -v); 
+            then sudo_used='sudo'
+        fi
+    fi
+    
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            --head=[0-9]*) row_lenght="${1#*=}" ;;
+            --lenght=[0-9]*) row_lenght="${1#*=}" ;;
+            --nocolumn) nocolumn=true ;;
+            --date-format=*) iso_format="${1#*=}" ;;
+            *) 
+                #ignore
+                ;;
+        esac
+        shift #unset $1, and set new $1
+    done
+
+    if $nocolumn; then
+        column="eval sed 's/ /\t/'"
+    fi
+
+    ${sudo_used} find ${path} -type f -exec stat -c '%Z %n' {} \; \
+    |sort -nr |head -n${row_lenght} |cut -d' ' -f2- \
+    |${sudo_used} xargs -I{} ls -lhtc --time-style=${iso_format} -- {} \
+	|${column}
+}
+
 
 function docker_inspect() {
 #docker inspect with 

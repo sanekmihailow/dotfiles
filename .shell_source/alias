@@ -91,7 +91,7 @@ if [ -n "${check_al_docker}" ]; then
 	alias docker_ports-with_names="docker ps --format 'table {{.Names}}\t{{.Ports}}'"
 	alias docker_ports-with_id="docker ps --format 'table {{.ID}}\t{{.Ports}}'"
 	alias docker_names="docker ps --format 'table {{.ID}}\t{{.Names}}' |sed 1d |sort -k2"
-	alias docker_status="docker ps --format 'table {{.Image}}\t{{.Status}}'"
+	alias docker_status="docker ps --format 'table {{.Image}}\t{{.Status}}\t{{.Names}}'"
 	alias docker_images="docker ps --format 'table {{.Names}}\t{{.Image}}'"
 	alias docker_ps="docker ps -a | awk 'NR == 1 || ($7 !~ /Up/ && $8 !~ /Up/)' && docker ps |egrep ' seconds| About a minute'"
 fi
