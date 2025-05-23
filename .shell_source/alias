@@ -23,9 +23,10 @@ fi
 check_al_nvim=$(type -P nvim)
 check_al_vim=$(type -P vim)
 if [ -n "${check_al_nvim}" ]; then
-    vi=nvim; vim=nvim
+    alias vi=nvim
+    alias vim=nvim
 elif [ -n "${check_al_vim}" ]; then
-    vi=vim
+    alias vi=vim
 fi    
 
 alias used="du -ch -d 1"

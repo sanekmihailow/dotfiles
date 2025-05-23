@@ -16,7 +16,7 @@ hi() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
         then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9] |sed -E "s/$/\n/g"'
         else history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
-    fi    
+    fi
 }
 
 # search for all history and show 50 last
@@ -24,7 +24,7 @@ hh() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
         then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
-    fi    
+    fi
 }
 
 # search all history to master word
@@ -32,7 +32,7 @@ hhall() {
     if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]
         then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |colorex -b '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |grep '^....[0-9]'
-    fi    
+    fi
 }
 
 # search all history and highlight special command
@@ -50,7 +50,7 @@ hhuniq() {
     else
         history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++"
     fi
-}    
+}
 
 # search last uniq word from your past line numbers
 # Example: hhlastuniq 50
@@ -220,7 +220,7 @@ allcrontab() {
     local PURPLE='\e[1;35m'
     local YELLOW='\e[22;33m'
     local NC='\e[0m'
-        
+
     local cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
 
     for dir in $cron_dir; do
@@ -230,7 +230,7 @@ allcrontab() {
                     then crondtab=$(sudo sh -c "cat ${dir}/${crond} 2>/dev/null" |egrep -Ev "^\s*(;|#|$)")
                     else crondtab=$(cat "${dir}/${crond}" 2>/dev/null |egrep -Ev "^\s*(;|#|$)")
                 fi
-    
+
                 if [ -n "${crondtab}" ]; then
                     echo -e "${RED}====== Start ${dir}/ ${NC}${GREEN}${crond}${NC} ${RED}======${NC}"
                         echo "${crondtab}"
@@ -239,16 +239,16 @@ allcrontab() {
             done
         echo -e "----------------- ${PURPLE}END ${dir} -------------------- ${NC}\n"
     done
-        
+
     echo -e "----------------- ${PURPLE}START /etc/crontab -------------------- ${NC}\n"
         cat /etc/crontab |egrep -Ev "^\s*(;|#|$)"
     echo -e "----------------- ${PURPLE}END /etc/crontab -------------------- ${NC}\n"
-    
+
     echo -e "----------------- ${PURPLE}START users crontab -------------------- ${NC}\n"
         if $(sudo -v &> /dev/null); then
             for user in $(cut -d':' -f1 /etc/passwd); do
                 local usercrontab=$(sudo sh -c "crontab -l -u ${user} 2>/dev/null")
-    
+
                 if [ -n "${usercrontab}" ]; then
                     echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
                         sudo sh -c "crontab -l -u ${user}" |sed '/ *#/d; /^ *$/d'
@@ -511,7 +511,7 @@ function show_new_files() {
             minits=${1}
         fi
     fi
-       
+
     if [[ $EUID -ne 0 ]]; then 
         if $(sudo -v); 
             then sudo_used='sudo'
@@ -600,7 +600,7 @@ function show_new_files() {
         command_output="$new_cat ${out_path}/changed_from_${TIME}_last_${minits}_min"
         echo_console="saved output in ${out_path}/changed_from_${TIME}_last_${minits}_min"
     fi
-        
+
     ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} ${exclude_def} \
                         ${exclude_shares} ${exclude_paths} \
                     \) -prune \
@@ -649,12 +649,14 @@ show_changed_files() {
     local nocolumn=false
     local column="eval column -t"
     local exclude=''
+    local old_sort=false
+    local sort_date="eval sort -nr"
 
     if [ -n "$1" ]; then
         if [[ "$1" != 'help' ]] \
-        && [[ "$1" != '--help' ]] \
+        && [[ ! "$1" =~ ^-- ]] \
         && [[ "$1" != '-h' ]]
-            then search_path=${1}
+            then search_path="$1"
         fi
     fi
 
@@ -663,7 +665,7 @@ show_changed_files() {
             then sudo_used='sudo'
         fi
     fi
- 
+
     while [[ "$#" -gt 0 ]]; do
         case $1 in
             --head=[0-9]*) row_lenght="${1#*=}" ;;
@@ -671,6 +673,7 @@ show_changed_files() {
             --nocolumn) nocolumn=true ;;
             --date-format=*) iso_format="${1#*=}" ;;
             --exclude=*) exclude="${1#*=}" ;;
+            --old) old_sort=true ;;
             *) 
                 #ignore
                 ;;
@@ -688,14 +691,19 @@ show_changed_files() {
             echo $i
             exclude_paths="${exclude_paths} -o -path ${i}"
         done
-    fi    
+    fi
+
+        #show older on start
+    if $old_sort; then
+        sort_date="eval sort -n"
+    fi
 
     ${sudo_used} find ${search_path} -type d  \( ${start_exclude_path} \
                     ${exclude_paths} \) -prune \
                     -o -type f -exec stat -c '%Z %n' {} \; \
-    |sort -nr |head -n${row_lenght} |cut -d' ' -f2- \
+    |${sort_date}  |head -n${row_lenght} |cut -d' ' -f2- \
     |${sudo_used} xargs -I{} ls -lhtc --time-style=${iso_format} -- {} \
-	|${column}
+    |${column}
 }
 
 
@@ -922,7 +930,7 @@ docker_exec() {
             ${sudo_used} docker exec -it $1 sh
         fi
     fi
-    
+
 }
 
 myfunctions_aliases () {

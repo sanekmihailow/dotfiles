@@ -57,7 +57,7 @@ IGNORESE='se ls:se ll:se ll -a:se ls -[la]:se lla *:se ls -la:se cat:se du -s*:s
 IGNOREMY="cheat *:incognito:err *:vless:cmyip:hh:hi *:hhistory:hhall *:hhuniq *:hhlastuniq *:hhlastuniq-grep *:hhnumuniq *:hhistory-uniq:history-uniq:locru:locen:lessr:showfatindir:extract *:se:maketar *:makezip *:cht *:check_mem_humanreadable:check_mem_procent:check_mem:check_swap:allcrontab:checkSizeInDirWithIgnore:ll:lla *:ll -a:scrd:psaux:psaux *:psajx:psajx *:myfunctions_aliases:myfunctions_aliases *:tig:lazygit"
 IGNOREGIT="git status:git st:git ls-files:git branch:git br:git log:git branch -vv:git diff:git diff *:git add *:git a:git remote:gs:gd:gl:glf:ga:gb:gbv"
 IGNOREDEF='ls:ls -l:ls -la:ps aux:ps auxe:pstree:exit:pwd:history:history *:dir:tree:clear:man *:vim:vi:dirtree:screen:screen -[rR]*:tmux:tmux -a*:df -h:df -hT:du -s*:less:more:cat:stat:nano:tee:uptime:top:htop:netstat:netstat -ntulp*:lsof:[bf]g:reset'
-IGNOREREG='?:??:???:????:[ \t]*:[а-яА-Я]?:[а-яА-Я]??:[а-яА-Я]???:[а-яА-Я]????'
+IGNOREREG='?:??:???:[а-яА-Яa-ZA-Z]???:[а-яА-Яa-zA-Z]????'
 
 HISTIGNORE="${IGNOREREG}:${IGNOREDEF}:${IGNOREMY}:${IGNOREGIT}:${IGNORESUDO}:${IGNORESE}"
 
