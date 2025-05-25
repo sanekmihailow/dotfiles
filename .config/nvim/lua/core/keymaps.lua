@@ -1,7 +1,7 @@
 -- ~/.config/nvim/lua/core/keymaps.lua
 -- for neovim >= 0.7 --
 
-vim.g.mapleader = "\\"
+vim.g.mapleader = ' '
 local keymap = vim.keymap.set
 
 
@@ -63,12 +63,12 @@ keymap("n", "<Leader>bl", ":buffers<CR>", { noremap = true, silent = true })   -
 keymap('i', '<F12>', ':set spell!<CR>', { noremap = true, silent = true })
     -- atocomplete shortcut
 keymap('i', '<S-Tab>', '<C-n>', { noremap = true, silent = true })
-    -- move row on X axes
-keymap('i', '<C-]>', "<C-o>>><Esc>i", { noremap = true, silent = true })
-keymap('i', '<C-l>', "<C-o><<<Esc>i", { noremap = true, silent = true })
     -- move row on Y axes
 keymap("i", "<C-j>", "<Esc><cmd>m .+1<CR>==gi", { noremap = true, silent = true })
 keymap("i", "<C-k>", "<Esc><cmd>m .-2<CR>==gi", { noremap = true, silent = true })
+    -- move row on X axes
+keymap('i', '<M-.>', "<C-o>>><Esc>i", { noremap = true, silent = true })
+keymap('i', '<M-,>', "<C-o><<<Esc>i", { noremap = true, silent = true })
 
 
 
