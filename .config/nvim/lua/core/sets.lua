@@ -85,7 +85,7 @@ opt.splitright = true                              -- vertical split вправ�
 opt.splitbelow = true                              -- horizontal split вниз
 --opt.clipboard:append("unnamedplus") 
 opt.mouse = 'nv'
-
+opt.helplang=en
 
 -- Screen title
 if string.match(vim.env.TERM or "", "screen") then

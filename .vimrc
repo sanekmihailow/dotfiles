@@ -165,8 +165,8 @@ endfunction
 
 
 " --------------------------------- MAPPINGS ------------------------------ {
-"#let mapleader = " "  "map leader space
-let mapleader = "\\"   "map leader backslash (for me rebinding CAPS LOCK to \)
+"let mapleader = "\\"   "map leader backslash (for me rebinding CAPS LOCK to \)
+let mapleader = " "     "map leader space
 
 
 " ------- Normal mode map ------- 
@@ -191,14 +191,21 @@ nnoremap <c-left> <c-w>h
 noremap <c-j> <c-w>+
 noremap <c-k> <c-w>-
 noremap <c-h> <c-w>>
-noremap <c-l> <c-w><    
+"noremap <c-l> <c-w><    
 
 nnoremap <C-x> :call MyToggleNumbers()<CR>
-nnoremap <C-s> :w
+nnoremap <C-s> :w<CR>
 nnoremap <C-n> :exec &nu==&rnu? "set nornu!" : "set rnu!"<cr>
+nnoremap <C-q> :exec &wrap ? "set nowrap" : "set wrap"<CR>
+nnoremap <C-l> :exec &list ? "set nolist" : "set list"<CR>
 
 nnoremap <M-x> "_dd
-nnoremap <M-z> "_D
+nnoremap <M-d> "_dd
+nnoremap <M-X> "_D
+nnoremap <M-D> "_D
+
+nnoremap <ESC>q "qp
+nnoremap <ESC>w "wp
 
 nnoremap YY y$
     " restore previous buffer \"" AND save cutted to buffer "w
@@ -234,12 +241,12 @@ nnoremap <Leader>bl :bp<CR>             " list buffer
 inoremap <silent> <F12> <C-O>:set spell!<cr>
     "-- atocomplete shortcut
 inoremap <S-Tab> <C-n>
-    "-- move row on X axes
-inoremap <C-]> <C-o>>><ESC>i
-inoremap <C-l> <C-o><<<ESC>i
     "-- move row on Y axes
 inoremap <silent> <C-j> <Esc>:m .+1<CR>==gi
 inoremap <silent> <C-k> <Esc>:m .-2<CR>==gi
+    "-- move row on X axes
+inoremap <ESC>. <C-o>>><ESC>i
+inoremap <ESC>, <C-o><<<ESC>i
 
 
 " ------- Visual mode map ------- 

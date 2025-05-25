@@ -6,8 +6,7 @@ local keymap = vim.keymap.set
 
 
 -------------------- NORMAL MODE map ---------------------
-vim.o.pastetoggle='<F1>'
---keymap("n", "<F1>", ":set autoread<CR>", { noremap = true })
+keymap("n", "<F1>", ':lua req_func.my_toggle_paste_mode()<cr>', { noremap = true, silent = true })
 keymap("n", "<F2>", ":au CursorMoved * checktime<CR>", { noremap = true })
 keymap("n", "<F3>", ":q!<CR>", { noremap = true })
 keymap('n', '<F5>', ':lua req_func.my_fold_mapping()<CR>', { noremap = true })
@@ -21,16 +20,23 @@ keymap("n", "<C-left>", "<C-w>h", { noremap = true, silent = true })
 keymap("n", "<C-j>", "<C-w>+", { noremap = true, silent = true })
 keymap("n", "<C-k>", "<C-w>-", { noremap = true, silent = true })
 keymap("n", "<C-h>", "<C-w><", { noremap = true, silent = true })
-keymap("n", "<C-l>", "<C-w>>", { noremap = true, silent = true })
+--keymap("n", "<C-l>", "<C-w>>", { noremap = true, silent = true })
 
 keymap('n', '<C-x>', ':lua req_func.my_toggle_line_numbers()<CR>', { noremap = true, silent = true })
     --keymap('n', '<C-x>', ':lua require("core.functions").toggle_line_numbers()<CR>', { noremap = true}) 
     -- use it withoiut global variable req_func
-keymap('n', '<C-s>', '":w', { noremap = true, silent = true })
+keymap('n', '<C-s>', ':w<CR>', { noremap = true, silent = true })
 keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
+keymap('n', '<C-q>', ':lua req_func.my_toggle_wrap_mode()<CR>', { noremap = true, silent = true })
+keymap('n', '<C-l>', ':lua req_func.my_list_chars_mode()<CR>', { noremap = true, silent = true })
 
 keymap('n', '<M-x>', '"_dd', { noremap = true, silent = true })
-keymap('n', '<M-z>', '"_D', { noremap = true, silent = true })
+keymap('n', '<M-d>', '"_dd', { noremap = true, silent = true })
+keymap('n', '<M-X>', '"_D', { noremap = true, silent = true })
+keymap('n', '<M-D>', '"_D', { noremap = true, silent = true })
+
+keymap('n', '<M-q>', '"qp', { noremap = true, silent = true })
+keymap('n', '<M-w>', '"wp', { noremap = true, silent = true })
 
 keymap("n", "YY", "y$", { noremap = true })
     -- restore previous buffer \"" AND save cutted to buffer "w

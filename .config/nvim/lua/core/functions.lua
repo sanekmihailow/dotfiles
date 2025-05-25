@@ -1,5 +1,6 @@
 -- ~/.config/nvim/lua/core/functions.lua
 local fn = vim.fn
+local opt =vim.opt
 
 local M = {}
 
@@ -102,6 +103,31 @@ M.my_fold_mapping = function()
     end        
 end
 
+M.my_toggle_paste_mode = function()
+    if opt.paste:get() then
+        opt.paste = false
+        print("NO paste mode")
+    else
+        opt.paste = true
+        print("paste mode ON")
+    end
+end
+
+M.my_toggle_wrap_mode = function()
+    if opt.wrap:get() then
+        opt.wrap = false
+    else
+        opt.wrap = true
+    end
+end
+
+M.my_list_chars_mode = function()
+    if opt.list:get() then
+        opt.list = false
+    else
+        opt.list = true
+    end
+end
 
 M.vcut_to_q = function()
     local vmapx_reg = fn.getreg('"')  -- save current register ""

@@ -1,12 +1,12 @@
 -- ~/.config/nvim/lua/old/keymap.lua
 -- for neovim <= 0.7 --
 
-vim.g.mapleader = "\\"
+vim.g.mapleader = ' '
 local keymap = vim.api.nvim_set_keymap
 
 
 -------------------- NORMAL MODE map ---------------------
-vim.o.pastetoggle='<F1>'
+keymap("n", "<F1>", ':lua req_func.my_toggle_paste_mode()<cr>', { noremap = true, silent = true })
 --keymap("n", "<F1>", ":set autoread<CR>", { noremap = true })
 keymap("n", "<F2>", ":au CursorMoved * checktime<CR>", { noremap = true })
 keymap("n", "<F3>", ":q!<CR>", { noremap = true })
@@ -28,9 +28,15 @@ keymap('n', '<C-x>', ':lua req_func.my_toggle_line_numbers()<CR>', { noremap = t
     -- use it withoiut global variable req_func
 keymap('n', '<C-s>', ':w', { noremap = true, silent = true })
 keymap('n', '<C-n>', [[:exec &nu==&rnu? "set nornu!" : "set rnu!"<CR>]], { noremap = true, silent = true })
+keymap('n', '<C-q>', ':lua req_func.my_toggle_wrap_mode()<CR>', { noremap = true, silent = true })
 
 keymap('n', '<M-x>', '"_dd', { noremap = true, silent = true })
-keymap('n', '<M-z>', '"_D', { noremap = true, silent = true })
+keymap('n', '<M-d>', '"_dd', { noremap = true, silent = true })
+keymap('n', '<M-X>', '"_D', { noremap = true, silent = true })
+keymap('n', '<M-D>', '"_D', { noremap = true, silent = true })
+
+keymap('n', '<M-q>', '"qp', { noremap = true, silent = true })
+keymap('n', '<M-w>', '"wp', { noremap = true, silent = true })
 
 keymap("n", "YY", "y$", { noremap = true })
     -- restore previous buffer \"" AND save cutted to buffer "w
@@ -63,12 +69,12 @@ keymap("n", "<Leader>bl", ":buffers<CR>", { noremap = true, silent = true })   -
 keymap('i', '<F12>', ':set spell!<CR>', { noremap = true, silent = true })
     -- atocomplete shortcut
 keymap('i', '<S-Tab>', '<C-n>', { noremap = true, silent = true })
-    -- move row on X axes
-keymap('i', '<C-]>', "<C-o>>><Esc>i", { noremap = true, silent = true })
-keymap('i', '<C-l>', "<C-o><<<Esc>i", { noremap = true, silent = true })
     -- move row on Y axes
 keymap("i", "<C-j>", "<Esc><cmd>m .+1<CR>==gi", { noremap = true, silent = true })
 keymap("i", "<C-k>", "<Esc><cmd>m .-2<CR>==gi", { noremap = true, silent = true })
+    -- move row on X axes
+keymap('i', '<M-.>', "<C-o>>><Esc>i", { noremap = true, silent = true })
+keymap('i', '<M-,>', "<C-o><<<Esc>i", { noremap = true, silent = true })
 
 
 
