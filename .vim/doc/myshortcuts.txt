@@ -1,0 +1,92 @@
+*myshortcuts.txt * Help with my keyboard bindings
+
+===================== NORMAL MODE =====================
+*myshortcuts-normal*
+
+"F1"                -  insert mode ON/OFF (when not needed, auto tabulation during insertion)
+"F2"                -  auto updating of file contents during navigation, for example, if an org file has been updated
+"F3"                -  exit without saving
+"F5"                -  hide or reveal contents inside brackets or based on tabs
+"F6"                -  color scheme - apply the desert
+"F7"                -  color scheme - apply the xoria256 color scheme
+"F8"                -  color scheme - apply noctu color scheme
+"F12"               -  ENABLE/DISABLE syntax checking for grammar
+
+"Ctrl" "Up"         -  move from the current window to the window upper
+"Ctrl" "Down"       -  move from the current window to the window downmer
+"Ctrl" "Left"       -  move from the current window to the window righter
+"Ctrl" "Right"      -  move from the current window to the window lefter
+
+"Ctrl" "k"          -  decrease the size of the current buffer window from bottom to top
+"Ctrl" "j"          -  increase the size of the current buffer window from top to bottom
+"Ctrl" "h"          -  increase the size of the current buffer window from right to left
+
+"Ctrl" "x"          -  ON/OFF showing line numbers
+"Ctrl" "s"          -  save changes
+"Ctrl" "n"          -  ON/OFF showing relative line numbers
+"Ctrl" "w"          -  ON/OFF wrap lines
+"Ctrl" "l"          -  ON/OFF list hidden chars
+
+"Meta" "x" or "d"   -  delete a row without writing to the register
+"Meta" "X" or "D"   -  delete everything in the row from the current carriage location
+
+"Meta" "q"          -  paste from register "q"
+"Meta" "w"          -  paste from register "w"
+
+"YY"                -  copy everything in the row from the current carriage location
+"ciw" or "ciW"      -  cut the word into the "w" case and switch to editing mode
+
+"Space" "Ctrl" "Y"  -  set grey background for space
+"Space" "Ctrl" "U"  -  show all spaces with background
+
+"Space" "t" "c"     -  create a new tab
+"Space" "t" "k"     -  close the current tab
+"Space" "t" "n"     -  move to the next tab
+"Space" "t" "p"     -  move to the previous tab
+"Space" "t" "l"     -  show the list of tabs
+
+"Space" "b" "c"     -  create a new buffer (file)
+"Space" "b" "k"     -  kill (close) the current buffer
+"Space" "b" "n"     -  move to the next buffer
+"Space" "b" "p"     -  move to the previous buffer
+"Space" "b" "l"     -  show the list of buffers (open files)
+
+
+
+===================== INSERT MODE =====================
+*myshortcuts-insert*
+
+"F12"               -  ON/OFF syntax checking for grammar
+
+"Ctrl" "k"          -  moving the current line from bottom to top during editing
+"Ctrl" "j"          -  moves the current line from top to bottom during editing
+"Meta" "."          -  indenting the current line from left to right during editing
+"Meta" ","          -  indenting the current line from right to left during editing
+
+"Shift" "Tab"       -  open the auto complations menu
+
+
+
+===================== VISUAL MODE =====================
+*myshortcuts-visual*
+
+"Ctrl" "t"          -  translates the selected line (requires the installed googletrans package)
+
+"Meta" "x"          -  delete the selected fragment without writing to the register
+
+"Shift" "Up"        -  moves the selected fragment from bottom to top
+"Shift" "Down"      -  moves the selected fragment from top to bottom
+
+">"                 -  tabulation of the selected fragment from left to right on one indent
+"<"                 -  tabulation of the selected fragment from right to left on one indent
+
+"x" or "X"          -  cut the selected fragment into the "q" register
+"c" or "C"          -  cut the selected fragment into the "w" register and switch to editing mode
+
+
+
+===================== COMMAND MODE =====================
+*myshortcuts-cmd*
+
+"Ctrl" "w" "w"      -  force saving when there are no rights to save the contents
+"Ctrl" "n" "n"      -  show the full path of the edited file
