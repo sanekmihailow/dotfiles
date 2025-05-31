@@ -5,6 +5,8 @@
 #user=$(find /home/ -name "vim_update.sh" 2>/dev/null |awk -F"/" '{print $3}' |head -n1)
 #check=$(find /home/ -name "vim_update.sh" |awk -F"/" '{$NF=""; print $0}' |sed "s/ /\//g")
 vim_ver="$(/usr/bin/vim --version | grep "Vi IMproved" | cut -d ' ' -f 5 | sed -e 's/\.//g')"
+vimver_first="$(echo ${vim_ver:0:1})"
+vimver_first=$((vimver_first))
 vim_path="/usr/share/vim/vim${vim_ver}"
 vimless="/usr/share/vim/vim$vim_ver/macros/less.sh"
 current_user="$USER"
@@ -12,6 +14,8 @@ home_dir="$HOME"
 curr_dir="$(pwd)"
 os_family="$(cat /etc/os-release |grep -w 'ID_LIKE')"
 next='yes'
+sudo_sudo=''
+
 
 conf_files=".bashrc .screenrc .tmux.conf .vimrc .source-user .bash_profile .profile"
 backup_user=".bashrc .screenrc .tmux.conf .vimrc .bash_history .grc .local .vim .bash_profile .profile"
@@ -20,12 +24,11 @@ if [ ! -d ${curr_dir}/.shell_source ]; then
     mv ${curr_dir}/shell_source ${curr_dir}/.shell_source;
 fi
 
-if [[ $EUID -ne 0 ]]; then 
-    if $(sudo -v); 
-        then sudo_sudo='sudo'
-        else sudo_sudo=''
+if [[ $EUID -ne 0 ]]; then
+    if $(sudo -v); then
+        sudo_sudo='sudo'
     fi
-fi    
+fi
 
 if [ -z $vim_ver ]; then
     echo -e "\033[0;31m try's of install package vim \033[0m"
@@ -45,15 +48,13 @@ if [ -z $vim_ver ]; then
 else
     mkdir -p ./backup_dir/{user,root}
     if [ -d ${home_dir}/.config/mc ]; then
-        cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/ || \
-        ${sudo_sudo} sh -c "cp -rpf $HOME/.config/mc ${curr_dir}/backup_dir/"
+        ${sudo_sudo} sh -c "cp -rpf ${home_dir}/.config/mc ${curr_dir}/backup_dir/"
     fi
 
     if [ -d ${home_dir}/.config/nvim ]; then
-        cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/ || \
-        ${sudo_sudo} sh -c "cp -rpf $HOME/.config/nvim ${curr_dir}/backup_dir/"
+        ${sudo_sudo} sh -c "cp -rpf ${home_dir}/.config/nvim ${curr_dir}/backup_dir/"
     fi
-    chown -R $current_user: ${home_dir}/.config/{mc,nvim}/
+    $sudo_sudo chown -R $current_user: ${home_dir}/.config/{mc,nvim}/ 2> /dev/null
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
@@ -80,29 +81,31 @@ else
     source ${curr_dir}/functions.sh
 #C---- create backup dir and copy
     if [[ $choose == 1 ]]; then
-        $(backupHome)
-        $(copyHome)
-        $(copyHomeRoot)
+        backupHome
+        copyHome
+        copyHomeRoot
         setPathSudo
     elif [[ $choose == 2 ]]; then
         backupRoot
         copyRoot
-        $(setPathSudo)
+        setPathSudo
     elif [[ $choose == 3 ]]; then
-
-        if [ -e /root/.source-root ]; then
-            $(backupRoot)
-            $(copyRoot)
+        check_source_root="$($sudo_sudo cat /root/.source-user 2>&1 |egrep -v 'No such file or directory|Permission denied')"
+        if [ -n "$check_source_root" ]; then
+            backupRoot
+            copyRoot
         else
-            $(backupHome)
-            $(copyHome)
+            backupHome
+            copyHome
+            # if use $(function_name), an example: $(backupHome)
+            # the bash processes any echo string as a command
         fi
     else
         echo -e "you choose not found, please try again start script"
         exit 1
     fi
 
-    echo -e "\n \033[1;32m Congratulations, you updated dot_files \n \033[0m"
+    echo -e "\n \033[1;32mCongratulations, you updated dot_files \n \033[0m"
     bashversion=$(bash -version |head -n1 | cut -d '.' -f 1 | egrep -o '[[:digit:]]')
 
     if [[ $((bashversion)) -le 4 ]]; then
@@ -116,9 +119,8 @@ fi
 #if [ "$current_user" = "root" ]; then
 #    source ${home_dir}/.source-root; else
     . ${home_dir}/.source-user
-#fi    
+#fi
 
 echo -e "\n USE:\n
 \033[1;36m source ~/.source-user\n \033[0m"
-echo -e "\n \033[1;36m EXIT\n \033[0m"
-exit 0
+echo -e "\n \033[1;36m EXIT\n \033[0m"exit 0

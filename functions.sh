@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 date_time="$(date +%Y-%m-%d_%H-%M-%S)"
 
 backupHome(){
@@ -10,13 +9,13 @@ backupHome(){
 
     if [[ $EUID -ne 0 ]]; then
         if $(sudo -v); then
-           sudo_used='sudo' 
+           sudo_used='sudo'
         fi
         $sudo_used sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
     fi
 
     tar -cf "backcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-    echo -e "\n\033[0;32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
+    echo -e "\n\033[0;32m $current_user  You old setting backuped to dotfiles/backup_dir \033[0m"
 }
 
 backupRoot(){
@@ -29,48 +28,65 @@ backupRoot(){
     cp -rf /usr/local/bin ./backup_dir
 
     tar -cf "bakcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
-    echo -e "\n\033[0;32m $current_user  You old setting bacuped to dotfiles/backup_dir \033[0m"
+    echo -e "\n\033[0;32m $current_user  You old setting backuped to dotfiles/backup_dir \033[0m"
 }
 
 copyHome(){
     local check_fc_cache=$(type -P fc-cache)
+    local check_nvim=$(type -P nvim)
 
     for conf in $conf_files; do
         cp -fr ${curr_dir}/$conf ${home_dir}/
     done
 
-    cp -frp ${curr_dir}/.shell_source ${home_dir}/
-    cp -frp ${curr_dir}/.config ${home_dir}/
-    cp -frp ${curr_dir}/.local ${home_dir}/
-    cp -rfp ${curr_dir}/.grc ${home_dir}/
-    cp -rfp ${curr_dir}/.vim ${home_dir}/
-    cp -rfp ${curr_dir}/.nvim ${home_dir}/
+    for dot in ${list_dotdir}; do
+        cp -frp ${curr_dir}/${dot} ${home_dir}/
+    done
 
-    check_nvim=$(type -P nvim)
-    if [[ $? != 0 ]]; then 
-        rm -rf ${home_dir}/.config/.nvim
-        rm -rf ${home_dir}/.nvim
-    fi
-
-    chmod +x ${home_dir}/.local/bin/*
-    ln -ns $vimless ${home_dir}/.local/bin/vimless
+    chmod +x ${home_dir}/.local/bin/*              2> /dev/null
+    ln -ns $vimless ${home_dir}/.local/bin/vimless 2> /dev/null
 
     if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
-    chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/
-    chown -R $current_user: ${home_dir}/{.shell_source,.grc,.local}/
+    chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/              2> /dev/null
+    chown -R $curredt_user: ${home_dir}/{.shell_source,.grc,.local,.cache}/ 2> /dev/null
+
+    if [ 7 -eq "${vimver_first}" ]; then
+        cp -frp ${curr_dir}/usr/share/vimOLD/plugin ${home_dir}/.vim/
+        sed -i 's/let .t_SR =/"&/' ${home_dir}/.vimrc
+        sed -i 's/set completeopt=/"&/' ${home_dir}/.vimrc
+        sed -i 's/set termguicolors/"&/' ${home_dir}/.vimrc
+    elif [ "${vimver_first}" -gt 7 ]; then
+        cp -frp ${curr_dir}/usr/share/vimXX/plugin ${home_dir}/.vim/
+        cp -frp ${curr_dir}/usr/share/vimXX/autoload ${home_dir}/.vim/
+        cp -frp ${curr_dir}/usr/share/vimXX/doc ${home_dir}/.vim/
+    else
+        echo 'not used vimchar'
+    fi
+
+    if [ -z "$check_nvim" ]; then
+        rm -rf ${home_dir}/.config/nvim
+        rm -rf ${home_dir}/.nvim
+    fi
 }
 
 copyHomeRoot(){
-    if $(sudo -v); then
-        sudo sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
+    local sudo_used=''
 
-        if [ -z "$(sudo grep 'source ~/.source-root' /root/.bashrc)" ]; then
-            sudo sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v); then
+            sudo_used='sudo'
         fi
-
-        sudo sh -c "cp -f ${curr_dir}/.source-root /root/"
-        sudo sh -c "ln -s ${home_dir}/.local/bin /usr/local/local_bin"
     fi
+
+    $sudo_used sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
+    if [ -z "$($sudo_used grep 'source ~/.source-root' /root/.bashrc)" ]; then
+        $sudo_used sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
+    fi
+
+    $sudo_used chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/              2> /dev/null
+    $sudo_used chown -R $current_user: ${home_dir}/{.shell_source,.grc,.local,.cache}/ 2> /dev/null
+    $sudo_used sh -c "cp -f ${curr_dir}/.source-root /root/"
+    $sudo_used sh -c "ln -s ${home_dir}/.local/bin /usr/local/local_bin" 2> /dev/null
 }
 
 copyRoot(){
@@ -100,19 +116,19 @@ setPathSudo(){
     local sudopath="/etc/sudoers"
     local sudo_used=''
 
-    if [[ $EUID -ne 0 ]]; then 
-        if $(sudo -v); 
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v);
             then sudo_used='sudo'
             else sudo_used='no'
         fi
-    fi    
-    
+    fi
+
 
     if [ "$sudo_used" != 'no' ] ; then
         local securepath=$(${sudo_used} grep -n 'secure_path' ${sudopath} |grep -v '#')
         local num=$(echo $securepath |cut -d ':' -f1)
         local sudo_user=$(${sudo_used} sh -c 'echo $SUDO_USER')
-        
+
         if [ -n "$num" ]; then
             content=$(echo $securepath |awk -F "\"" '{print $2}')
 
@@ -120,7 +136,7 @@ setPathSudo(){
                 content=$(echo $securepath |awk -F "=" '{print $2}' |tr -d ' ')
             fi
 
-            if [ -n "$content" ]; then 
+            if [ -n "$content" ]; then
                 change=false
                 check_sbin=$(echo $content |grep '\/usr\/local\/sbin')
                 if [[ $? != 0 ]]; then content="${content}:/usr/local/sbin"; change=true; fi
@@ -140,8 +156,8 @@ setPathSudo(){
                         ${sudo_used} sed -i "${num}i Defaults       secure_path=\"${content}\"" $sudopath
                     fi
                 fi
-            else 
-                echo -e "\n\033[0;31m Secure_path not found \033[0m" 
+            else
+                echo -e "\n\033[0;31m Secure_path not found \033[0m"
             fi
         fi
     fi
