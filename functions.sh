@@ -1,18 +1,10 @@
 date_time="$(date +%Y-%m-%d_%H-%M-%S)"
 
 backupHome(){
-    local sudo_used=''
-
     for conf in $backup_user; do
         cp -rpf ${home_dir}/$conf ./backup_dir/user/ 2> /dev/null
     done
-
-    if [[ $EUID -ne 0 ]]; then
-        if $(sudo -v); then
-           sudo_used='sudo'
-        fi
-        $sudo_used sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
-    fi
+    $sudo_used sh -c "cp -p /root/{.bash_profile,.profile} ./backup_dir/root/ 2> /dev/null"
 
     tar -cf "backcup_dir_${date_time}.tar" ${curr_dir}/backup_dir
     echo -e "\n\033[0;32m $current_user  You old setting backuped to dotfiles/backup_dir \033[0m"
@@ -34,6 +26,7 @@ backupRoot(){
 copyHome(){
     local check_fc_cache=$(type -P fc-cache)
     local check_nvim=$(type -P nvim)
+    local list_dotdir='.shell_source .config .local .grc .vim .nvim'
 
     for conf in $conf_files; do
         cp -fr ${curr_dir}/$conf ${home_dir}/
@@ -47,8 +40,8 @@ copyHome(){
     ln -ns $vimless ${home_dir}/.local/bin/vimless 2> /dev/null
 
     if [ -n "${check_fc_cache}" ]; then fc-cache -f -v > /dev/null; fi
-    chown -R $current_user: ${home_dir}/.config/{mc,vim,nvim}/              2> /dev/null
-    chown -R $curredt_user: ${home_dir}/{.shell_source,.grc,.local,.cache}/ 2> /dev/null
+    $sudo_used ochown -R $current_user: ${home_dir}/.config/{mc,nvim}/                      2> /dev/null
+    $sudo_used chown -R $curredt_user: ${home_dir}/{.shell_source,.grc,.local,.cache,.vim}/ 2> /dev/null
 
     if [ 7 -eq "${vimver_first}" ]; then
         cp -frp ${curr_dir}/usr/share/vimOLD/plugin ${home_dir}/.vim/
@@ -70,14 +63,6 @@ copyHome(){
 }
 
 copyHomeRoot(){
-    local sudo_used=''
-
-    if [[ $EUID -ne 0 ]]; then
-        if $(sudo -v); then
-            sudo_used='sudo'
-        fi
-    fi
-
     $sudo_used sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
     if [ -z "$($sudo_used grep 'source ~/.source-root' /root/.bashrc)" ]; then
         $sudo_used sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
@@ -114,17 +99,8 @@ copyRoot(){
 
 setPathSudo(){
     local sudopath="/etc/sudoers"
-    local sudo_used=''
 
-    if [[ $EUID -ne 0 ]]; then
-        if $(sudo -v);
-            then sudo_used='sudo'
-            else sudo_used='no'
-        fi
-    fi
-
-
-    if [ "$sudo_used" != 'no' ] ; then
+    if [ -n "$sudo_used" ] ; then
         local securepath=$(${sudo_used} grep -n 'secure_path' ${sudopath} |grep -v '#')
         local num=$(echo $securepath |cut -d ':' -f1)
         local sudo_user=$(${sudo_used} sh -c 'echo $SUDO_USER')

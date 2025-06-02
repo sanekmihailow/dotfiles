@@ -14,19 +14,15 @@ home_dir="$HOME"
 curr_dir="$(pwd)"
 os_family="$(cat /etc/os-release |grep -w 'ID_LIKE')"
 next='yes'
-sudo_sudo=''
+sudo_used=''
 
 
 conf_files=".bashrc .screenrc .tmux.conf .vimrc .source-user .bash_profile .profile"
 backup_user=".bashrc .screenrc .tmux.conf .vimrc .bash_history .grc .local .vim .bash_profile .profile"
 
-if [ ! -d ${curr_dir}/.shell_source ]; then
-    mv ${curr_dir}/shell_source ${curr_dir}/.shell_source;
-fi
-
 if [[ $EUID -ne 0 ]]; then
     if $(sudo -v); then
-        sudo_sudo='sudo'
+        sudo_used='sudo'
     fi
 fi
 
@@ -48,13 +44,13 @@ if [ -z $vim_ver ]; then
 else
     mkdir -p ./backup_dir/{user,root}
     if [ -d ${home_dir}/.config/mc ]; then
-        ${sudo_sudo} sh -c "cp -rpf ${home_dir}/.config/mc ${curr_dir}/backup_dir/"
+        ${sudo_used} sh -c "cp -rpf ${home_dir}/.config/mc ${curr_dir}/backup_dir/"
     fi
 
     if [ -d ${home_dir}/.config/nvim ]; then
-        ${sudo_sudo} sh -c "cp -rpf ${home_dir}/.config/nvim ${curr_dir}/backup_dir/"
+        ${sudo_used} sh -c "cp -rpf ${home_dir}/.config/nvim ${curr_dir}/backup_dir/"
     fi
-    $sudo_sudo chown -R $current_user: ${home_dir}/.config/{mc,nvim}/ 2> /dev/null
+    $sudo_used chown -R $current_user: ${home_dir}/.config/{mc,nvim}/ 2> /dev/null
 
     if [ -n "$1" ]; then
         if [ "$1" == 'local' ]; then
@@ -90,7 +86,7 @@ else
         copyRoot
         setPathSudo
     elif [[ $choose == 3 ]]; then
-        check_source_root="$($sudo_sudo cat /root/.source-user 2>&1 |egrep -v 'No such file or directory|Permission denied')"
+        check_source_root="$($sudo_used cat /root/.source-user 2>&1 |egrep -v 'No such file or directory|Permission denied')"
         if [ -n "$check_source_root" ]; then
             backupRoot
             copyRoot
