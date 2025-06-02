@@ -572,7 +572,7 @@ function show_new_files() {
             -o -path /dev
             -o -path /run
             -o -path /var/lib/docker
-            -o -path */.git
+            -o -path '*/.git'
         "
     fi
 
