@@ -170,7 +170,7 @@ cht() { /usr/bin/curl cheat.sh/"$@"; }
 sys-start() { sudo bash -c "sudo systemctl start $*"; sudo systemctl status $* --full --no-pager; }
 sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $* --full --no-pager; }
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --full --no-pager; }
-sys-restart() { sudo bash -c "systemctl restart $*" && sleep 1 && sudo systemctl status $* --full --no-pager; }
+sys-restart() { sudo bash -c "systemctl restart $*" && sleep 2 && sudo systemctl status $* --full --no-pager; }
 sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
 sys-cat() { sudo bash -c "systemctl cat $* --full --no-pager"; }
 sys-edit() { sudo bash -c "sudo EDITOR=vim systemctl edit $*"; }
@@ -179,7 +179,7 @@ sys-disable() { sudo bash -c "systemctl disable $*"; }
 sys-daemon() { sudo bash -c "systemctl daemon-reload"; }
 sysstopstart() { 
     sudo bash -c "systemctl stop $*" && sleep 1 && 
-    sudo systemctl start $* && sleep 1 && 
+    sudo systemctl start $* && sleep 3 && 
     sudo systemctl status $* --full --no-pager
 }
 
@@ -932,6 +932,36 @@ docker_exec() {
     fi
 
 }
+
+cat_z () {
+    local path_logs="${2:-.}"
+    local pattern="$1"
+    local sudo_used=''
+    local type_log=''
+
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v);
+            then sudo_used='sudo'
+        fi
+    fi
+
+    ${sudo_used} find "$path_logs" -type f -name "$pattern" -print0 |while IFS= read -r -d $'\0' log_file; do
+        type_log="$( ${sudo_used} file $log_file |cut -d ':' -f2 |cut -d ',' -f1)"
+        
+        case "$type_log" in
+            *ASCII*) archive_cat="cat" ;;
+            *gzip*)  archive_cat="zcat" ;;
+            *XZ*)    archive_cat="xzcat" ;;
+            *bzip2*) archive_cat="bzcat" ;;
+            *lzip*)  archive_cat="lzcat" ;;
+            *)       archive_cat="cat" ;;
+        esac
+
+        ${sudo_used} ${archive_cat} "$log_file"
+    done
+}
+
+
 
 myfunctions_aliases () {
     echo -e '
