@@ -295,7 +295,13 @@ set incsearch                               " use incremental search for show di
 
 "-- TAB/INDENT
 set backspace=indent,eol,start              " use for remove indents, line breaks, symbols
-set tabstop=4 shiftwidth=4 softtabstop=4 expandtab autoindent smartindent  " use 4 spaces for indents(tabs)
+set tabstop=4                               " use 4 spaces for indents(tabs)
+set shiftwidth=4
+set softtabstop=4
+set expandtab                               " use spaces instead tab
+set autoindent
+set smartindent
+
 set copyindent                              " copy the previous indentation on autoindenting (wan nocopyindent)
 set wrap
 

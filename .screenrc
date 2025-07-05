@@ -17,7 +17,7 @@ bind ^[ copy
 
 # more buffer size equal less new window (2999999 - 7 window max)
 # 999999 equal 15 window max
-defscrollback 499999
+defscrollback 399999
 bind ^k
 bind ^\
 bind \\ quit

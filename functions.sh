@@ -63,7 +63,7 @@ copyHome(){
 }
 
 copyHomeRoot(){
-    $sudo_used sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/"
+    $sudo_used sh -c "cp -f ${curr_dir}/{.source-root,.bash_profile,.profile} /root/" 2> /dev/null
     if [ -z "$($sudo_used grep 'source ~/.source-root' /root/.bashrc)" ]; then
         $sudo_used sh -c "echo 'source ~/.source-root' >> /root/.bashrc"
     fi

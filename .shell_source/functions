@@ -9,11 +9,11 @@ highlightgnu='cat|tac|nl|od|base32|base64|basenc|fmt|pr|fold|head|tail|split|csp
 # install colorex or delete string the end
 hhgrepv='(grep.*|hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-grep|hhlastuniq|hhistory-uniq) '
 hhgrepvfirst='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|grep|hhlastuniq-grep|hhlastuniq|hhistory-uniq)'
-hhlocalgrepv='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-grep|hhlastuniq|hhisrtory-uniq)' 
+hhlocalgrepv='^(hi|hh|hhall|history|hhistory|hhuniq|plz|sr|hhnumuniq|hhlastuniq-grep|hhlastuniq|hhisrtory-uniq)'
 
 #search for tag-
 hi() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]
         then history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9] |sed -E "s/$/\n/g"'
         else history |grep --color=always "tag-$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi
@@ -21,7 +21,7 @@ hi() {
 
 # search for all history and show 50 last
 hh() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ] 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]
         then history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |colorex -b '^....[0-9]'
         else history |grep --color=always -i "$@" |grep -wvE "${hhgrepv}" |tail -n60 |grep '^....[0-9]'
     fi
@@ -37,15 +37,15 @@ hhall() {
 
 # search all history and highlight special command
 hhistory() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then
         history |grep -wvE "${hhgrepv}" |colorex -b '^....[0-9]' |colorex -c ":[0-9][0-9] (${highlightgnu})" |colorex -y ":[0-9][0-9] (${highlightcom})" |colorex -B ":[0-9][0-9] (${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
-    else history |grep --color=always -wvE "${hhgrepv}" |grep '^....[0-9]' 
+    else history |grep --color=always -wvE "${hhgrepv}" |grep '^....[0-9]'
     fi
 }
 
 # serach uniq word
 hhuniq() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then
         history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else
         history |grep --color=always -i "$@" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}"|awk "!a[\$0]++"
@@ -55,7 +55,7 @@ hhuniq() {
 # search last uniq word from your past line numbers
 # Example: hhlastuniq 50
 hhlastuniq() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
     else
         history |tail -n "$1" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhgrepvfirst}" |awk "!a[\$0]++"
@@ -79,7 +79,7 @@ hhlastuniq-grep() {
 hhnumuniq() {
     declare -A unnumber
     local len="$(hhuniq "$@" |wc -l)"
-    local criterion="$(history | grep --color=none -i "$@" |grep --color=none -wv "${hhgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"    
+    local criterion="$(history | grep --color=none -i "$@" |grep --color=none -wv "${hhgrepv}" |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |awk "!a[\$0]++")"
     local listprevent="$(history | grep --color=always -i "$@" |grep -wv "${hhgrepv}" |sed -E 's/^\s{4}//g' |awk "!a[\$0]++")"
 
     for i in $(seq $len); do
@@ -93,9 +93,9 @@ hhnumuniq() {
 }
 
 hhistory-uniq() {
-    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then 
+    if [ -n "$(whereis colorex |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ')" ]; then
         history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}"  |awk "!a[\$0]++" |colorex -c "^(${highlightgnu})" |colorex -y "^(${highlightcom})" |colorex -Y "^(${highlightsudo}).*" |colorex -r '\|' |colorex -D '\|' |colorex -g '\/' |colorex -M '\\'
-    else 
+    else
         history |awk "{\$1=\$2=\$3\"\"; print \$0}" |sed -E 's/^\s{8}//g' |sed 's/^\(\([0-9]\{2\}:\)\{2\}[0-9]\{2\}\s\)\{3\}//g' |grep -vE "${hhlocalgrepv}" |awk "!a[\$0]++"
     fi
 }
@@ -172,14 +172,16 @@ sys-stop() { sudo bash -c "systemctl stop $*"; sudo systemctl status $* --full -
 sys-reload() { sudo bash -c "systemctl reload $*"; sudo systemctl status $* --full --no-pager; }
 sys-restart() { sudo bash -c "systemctl restart $*" && sleep 2 && sudo systemctl status $* --full --no-pager; }
 sys-stat() { sudo bash -c "systemctl status $* --full --no-pager"; }
+sys-list() { sudo bash -c "systemctl list-units '*$1*' --full --no-pager"; }
+sys-sock() { sudo bash -c "systemctl list-sockets '*$1*' --full --no-pager"; }
 sys-cat() { sudo bash -c "systemctl cat $* --full --no-pager"; }
 sys-edit() { sudo bash -c "sudo EDITOR=vim systemctl edit $*"; }
 sys-enable() { sudo bash -c "systemctl enable $*"; }
 sys-disable() { sudo bash -c "systemctl disable $*"; }
 sys-daemon() { sudo bash -c "systemctl daemon-reload"; }
-sysstopstart() { 
-    sudo bash -c "systemctl stop $*" && sleep 1 && 
-    sudo systemctl start $* && sleep 3 && 
+sysstopstart() {
+    sudo bash -c "systemctl stop $*" && sleep 1 &&
+    sudo systemctl start $* && sleep 3 &&
     sudo systemctl status $* --full --no-pager
 }
 
@@ -188,7 +190,7 @@ check_mem_humanreadable() { ps aux | awk '{print $6/1024 " MB\t\t" $11}' | sort 
 check_mem_procent() { ps -e -o pid,user,%mem,command --sort %mem; }
 check_mem() { ps -e -o pid,vsz,comm= | sort -n -k 2; }
 check_swap() {
-    for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do 
+    for dir in $(find /proc/ -maxdepth 1 -type d |grep -E "[0-9]+"); do
         local pid=$(echo $dir |cut -d/ -f3)
         local cmd=$(ps h -o comm -p $pid)
         local swap=$(grep VmSwap ${dir}/status 2> /dev/null |awk '{print int($2/1024)}')
@@ -204,7 +206,7 @@ ports() {
     local check_netstat=$(type netstat)
     local sudo_used=''
 
-    if $(sudo -v); then sudo_used='sudo'; fi    
+    if $(sudo -v); then sudo_used='sudo'; fi
 
     if [ -n "$check_netstat" ]
         then ${sudo_used} netstat -tulpn |sort -t: -k2 -n
@@ -221,7 +223,7 @@ allcrontab() {
     local YELLOW='\e[22;33m'
     local NC='\e[0m'
 
-    local cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)" 
+    local cron_dir="$(find /etc -type d -name "*cron*" 2> /dev/null)"
 
     for dir in $cron_dir; do
         echo -e "----------------- ${PURPLE}START ${dir} -------------------- ${NC}\n"
@@ -253,13 +255,13 @@ allcrontab() {
                     echo -e "${RED}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${RED}======${NC}"
                         sudo sh -c "crontab -l -u ${user}" |sed '/ *#/d; /^ *$/d'
                     echo -e "${RED}====== End crontab for user ${NC}${GREEN}${user}${NC} ${RED}========${NC}\n"
-                fi    
+                fi
             done
-        else 
+        else
             echo -e "${YELLOW}====== Start crontab for user ${NC}${GREEN}${user}${NC} ${YELLOW}======${NC}"
                 crontab -l |sed '/ *#/d; /^ *$/d'
             echo -e "${YELLOW}====== End crontab for user ${NC}${GREEN}${user}${NC} ${YELLOW}========${NC}\n"
-        fi   
+        fi
     echo -e "----------------- ${PURPLE}END users crontab -------------------- ${NC}\n"
 
 }
@@ -267,7 +269,7 @@ allcrontab() {
 
 checkSizeInDirWithIgnore() {
 #C- example: checkSizeInDirWithIgnore var boot
-#or         checkSizeInDirWithIgnore 
+#or         checkSizeInDirWithIgnore
     local params=''
     local with=false
     if [ "$1" = '--with-proc' ]
@@ -300,10 +302,11 @@ checkSizeInDirWithIgnore() {
     fi
 }
 
- 
+
 removeComments() {
 #C- Used: removeComments /path/to/file '\;'
 #or       removeComments /path/to/file
+#TODO ADD EXCLUDE SPECIFIC
     local run=false
     local removed='#'
     local path="$1"
@@ -333,6 +336,7 @@ removeComments() {
 egreplessdir() {
 #C- Example: egreplessdir  'struing' /path/to/dir '\string_exclude_comment' '--<param>'
 #or          egreplessdir  'string pattern' /path/to/dir
+#TODO ADD IGNORE
     local run=false
     local comment='#'
     local path="$2"
@@ -443,10 +447,10 @@ showCountOpenFiles () {
 
             echo -e "summarize files opened -\033[0;35m $sum \033[0m"
 
-        else 
+        else
             echo -e "\033[1;31m Parent pid dont't be euqal 1/0 or content alphabic symbols;\033[0m ppid =$Ppid; you inputed - $srv_app"
         fi
-    else  
+    else
         echo -e "\033[1;31m You don't have sudo priveleges"
     fi
 }
@@ -464,7 +468,7 @@ rm() {
                 then /bin/rm -rf "$@"
                 else echo "Cancel"
             fi
-        else 
+        else
             echo "Cancel"
         fi
     else
@@ -479,7 +483,9 @@ function move_cursor_to_end_line () {
 }
 
 function show_new_files() {
-#(%c)
+# TODO add range search times
+# TODO add --help or -h
+# TODO add naming log install
     local change_time=true
     local sort_name=true
     local root_tree=true
@@ -500,10 +506,13 @@ function show_new_files() {
     local comamnd_output=''
     local new_cat=''
     local echo_console=''
-    local start_exclude_path="-path /tmp/d313d4379asgdgs"
+    local start_exclude_path="-path /tmp/new_files"
     local exclude_paths=''
     local exclude_shares="-o -path /mnt"
     local exclude=''
+    local last_history=''
+    local hist_exclude=''
+    local all_cli_args="$*"
 
 
     if [ -n "$1" ]; then
@@ -512,11 +521,12 @@ function show_new_files() {
         fi
     fi
 
-    if [[ $EUID -ne 0 ]]; then 
-        if $(sudo -v); 
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v);
             then sudo_used='sudo'
         fi
     fi
+
 
         # check parameters
     while [[ "$#" -gt 0 ]]; do
@@ -528,7 +538,7 @@ function show_new_files() {
             --exclude=*) exclude="${1#*=}" ;;
             --share) no_shares=false ;;
             --all) include_all_dirs=true; no_shares=true ;;
-            *) 
+            *)
                 #ignore
                 ;;
         esac
@@ -554,7 +564,7 @@ function show_new_files() {
         for i in ${exclude}; do
             exclude_paths="${exclude_paths} -o -path ${i}"
         done
-    fi    
+    fi
 
         # search path
     if $root_tree; then
@@ -583,7 +593,7 @@ function show_new_files() {
             for i in ${shares}; do
                 exclude_shares="${exclude_shares} -o -path ${i}"
             done
-        fi    
+        fi
     else exclude_shares=''
     fi
 
@@ -593,10 +603,29 @@ function show_new_files() {
     else
         if [ ! -d ${out_path} ]; then mkdir -p ${out_path}; fi
         check_tee=$(type -P tee)
-        if [[ $? == 0 ]]; 
-            then new_cat='tee '
-            else new_cat='cat > '
+        if [[ $? == 0 ]];
+            then new_cat='tee -a'
+            else new_cat='cat >> '
         fi
+        hist_exclude='^(#|vi?m|cat|head|tail|source|lla|ll|less|more|show_new_file|show_changed_files|git\ (log|commit|reset|status|pull|set|fetch|branch|switch))'
+        last_history=$(
+          tail "${HOME}/.bash_history" -n 200 |
+          awk '
+            {
+              if ($1 ~ /^[0-9]/) {
+                for (i = 4; i <= NF; i++) {
+                  printf "%s%s", $i, (i < NF ? OFS : ORS)
+                }
+              } else {
+                print $0
+              }
+            }
+          ' |
+          egrep -v "${hist_exclude}|${hhlocalgrepv}|^$" |
+          tail -n10
+        )
+
+        echo -e "${all_cli_args} \n ${last_history} \n " >> ${out_path}/changed_from_${TIME}_last_${minits}_min
         command_output="$new_cat ${out_path}/changed_from_${TIME}_last_${minits}_min"
         echo_console="saved output in ${out_path}/changed_from_${TIME}_last_${minits}_min"
     fi
@@ -606,13 +635,13 @@ function show_new_files() {
                     \) -prune \
                     -o -type f -cmin -${minits} \
                     -printf "${print_args}" \
-    |awk '{ 
+    |awk '{
         $2 = substr($2, 1, 12);
         if (length($3) >= 3 && length($3) < 6) {
-           $3 = sprintf("\t%.2fkb\t", $3/1024); 
+           $3 = sprintf("\t%.2fkb\t", $3/1024);
         } else if (length($3) >= 6 && length($3) < 10) {
            $3 = sprintf("\t%.2fmb\t", $3/1024/1024);
-        } else if (length($3) >= 10 && length($3) < 13) { 
+        } else if (length($3) >= 10 && length($3) < 13) {
            $3 = sprintf("\t%.2fgb\t", $3/1024/1024/1024);
         } else if (length($3) >= 13) {
            $3 = sprintf("\t%.2ftb\t", $3/1024/1024/1024/1024);
@@ -620,7 +649,7 @@ function show_new_files() {
            $3 = "\t"$3 "b""\t";
         }
         $4=$4 "\t " ;
-        print 
+        print
     }' \
     |sort ${sort_args} \
     |eval "$( echo ${command_output} )"
@@ -641,7 +670,7 @@ function show_new_files() {
 
 show_changed_files() {
     local search_path='.'
-    local start_exclude_path="-path /tmp/d313d4379asgdgs"
+    local start_exclude_path="-path /tmp/new_files"
     local exclude_paths=''
     local sudo_used=''
     local row_lenght=25
@@ -660,8 +689,8 @@ show_changed_files() {
         fi
     fi
 
-    if [[ $EUID -ne 0 ]]; then 
-        if $(sudo -v); 
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v);
             then sudo_used='sudo'
         fi
     fi
@@ -674,7 +703,7 @@ show_changed_files() {
             --date-format=*) iso_format="${1#*=}" ;;
             --exclude=*) exclude="${1#*=}" ;;
             --old) old_sort=true ;;
-            *) 
+            *)
                 #ignore
                 ;;
         esac
@@ -706,10 +735,14 @@ show_changed_files() {
     |${column}
 }
 
+#addBackup() {
+    # TODO
+    # подсчет ${1}.bak\d* через ls and wc -l затем increment для нового
+#}
 
 function docker_inspect() {
-#docker inspect with 
-    if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then 
+#docker inspect with
+    if [ -n $(whereis docker |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
         if [ -n $(whereis jq |cut -d: -f2 |egrep '/bin|/sbin' |tr -d ' ') ]; then
 
             local sudo_used=''
@@ -911,7 +944,7 @@ function docker_log() {
             | jq -r '.[0].State.Health.Log[].Output'
 
             echo -e "==================== LOGS for ${1} =====================: \n\n"
-            ${sudo_used} docker logs --details -f "$1"                
+            ${sudo_used} docker logs --details -f "$1"
         fi
     fi
 }
@@ -947,7 +980,7 @@ cat_z () {
 
     ${sudo_used} find "$path_logs" -type f -name "$pattern" -print0 |while IFS= read -r -d $'\0' log_file; do
         type_log="$( ${sudo_used} file $log_file |cut -d ':' -f2 |cut -d ',' -f1)"
-        
+
         case "$type_log" in
             *ASCII*) archive_cat="cat" ;;
             *gzip*)  archive_cat="zcat" ;;
@@ -982,6 +1015,8 @@ SYSTEMD:
         sys-stop
         sys-reload
         sys-stat
+        sys-list
+        sys-sock
         sys-cat
         sys-edit
         sys-enable
@@ -1012,6 +1047,7 @@ SEARCH:
         psaux, psu, psg
         dirtree, stripcomments
         show_new_files
+        show_changed_files
 
 DOCKER:
         docker_all
@@ -1025,7 +1061,7 @@ DOCKER:
         docker_inspect
 
 SYNC:
-       scpresume 
+       scpresume
 
 HIGHLIGHTS:
         gulimit             - highlight ulimit
@@ -1046,7 +1082,7 @@ GIT SHORCUTS:
 
 OTHER:
         incognito
-        extract
+        extract cat_z
         defcat              - /usr/bin/cat
         scriptformat        - remove ansci unprintable cahracters
         se                  - short sudo
@@ -1054,7 +1090,7 @@ OTHER:
         maketar
         makezip
         cht                 - search in cheat.sh
-        vime, svi                
+        vime, svi
         wdownload, lnn
         xsc, lnn
         lla, lss
@@ -1064,5 +1100,4 @@ OTHER:
         locru, locen, lessr
 
     '
-}    
-
+}
