@@ -485,7 +485,7 @@ function move_cursor_to_end_line () {
 function show_new_files() {
 # TODO add range search times
 # TODO add --help or -h
-# TODO add naming log install
+# TODO add naming log install #use arrat for case *
     local change_time=true
     local sort_name=true
     local root_tree=true
@@ -734,7 +734,7 @@ show_changed_files() {
         sort_date="eval sort -n"
     fi
 
-    if create; then
+    if $create; then
         if [ ! -d ${out_path} ]; then mkdir -p ${out_path}; fi
         check_tee=$(type -P tee)
         if [[ $? == 0 ]];
@@ -758,10 +758,42 @@ show_changed_files() {
     echo -e "\n\033[0;32m ${echo_console} \033[0m"
 }
 
-#addBackup() {
-    # TODO
-    # подсчет ${1}.bak\d* через ls and wc -l затем increment для нового
-#}
+addBackup() {
+    local backup_path="${PWD}/${1}"
+    local check_type="$(file -b ${backup_path})"
+    sudo_used=''
+    local num=0
+    local check_num=0
+    local check_zstd=''
+
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v);
+            then sudo_used='sudo'
+        fi
+    fi
+
+    if [ "$check_type" = "directory" ]
+        then
+            check_previous="$(2>/dev/null ls -a ${backup_path}_[0-9]* |egrep '\.(gz|zst)' 2> /dev/null)"
+            if [ -n "$check_previous" ]; then
+                check_num=$(echo "$check_previous" |wc -l)
+            fi
+            num=$(expr $check_num + 1)
+            check_zstd="$(type -P zstd)"
+            if [ -n "$check_zstd" ]
+                then ${sudo_used} tar -I "zstd -12 -T0" -cf ${backup_path}_${num}.tar.zst ${backup_path}
+                else ${sudo_used} tar czfp ${backup_path}_${num}.tar.gz ${backup_path}
+            fi
+        else
+            check_previous="$(2>/dev/null ls -a ${backup_path}* |egrep '\.bak[0-9]*' 2> /dev/null)"
+            if [ -n "$check_previous" ]; then
+                check_num=$(echo "$check_previous" |wc -l)
+            fi
+            num=$(expr $check_num + 1)
+            ${sudo_used} cp ${backup_path} ${backup_path}.bak${num}
+    fi
+}
+
 
 function docker_inspect() {
 #docker inspect with
