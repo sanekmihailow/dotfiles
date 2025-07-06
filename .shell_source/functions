@@ -334,38 +334,62 @@ removeComments() {
 }
 
 egreplessdir() {
-#C- Example: egreplessdir  'struing' /path/to/dir '\string_exclude_comment' '--<param>'
-#or          egreplessdir  'string pattern' /path/to/dir
-#TODO ADD IGNORE
+#C- Example: egreplessdir  'string' /path/to/dir '\comment_prefix' '--binary' '--exclude=dir1:dir2' 
+#or          egreplessdir  'pattern' /path --exclude=.git:node_modules
     local run=false
     local comment='#'
     local path="$2"
     local pattern="$1"
     local param=''
+    local exclude_dirs=()
+    local grep_excludes=()
+    local exclude='tmp_d313d4379asgdgs'
+    local grep_flags="-iIr"
+    local arr_old_args=("$@")
+    local arr_new_args=()
 
-    if [ "$#" -le 1 ]; then
-       echo -e "Error: too few arguments, must will be min - 2"
+    for arg in "${arr_old_args[@]}"; do
+        if [[ "$arg" == --exclude=* ]]; then
+            IFS=':' read -ra dirs <<< "${arg#*=}"
+            exclude_dirs+=("${dirs[@]}")
+        else
+            arr_new_args+=("$arg")
+        fi
+    done
+
+        # rewrite parametes (remove parameters exclude)
+    set -- "${arr_new_args[@]}"
+    pattern="$1"
+    path="$2"
+    
+    if [ "$#" -lt 2 ]; then
+       echo -e "Error: too few arguments, must be min - 2"
     elif [ "$#" -gt 4 ]; then
-       echo -e "Error: too many arguments, must will be max - 4"
+       echo -e "Error: too many arguments, must be max - 4 (including --exclude='dir1:dir2')"
     else
         run=true
-
         if [ "$#" -ge 3 ]; then
-            if [ "$3" != '' ];  then comment="$3"; fi
-            if [ "$3" != ' ' ]; then comment="$3"; fi
+            if [ -n "$3" ] && [ "$3" != " " ]; then
+                comment="$3"
+            fi
         fi
 
-        if [ "$#" -eq 4 ]; then param="$4"; fi
+        if [ "$#" -eq 4 ]; then
+            param="$4"
+        fi
     fi
 
-
     if [ "$run" = true ]; then
-        if [ "$param" = '--binary' ]; then
-            grep -o ".\{0,120\}${pattern}.\{0,120\}" -ir "$path" |egrep -v "^${comment}|^\s?+${comment}" \
-                            |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern";    else
-            grep -o ".\{0,120\}${pattern}.\{0,120\}" -iIr "$path" |egrep -v "^${comment}|^\s?+${comment}" \
-                            |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -i "$pattern"
-        fi
+        if [ "$param" = '--binary' ]; then  grep_flags="-iar" ; fi
+        for dir in "${exclude_dirs[@]}"; do
+                #add element to array
+            grep_excludes+=(--exclude-dir="$dir")
+        done
+
+        grep "${grep_excludes[@]}" -o ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" |\
+        egrep -v "^${comment}|^\s?+${comment}" | \
+        sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" | \
+        grep -i "$pattern"
     fi
 }
 
