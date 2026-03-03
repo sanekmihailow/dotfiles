@@ -1,5 +1,6 @@
 /.git/
 /backup_dir/
+__pycache__/
 *.swp
 *.swo
 *.tar
@@ -7,5 +8,7 @@
 *.gz
 *.bak*
 *.un~
+*.pyc
+*.pyo
 
 
