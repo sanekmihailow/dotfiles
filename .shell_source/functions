@@ -309,35 +309,74 @@ checkSizeInDirWithIgnore() {
     fi
 }
 
-
 removeComments() {
-#C- Used: removeComments /path/to/file '\;'
-#or       removeComments /path/to/file
-#TODO ADD EXCLUDE SPECIFIC
+# Used: removeComments /path/to/file [removed_char] [--implode]
+# or    removeComments /path/to/file --implode
+# TODO ADD EXCLUDE SPECIFIC
     local run=false
     local removed='#'
-    local path="$1"
+    local implode=false
+    local path=''
+    local cmd=('egrep')
+    # нужен чтобы '#' не съедался внутри двойных кавычек sed
+    local marker="$(printf '%s' "${removed}PATTERN_DEL")"
+    local tail_cmd=('cat' '-s')
+    local help_text
 
-    if [ "$#" -lt 1 ]; then
-       echo -e "Error: no arguments, must will be min - 1"
-    elif [ "$#" -gt 2 ]; then
-       echo -e "Error: too many arguments, must will be max - 2"
+	help_text=$(cat <<'EOF'
+removeComments - remove typical useless comments
+
+USAGE:
+	removeComments <file> [removed_char] [--implode]
+
+ARGUMENTS:
+  <file>          path to file
+
+OPTIONS:
+  [removed_char]  comment character (default: #)
+  --implode       remove all empty lines (default: squeeze multiple into one)
+
+EXAMPLES:
+  removeComments /etc/ssh/sshd_config
+
+  # And remove empty strings
+  removeComments /etc/ssh/sshd_config --implode
+
+  # Remove comments with specific char, on example ;
+  removeComments /path/to/file '\;'
+EOF
+)
+
+    for arg in "$@"; do
+        case "$arg" in
+            --implode) implode=true ;;
+            -h|--help|help) echo "$help_text"; return ;;
+            *) 
+				[ -z "$path" ] && path="$arg" || removed="$arg" ;;
+        esac
+    done
+
+    if [ -z "$path" ]; then
+        echo -e "Error: no arguments, must will be min - 1"
     else
         run=true
-
-        if [ "$#" -eq 2 ]; then
-            if [ "$2" != '' ];  then removed="$2"; fi
-            if [ "$2" != ' ' ]; then removed="$2"; fi
-        fi
     fi
 
     if [ "$run" = true ]; then
-        if $(sudo -v); then
-            sudo cat "$path" |egrep -v "^${removed}|^\s?+${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
-        else
-            cat "$path" |egrep -v "^${removed}|^\s?+${removed}|^$" |sed "s/${removed}.*//g" |sed '/^$/d' |grep -v '^\s*$'
+        if [[ $EUID -ne 0 ]]; then
+            if $(sudo -v); then
+                cmd=('sudo' 'egrep')
+            fi
         fi
-     fi
+
+        if [ "$implode" = true ]; then
+            tail_cmd=('grep' '-v' '^$')
+        fi
+
+        "${cmd[@]}" -v "^\s*${removed} .*$" "$path" \
+            |sed "s| ${removed} .*| ${marker}|g" \
+            |sed 's/^\s*$//' |"${tail_cmd[@]}"
+    fi
 }
 
 egreplessdir() {
