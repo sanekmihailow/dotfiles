@@ -14,6 +14,8 @@ escape \000\000    #- my prefix <Ctrl + Space>
 
 bind [ paste .
 bind ^[ copy
+bindkey "^[[1;2H" eval "copy" "stuff ^b"        # shift + HOME - activate copymode and move Up
+bindkey "^[[1;2F" eval "copy" "stuff ^f"        # shift + END  - activate copymode and move Down
 
 # copy mode <~> + <ESCAPE> or <~> + <ESC> + <k>
 # ^ - meta ( alt or esc or ctrl)
