@@ -1885,6 +1885,51 @@ ses() {
     ${sudo_used} sudo sh -c "$cmd"
 }
 
+dumper() {
+# tcpdump wrapper: separates each packet with a blank line for readability
+# Usage: dumper [def|def-ext] [TCPDUMP OPTIONS] [FILTER]
+#   dumper def port 80
+#   dumper def-ext host 192.168.1.1
+#   dumper -i eth0 -vv port 443
+    local help_text
+    help_text=$(cat <<'EOF'
+dumper - tcpdump wrapper with visual packet separation
+
+USAGE:
+    dumper [PRESET] [TCPDUMP OPTIONS] [FILTER EXPRESSION]
+
+PRESETS:
+    def         --nnvv -i any  (no DNS resolve, verbose, all interfaces)
+    def-ext     --nnvv -A -s0 -i any  (+ ASCII payload, full snaplen)
+
+DESCRIPTION:
+    Runs tcpdump and inserts a blank line before each new packet.
+    Multi-line verbose output (-v, -vv) stays grouped — blank line
+    is added only before a new timestamp line, not between its lines.
+
+EXAMPLES:
+    dumper def
+    dumper def port 80
+    dumper def-ext host 192.168.1.1
+    dumper -i eth0 -n port 80
+    dumper -i eth0 -vv -e tcp and port 443
+EOF
+)
+    local sudo_used=''
+    if [[ $EUID -ne 0 ]]; then
+        if $(sudo -v 2>/dev/null); then sudo_used='sudo'; fi
+    fi
+
+    local tcpdump_args=()
+    case "$1" in
+        -h|--help|help) echo "$help_text"; return ;;
+        def)     shift; tcpdump_args=(-nnvv -i any) ;;
+        def-ext) shift; tcpdump_args=(-nnvv -A -s0 -i any) ;;
+    esac
+
+    ${sudo_used} tcpdump "${tcpdump_args[@]}" "$@" 2>&1 | sed -E '1!s/^[0-9]{2}:[0-9]{2}:[0-9]{2}\./\n&/'
+}
+
 myfunctions_aliases () {
     echo -e '
 HIGHLIGHTS HISTORY SEARCH:
@@ -1929,6 +1974,7 @@ NET CHECK:
         ports                       - show all ports listening
         ports4, ports6
         cmyip, ip_a, ip_r
+        dumper                      - tcpdump with blank line between packets
 
 SEARCH:
         removeComments      - cat and remove comments
