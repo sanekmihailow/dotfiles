@@ -1,0 +1,14 @@
+HISTSIZE=50000
+HISTFILESIZE=10000
+HISTTIMEFORMAT="%F %T "
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+
+alias ls='ls --color=auto'
+alias ll='ls -ltF'
+alias l1='ls -1'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias grep='grep --color=auto'
+
+PS1='[docker] \t j=\j \u@\h:\w\n \$ '

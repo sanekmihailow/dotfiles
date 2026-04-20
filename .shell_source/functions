@@ -1618,6 +1618,11 @@ docker_exec() {
             local sudo_used=''
             if $(sudo -v); then sudo_used='sudo'; fi
 
+            if ! ${sudo_used} docker exec $1 test -f /tmp/.bashrc 2>/dev/null; then
+                ${sudo_used} docker cp ${HOME}/.config/bashrc_docker $1:/root/.bashrc 2>/dev/null
+                ${sudo_used} docker cp ${HOME}/.config/bashrc_docker $1:/tmp/.bashrc 2>/dev/null
+            fi                
+
             ${sudo_used} docker exec -it $1 zsh  || \
             ${sudo_used} docker exec -it $1 bash || \
             ${sudo_used} docker exec -it $1 ash  || \
