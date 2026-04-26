@@ -310,7 +310,7 @@ checkSizeInDirWithIgnore() {
 }
 
 removeComments() {
-# Used: removeComments /path/to/file [removed_char] [--implode]
+# Used: removeComments /path/to/file [removed_char] [--implode] [--multiline='START END']
 # or    removeComments /path/to/file --implode
 # TODO ADD EXCLUDE SPECIFIC
     local run=false
@@ -318,9 +318,12 @@ removeComments() {
     local implode=false
     local path=''
     local cmd=('egrep')
+    local sudo_used=''
     # нужен чтобы '#' не съедался внутри двойных кавычек sed
     local marker="$(printf '%s' "${removed}PATTERN_DEL")"
     local tail_cmd=('cat' '-s')
+    local -a multiline_starts=()
+    local -a multiline_ends=()    
     local help_text
 
         help_text=$(cat <<'EOF'
@@ -344,6 +347,12 @@ EXAMPLES:
 
   # Remove comments with specific char, on example ;
   removeComments /path/to/file '\;'
+
+  # Remove C-style multi-line comments
+  removeComments /path/to/file.c --multiline='/* */'
+
+  # Remove Python-style multiple multiline patterns at once
+  removeComments file.py --multiline='""" """' --multiline="''' '''"  
 EOF
 )
 
@@ -351,8 +360,14 @@ EOF
         case "$arg" in
             --implode) implode=true ;;
             -h|--help|help) echo "$help_text"; return ;;
+            --multiline=*)
+                local _ml="${arg#--multiline=}"
+                [[ "$_ml" == \"*\" || "$_ml" == \'*\' ]] && _ml="${_ml:1:${#_ml}-2}"
+                multiline_starts+=("${_ml%% *}")
+                multiline_ends+=("${_ml##* }")
+                ;;            
             *)
-                                [ -z "$path" ] && path="$arg" || removed="$arg" ;;
+                [ -z "$path" ] && path="$arg" || removed="$arg" ;;
         esac
     done
 
@@ -366,6 +381,7 @@ EOF
         if [[ $EUID -ne 0 ]]; then
             if $(sudo -v); then
                 cmd=('sudo' 'egrep')
+                sudo_used='sudo'
             fi
         fi
 
@@ -373,9 +389,28 @@ EOF
             tail_cmd=('grep' '-v' '^$')
         fi
 
-        "${cmd[@]}" -v "^\s*${removed}" "$path" \
-            |sed "s| ${removed} .*| ${marker}|g" \
-            |sed 's/^\s*$//' |"${tail_cmd[@]}"
+        if [[ ${#multiline_starts[@]} -gt 0 ]]; then
+            local i ms_esc me_esc
+            # build sed script: for each pattern — first strip inline, then block
+            local ml_script=''
+            for (( i=0; i<${#multiline_starts[@]}; i++ )); do
+                ms_esc="${multiline_starts[i]//\//\\/}"
+                ms_esc="${ms_esc//\*/\\*}"
+                me_esc="${multiline_ends[i]//\//\\/}"
+                me_esc="${me_esc//\*/\\*}"
+                ml_script+="s/${ms_esc}.*${me_esc}//g;"$'\n'
+                ml_script+="/${ms_esc}/,/${me_esc}/d;"$'\n'
+            done
+            ${sudo_used} sed "$ml_script" "$path" \
+                |egrep -v "^\s*${removed}" \
+                |sed "s| ${removed} .*| ${marker}|g" \
+                |sed 's/^\s*$//' |"${tail_cmd[@]}"
+        else
+            "${cmd[@]}" -v "^\s*${removed}" "$path" \
+                |sed "s| ${removed} .*| ${marker}|g" \
+                |sed 's/^\s*$//' |"${tail_cmd[@]}"
+        fi
+
     fi
 }
 
