@@ -323,11 +323,11 @@ removeComments() {
     local tail_cmd=('cat' '-s')
     local help_text
 
-	help_text=$(cat <<'EOF'
+        help_text=$(cat <<'EOF'
 removeComments - remove typical useless comments
 
 USAGE:
-	removeComments <file> [removed_char] [--implode]
+        removeComments <file> [removed_char] [--implode]
 
 ARGUMENTS:
   <file>          path to file
@@ -351,8 +351,8 @@ EOF
         case "$arg" in
             --implode) implode=true ;;
             -h|--help|help) echo "$help_text"; return ;;
-            *) 
-				[ -z "$path" ] && path="$arg" || removed="$arg" ;;
+            *)
+                                [ -z "$path" ] && path="$arg" || removed="$arg" ;;
         esac
     done
 
@@ -373,7 +373,7 @@ EOF
             tail_cmd=('grep' '-v' '^$')
         fi
 
-        "${cmd[@]}" -v "^\s*${removed} .*$" "$path" \
+        "${cmd[@]}" -v "^\s*${removed}" "$path" \
             |sed "s| ${removed} .*| ${marker}|g" \
             |sed 's/^\s*$//' |"${tail_cmd[@]}"
     fi
