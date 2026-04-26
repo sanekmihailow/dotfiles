@@ -1993,6 +1993,72 @@ EOF
     done
 }
 
+genpass() {
+# generate random password: genpass [LENGTH] [--exclude=CHARS] [--alnum]
+#   genpass
+#   genpass 32
+#   genpass 16 --exclude='@!'
+    local length=20
+    local extra_exclude=''
+    local only_num=false
+    local no_special=false
+    local base_exclude=$'\'\"$#\\\\*`;&|<>'
+    local help_text
+    help_text=$(cat <<'EOF'
+genpass - generate a random password
+
+USAGE:
+    genpass [LENGTH] [OPTIONS]
+
+ARGUMENTS:
+    LENGTH          Password length (default: 20)
+
+OPTIONS:
+    --exclude=CHARS Additional characters to exclude
+    --onlynum       Digits only
+    --nospec        Alphanumeric only (letters + digits)
+    -h, --help      Show this help
+
+DEFAULT EXCLUDED: ' " $ # \ * ` ; & | < >
+
+EXAMPLES:
+    genpass
+    genpass 32
+    genpass 16 --exclude='@'
+    genpass --onlynum
+EOF
+)
+
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        length="$1"
+        shift
+    fi
+
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -h|--help|help) echo "$help_text"; return ;;
+            --exclude=*)    extra_exclude="${1#*=}" ;;
+            --onlynum)      only_num=true ;;
+            --nospec)       no_special=true ;;
+            *) echo "genpass: unknown option: $1" >&2; return 1 ;;
+        esac
+        shift
+    done
+
+    if $only_num; then
+        tr -dc '0-9' < /dev/urandom | tr -d "${extra_exclude}" | head -c "$length"
+    fi
+
+    if [ "$no_special" = true ] && [ "$only_num" = false ] ; then
+        tr -dc 'A-Za-z0-9' < /dev/urandom | tr -d "${extra_exclude}" | head -c "$length"
+    fi
+    
+    if [ "$only_num" = false ] && [ "$no_special" = false ]; then
+        tr -dc '_^%.,<>!-~?' < /dev/urandom | tr -d "${base_exclude}${extra_exclude}" | head -c "$length"
+    fi
+}
+
+
 myfunctions_aliases () {
     echo -e '
 HIGHLIGHTS HISTORY SEARCH:
@@ -2087,6 +2153,7 @@ GIT SHORCUTS:
         gr, gpo, gplo, gst
 
 OTHER:
+        genpass             - generate random password:
         incognito
         extract cat_z
         defcat              - /usr/bin/cat
