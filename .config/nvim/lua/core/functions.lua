@@ -169,4 +169,57 @@ M.ccut_to_ww = function()
     vim.cmd('startinsert')
 end
 
+M.toggle_comment = function()
+    local ft = vim.bo.filetype
+
+    local comment_map = {
+        python     = '#',   sh         = '#',   bash       = '#',
+        zsh        = '#',   fish       = '#',   ruby       = '#',
+        perl       = '#',   yaml       = '#',   toml       = '#',
+        dockerfile = '#',   make       = '#',   conf       = '#',
+        ini        = '#',   gitconfig  = '#',   gitignore  = '#',
+        c          = '//',  cpp        = '//',  java       = '//',
+        javascript = '//',  typescript = '//',  go         = '//',
+        rust       = '//',  swift      = '//',  kotlin     = '//',
+        php        = '//',  cs         = '//',  ada        = '--',
+        lua        = '--',  vim        = '"',
+        sql        = '--',  haskell    = '--',  
+        tex        = '%',   matlab     = '%',
+    }
+
+    -- Fallback to '#' if filetype is unknown or has no extension
+    local cs = comment_map[ft] or '#'
+    local cs_pat = vim.pesc(cs)
+
+    local line_start = vim.fn.line("'<")
+    local line_end   = vim.fn.line("'>")
+
+    -- Check if ALL non-empty lines in selection are already commented
+    local all_commented = true
+    for lnum = line_start, line_end do
+        local line = vim.fn.getline(lnum)
+        if line:match('^%s*$') then goto check_next end   -- skip blank lines
+        if not line:match('^%s*' .. cs_pat) then
+            all_commented = false
+            break
+        end
+        ::check_next::
+    end
+
+    for lnum = line_start, line_end do
+        local line = vim.fn.getline(lnum)
+        if line:match('^%s*$') then goto apply_next end   -- skip blank lines
+        local indent = line:match('^%s*')
+        local rest   = line:sub(#indent + 1)
+        if all_commented then
+            -- Remove comment string + optional trailing space
+            rest = rest:gsub('^' .. cs_pat .. ' ?', '', 1)
+        else
+            rest = cs .. ' ' .. rest
+        end
+        vim.fn.setline(lnum, indent .. rest)
+        ::apply_next::
+    end
+end
+
 return M

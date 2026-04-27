@@ -151,6 +151,49 @@ function! MyEnsureDirExists(dir)
     endif
 endfunction
 
+function! ToggleComment() range
+    let l:map = {
+        \ 'lua':        '--',  'vim':        '"',   'bash':       '#',
+        \ 'zsh':        '#',   'fish':       '#',   'ruby':       '#',
+        \ 'perl':       '#',   'yaml':       '#',   'toml':       '#',
+        \ 'dockerfile': '#',   'make':       '#',   'conf':       '#',
+        \ 'ini':        '#',   'gitconfig':  '#',   'gitignore':  '#',
+        \ 'c':          '//',  'cpp':        '//',  'java':       '//',
+        \ 'javascript': '//',  'typescript': '//',  'go':         '//',
+        \ 'rust':       '//',  'swift':      '//',  'kotlin':     '//',
+        \ 'php':        '//',  'cs':         '//',  'ada':        '--',
+        \ 'python':     '#',   'sh':         '#',
+        \ 'sql':        '--',  'haskell':    '--',
+        \ 'tex':        '%',   'matlab':     '%',
+    \ }
+    " Fallback to '#' if filetype is unknown or has no extension
+    let l:cs = get(l:map, &filetype, '#')
+    let l:cs_esc = escape(l:cs, '/\^$.*[]~')
+
+    " Check if ALL non-empty lines are already commented
+    let l:all_commented = 1
+    for l:lnum in range(a:firstline, a:lastline)
+        let l:line = getline(l:lnum)
+        if l:line =~# '^\s*$' | continue | endif
+        if l:line !~# '^\s*' . l:cs_esc
+            let l:all_commented = 0 | break
+        endif
+    endfor
+
+    for l:lnum in range(a:firstline, a:lastline)
+        let l:line = getline(l:lnum)
+        if l:line =~# '^\s*$' | continue | endif
+        let l:indent = matchstr(l:line, '^\s*')
+        let l:rest   = l:line[len(l:indent):]
+        if l:all_commented
+            let l:rest = substitute(l:rest, '^' . l:cs_esc . ' \?', '', '')
+        else
+            let l:rest = l:cs . ' ' . l:rest
+        endif
+        call setline(l:lnum, l:indent . l:rest)
+    endfor
+endfunction
+
 function! MyTogglePasteMode()
     if &paste
         set nopaste
@@ -253,23 +296,26 @@ inoremap <ESC>, <C-o><<<ESC>i
 " ------- Visual mode map ------- 
     "перемещает выделенные строку/и вверх вниз (как в vsode)
     "применяется autoindent при перемещении (не понял как отклчить)
-vnoremap <S-Down> :m '>+1<CR>gv=gv
-vnoremap <S-Up> :m '<-2<CR>gv=gv
+xnoremap <S-Down> :m '>+1<CR>gv=gv
+xnoremap <S-Up> :m '<-2<CR>gv=gv
     "-- translate
-vmap <C-t> <Leader>t
-    "-- remove selected to black hole (don't save in register)
+xmap <C-t> <Leader>t
+    "-- tabs and carriage return to the start
+xnoremap <silent> > >gv
+xnoremap <silent> < <gv
+    " restore previous buffer \"" AND save cutted to buffer "q
+xnoremap <silent> x :<C-U>let save_vmapx = @"<CR>gv"qx:let @" = save_vmapx<CR>
+xnoremap <silent> X :<C-U>let save_vmapx = @"<CR>gv"qX:let @" = save_vmapx<CR>
+    " restore previous buffer \"" AND save cutted to buffer "w
+xnoremap <silent> c :<C-U>let save_vmapc = @"<CR>gv"wc<Esc>:let @" = save_vmapc<CR>a
+xnoremap <silent> C :<C-U>let save_vmapc = @"<CR>gv"wC<Esc>:let @" = save_vmapc<CR>a
+    " toggle comment
+xnoremap <silent> <F1> :call ToggleComment()<CR>
+    
+"-- remove selected to black hole (don't save in register)
 vnoremap <M-x> "_d
 
-    "-- tabs and carriage return to the start
-vnoremap <silent> > >gv
-vnoremap <silent> < <gv
-    " restore previous buffer \"" AND save cutted to buffer "q
-vnoremap <silent> x :<C-U>let save_vmapx = @"<CR>gv"qx:let @" = save_vmapx<CR>
-vnoremap <silent> X :<C-U>let save_vmapx = @"<CR>gv"qX:let @" = save_vmapx<CR>
-    " restore previous buffer \"" AND save cutted to buffer "w
-vnoremap <silent> c :<C-U>let save_vmapc = @"<CR>gv"wc<Esc>:let @" = save_vmapc<CR>a
-vnoremap <silent> C :<C-U>let save_vmapc = @"<CR>gv"wC<Esc>:let @" = save_vmapc<CR>a
-
+"vnoremap <silent> <F1> :call ToggleComment()<CR>gv
 "vnoremap d "qd<Esc>
 " clear buffer \""
 "vnoremap y "qy:let @"=""<CR>

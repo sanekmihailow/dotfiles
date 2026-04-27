@@ -80,24 +80,26 @@ keymap('i', '<M-,>', "<C-o><<<Esc>i", { noremap = true, silent = true })
 
 
 --------------------- VISUAL MODE map ----------------------------   
-    --перемещает выделенные строку/и вверх вниз (как в vsode)
-    --применяется autoindent при перемещении (не понял как отклчить)
-keymap("v", "<S-Down>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
-keymap("v", "<S-Up>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
     -- translate
 keymap("v", "<C-t>", "<Leader>t", { noremap = true, silent = true })
     -- remove selected to black hole (don't save in register)
 keymap('v', '<M-x>', '"_d', { noremap = true, silent = true })
 
+    --перемещает выделенные строку/и вверх вниз (как в vsode)
+    --применяется autoindent при перемещении (не понял как отклчить)
+keymap("x", "<S-Down>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+keymap("x", "<S-Up>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
     -- tabs and carriage return to the start
-keymap('v', '>', '>:gv', { noremap = true, silent = true })
-keymap('v', '<', '<:gv', { noremap = true, silent = true })
+keymap('x', '>', '>:gv', { noremap = true, silent = true })
+keymap('x', '<', '<:gv', { noremap = true, silent = true })
     -- restore previous buffer \"" AND save cutted to buffer "q
-keymap('v', 'x', ':lua req_func.vcut_to_q()<CR>', { noremap = true, silent = true })
-keymap('v', 'X', ':lua req_func.vcut_to_qq()<CR>', { noremap = true, silent = true })
+keymap('x', 'x', ':lua req_func.vcut_to_q()<CR>', { noremap = true, silent = true })
+keymap('x', 'X', ':lua req_func.vcut_to_qq()<CR>', { noremap = true, silent = true })
     -- restore previous buffer \"" AND save cutted to buffer "w
-keymap('v', 'c', ':lua req_func.vcut_to_w()<CR>', { noremap = true, silent = true })
-keymap('v', 'C', ':lua req_func.vcut_to_ww()<CR>', { noremap = true, silent = true })
+keymap('x', 'c', ':lua req_func.vcut_to_w()<CR>', { noremap = true, silent = true })
+keymap('x', 'C', ':lua req_func.vcut_to_ww()<CR>', { noremap = true, silent = true })
+    -- toggle comment
+keymap('x', '<F1>', ':<C-u>lua req_func.toggle_comment()<CR>', { noremap = true, silent = true })
 
 
 --------------------- COMMAND MODE map ----------------------------    
