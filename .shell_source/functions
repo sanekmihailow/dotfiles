@@ -2093,6 +2093,138 @@ EOF
     fi
 }
 
+tailf() {
+# Watch files/dirs / stream grep-filtered output (like multitail -f)
+# Usage: tailf [OPTIONS] FILE|DIR [FILE|DIR ...]
+#   tailf -e 'error' /var/log/syslog /var/log/auth.log
+#   tailf -e 'WARN|ERROR' /var/log /opt/app/logs
+#   tailf --temp -r -e 'exception' /var/log    # also write to /tmp/tailf_<timestamp>.log
+    local n=0
+    local recursive=false
+    local use_temp=false
+    local pattern="."
+    local dirs=()
+    local help_text
+    help_text=$(cat <<'EOF'
+tailf - watch files in directories or stream grep-filtered output
+
+USAGE:
+    tailf [OPTIONS] FILE|DIR [FILE|DIR ...]
+
+ARGUMENTS:
+    FILE|DIR    One or more files or directories to watch
+
+OPTIONS:
+    -e PATTERN  Extended regex to filter lines (default: match all)
+    -n N        Show last N lines on start (default: 0 = new lines only)
+    -r          Watch subdirectories recursively (dirs only)
+    --temp      Also write output to /tmp/tailf_<timestamp>.log
+    -h, --help  Show this help
+
+EXAMPLES:
+    tailf /var/log
+    tailf -e 'error' /var/log/syslog /var/log/auth.log
+    tailf -e 'WARN|ERROR' /var/log /opt/app/logs
+    tailf -r -n 10 -e 'GET' /var/log/nginx
+    tailf --temp -e 'exception' /var/log /home/user/app/logs
+EOF
+)
+
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -h|--help|help) echo "$help_text"; return 0 ;;
+            -e)             pattern="$2"; shift ;;
+            -e*)            pattern="${1#-e}" ;;
+            -n)             n="$2"; shift ;;
+            -n[0-9]*)       n="${1#-n}" ;;
+            -r|--recursive) recursive=true ;;
+            --temp)         use_temp=true ;;
+            -*)             echo "tailf: unknown option: $1" >&2; return 1 ;;
+            *)              dirs+=("$1") ;;
+        esac
+        shift
+    done
+
+    if [[ ${#dirs[@]} -eq 0 ]]; then
+        echo "tailf: no path specified" >&2; echo "$help_text" >&2; return 1
+    fi
+
+    local d
+    for d in "${dirs[@]}"; do
+        if [[ ! -e "$d" ]]; then
+            echo "tailf: '$d' does not exist" >&2; return 1
+        fi
+    done
+
+    # Setup temp file (no tee dependency — dual write inside the loop)
+    local tmpfile=""
+    if $use_temp; then
+        tmpfile="/tmp/tailf_$(date +%Y%m%d_%H%M%S).log"
+        echo "tailf: output also written to $tmpfile" >&2
+        touch "$tmpfile"
+    fi
+
+    local colors=($'\e[31m' $'\e[32m' $'\e[33m' $'\e[34m' $'\e[35m' $'\e[36m')
+    local nc=${#colors[@]}
+    local cidx=0
+
+    local pid_file
+    pid_file=$(mktemp)
+
+    # Disable job control notifications ([1] pid) for the duration of the function
+    local _mon=0; [[ $- == *m* ]] && _mon=1
+    set +m
+
+    _tailf_cleanup() {
+        local pid
+        while IFS= read -r pid; do
+            kill "$pid" 2>/dev/null
+        done < "$pid_file"
+        rm -f "$pid_file"
+        [[ $_mon -eq 1 ]] && set -m
+        trap - INT TERM
+    }
+    trap '_tailf_cleanup' INT TERM
+
+    declare -A _tailf_watched
+
+    local find_opts=()
+    $recursive || find_opts+=(-maxdepth 1)
+
+    echo "tailf: watching [${dirs[*]}] | pattern: '$pattern' | recursive: $recursive" >&2
+
+    _tailf_watch_file() {
+        local file="$1"
+        [[ "${_tailf_watched[$file]+x}" ]] && return
+        _tailf_watched[$file]=1
+        local col="${colors[$((cidx % nc))]}"
+        local fname="${file##*/}"
+        (( cidx++ ))
+        (
+            tail -F -n "$n" "$file" 2>/dev/null \
+            | grep --line-buffered -E "$pattern" \
+            | while IFS= read -r line; do
+                printf "%s[%s]\e[0m %s\n" "$col" "$fname" "$line"
+                [[ -n "$tmpfile" ]] && printf "%s[%s]\e[0m %s\n" "$col" "$fname" "$line" >> "$tmpfile"
+              done
+        ) &
+        echo $! >> "$pid_file"
+    }
+
+    local path file
+    while true; do
+        for path in "${dirs[@]}"; do
+            if [[ -f "$path" ]]; then
+                _tailf_watch_file "$path"
+            elif [[ -d "$path" ]]; then
+                while IFS= read -r -d '' file; do
+                    _tailf_watch_file "$file"
+                done < <(find "$path" "${find_opts[@]}" -type f -print0 2>/dev/null)
+            fi
+        done
+        sleep 1
+    done
+}
 
 myfunctions_aliases () {
     echo -e '
@@ -2188,16 +2320,16 @@ GIT SHORCUTS:
         gr, gpo, gplo, gst
 
 OTHER:
-        genpass             - generate random password:
+        genpass                             - generate random password:
         incognito
         extract cat_z
-        defcat              - /usr/bin/cat
-        scriptformat        - remove ansci unprintable cahracters
-        se, ses, seb        - short sudo
+        defcat                              - /usr/bin/cat
+        scriptformat                        - remove ansci unprintable cahracters
+        se, ses, seb                        - short sudo
         sq, plz, sr, l1
         maketar
         makezip
-        cht                 - search in cheat.sh
+        cht                                 - search in cheat.sh
         vime, svi
         wdownload, lnn
         xsc, lnn
@@ -2207,6 +2339,7 @@ OTHER:
         speedt, speedt1, speeddown
         locru, locen, lessr, jobs, renull
         infinity_loop
+        tailf                               - custom multitail
 
     '
 }
