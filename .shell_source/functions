@@ -2227,13 +2227,15 @@ EOF
 }
 
 syslog_pretty() {
-# Usage: syslog_pretty [-s] ["log line"]
+# Usage: syslog_pretty [-s] [-j] ["log line"]
 # Example: tail -f /var/log/slapd.log | syslog_pretty -s
-    local sep=0
+# Example: syslog_pretty "[date] conn=1 op=0 RESULT err=0 tag=101"
+# Example: cat /var/log/k3s.log | syslog_pretty -j | grep '"err":[^0]'
+    local sep=0 json_mode=0
     local indent="    "
     local help_text
     help_text=$(cat <<'EOF'
-syslog_pretty [-s] ["log line"]
+syslog_pretty [-s] [-j] ["log line"]
 
 Expand a syslog/log line into a readable multi-line format.
 Each key=value pair gets its own indented line. JSON values are
@@ -2241,6 +2243,7 @@ pretty-printed. Reads from stdin if no argument is given.
 
 OPTIONS
   -s    print a blank separator line between log entries
+  -j    output as JSON (JSONL: one object per line, then pretty-printed)
 
 SUPPORTED FORMATS
   [timestamp] key=val ...         OpenLDAP / nginx
@@ -2249,24 +2252,86 @@ SUPPORTED FORMATS
   TIMESTAMP host proc[pid]: ...   ISO / RFC5424 syslog
   + klog sub-header inside any of the above (k3s / kubelet)
 
+JSON OUTPUT FIELDS
+  _header   syslog header line
+  _klog     klog sub-header (k3s/kubelet), if present
+  _message  standalone quoted message, if present
+  _text     bare-word tokens that don't map to a key=value
+  <key>     all key=value pairs; numeric/bool/null/JSON values typed natively
+
 EXAMPLES
   syslog_pretty "[10/Feb/2026:15:28:58 +0300] conn=38 op=5 RESULT err=0"
   tail -f /var/log/slapd.log | syslog_pretty -s
-  cat /var/log/k3s.log | syslog_pretty -s | less -R
+  cat /var/log/k3s.log | syslog_pretty -j | grep '"err":[^0]'
 EOF
 )
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             -h|--help|help) echo "$help_text"; return 0 ;;
             -s)             sep=1 ;;
+            -j|--json)      json_mode=1 ;;
             -*)             echo "syslog_pretty: unknown option: $1" >&2; return 1 ;;
             *)              break ;;
         esac
         shift
     done
 
+    # _jsonfmt: pretty-print a single JSON value from stdin (2-space indent)
+    # _jsonfmt_jsonl: pretty-print a stream of compact JSON objects (one per line)
+    if   command -v jq      >/dev/null 2>&1; then
+        _jsonfmt()       { jq --indent 2 .; }
+        _jsonfmt_jsonl() { jq .; }
+    elif command -v python3 >/dev/null 2>&1; then
+        _jsonfmt()       { python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"; }
+        _jsonfmt_jsonl() { python3 -c "import json,sys; [print(json.dumps(json.loads(l),indent=2)) for l in sys.stdin if l.strip()]"; }
+    elif command -v python >/dev/null 2>&1; then
+        _jsonfmt()       { python -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"; }
+        _jsonfmt_jsonl() { python -c "import json,sys; [print(json.dumps(json.loads(l),indent=2)) for l in sys.stdin if l.strip()]"; }
+    else
+        _jsonfmt() {
+            awk '
+            function print_indent(    i) { for (i=0; i<depth; i++) printf "  " }
+            function flush_newline()     { if (after_open) { printf "\n"; print_indent(); after_open=0 } }
+            BEGIN { depth=0; in_str=0; after_open=0 }
+            {
+                n = length($0)
+                for (i = 1; i <= n; i++) {
+                    c = substr($0, i, 1)
+                    if (in_str) {
+                        flush_newline(); printf "%s", c
+                        if      (c == "\\") { i++; printf "%s", substr($0,i,1) }
+                        else if (c == "\"")   in_str = 0
+                        continue
+                    }
+                    if (c == " " || c == "\t" || c == "\r") continue
+                    switch (c) {
+                    case "{": case "[":
+                        flush_newline(); printf "%s", c; depth++; after_open=1; break
+                    case "}": case "]":
+                        if (after_open) { after_open=0; depth-- }
+                        else            { printf "\n"; depth--; print_indent() }
+                        printf "%s", c
+                        if (depth == 0) printf "\n"
+                        break
+                    case ",":
+                        flush_newline(); printf "%s", c; after_open=1; break
+                    case ":":
+                        flush_newline(); printf ": "; break
+                    case "\"":
+                        flush_newline(); in_str=1; printf "\""; break
+                    default:
+                        flush_newline(); printf "%s", c
+                    }
+                }
+            }
+            END { printf "\n" }
+            '
+        }
+        _jsonfmt_jsonl() { _jsonfmt; }
+    fi
+
     _syslog_pretty_awk() {
-        awk -v indent="$indent" -v sep="$sep" '
+        awk -v indent="$indent" -v sep="$sep" -v json_mode="$json_mode" '
 
         function tokenize(line,    raw, n, i, tok, q) {
             delete _tok
@@ -2288,59 +2353,134 @@ EOF
             return _ntok
         }
 
+        function json_escape(s) {
+            gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s)
+            gsub(/\n/, "\\n",  s); gsub(/\r/, "\\r", s); gsub(/\t/, "\\t", s)
+            return s
+        }
+        function json_str(s) { return "\"" json_escape(s) "\"" }
+        function unescape_go(s,    result, i, c, nc) {
+            result = ""; i = 1
+            while (i <= length(s)) {
+                c = substr(s, i, 1)
+                if (c == "\\") {
+                    nc = substr(s, i+1, 1)
+                    if      (nc == "\"") { result = result "\""; i += 2 }
+                    else if (nc == "\\") { result = result "\\"; i += 2 }
+                    else if (nc == "n")  { result = result "\n"; i += 2 }
+                    else if (nc == "t")  { result = result "\t"; i += 2 }
+                    else if (nc == "r")  { result = result "\r"; i += 2 }
+                    else                 { result = result c;    i++    }
+                } else {
+                    result = result c; i++
+                }
+            }
+            return result
+        }
+        function json_val(s) {
+            if (s ~ /^".*"$/)                                   return json_str(unescape_go(substr(s, 2, length(s)-2)))
+            if (s ~ /^\{/ || s ~ /^\[/)                         return s
+            if (s ~ /^-?[0-9]+$/ || s ~ /^-?[0-9]*\.[0-9]+$/) return s
+            if (s == "true" || s == "false" || s == "null")     return s
+            return json_str(s)
+        }
+
         {
             line = $0
+            header = ""; klog_hdr = ""
 
-            # OpenLdap Format
             if (match(line, /^\[[^]]*\]/)) {
-                print substr(line, RSTART, RLENGTH)
-                line = substr(line, RSTART + RLENGTH)
-            # BSD syslog format
+                header = substr(line, RSTART, RLENGTH)
+                line   = substr(line, RSTART + RLENGTH)
+
             } else if (match(line, /^[A-Z][a-z][a-z] [ 0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9] [^ ]+ [^ ]+: /)) {
-                hdr = substr(line, RSTART, RLENGTH); sub(/ $/, "", hdr)
-                print hdr; line = substr(line, RSTART + RLENGTH)
-            # journald format
+                header = substr(line, RSTART, RLENGTH); sub(/ $/, "", header)
+                line   = substr(line, RSTART + RLENGTH)
+
             } else if (match(line, /^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]/)) {
-                hdr = substr(line, RSTART, RLENGTH)
-                rest = substr(line, RSTART + RLENGTH)
+                header = substr(line, RSTART, RLENGTH)
+                rest   = substr(line, RSTART + RLENGTH)
                 if (match(rest, /^ [A-Z][A-Z]+( |$)/)) {
                     level = substr(rest, RSTART, RLENGTH); sub(/ $/, "", level)
-                    hdr = hdr level; rest = substr(rest, RSTART + RLENGTH)
+                    header = header level; rest = substr(rest, RSTART + RLENGTH)
                 }
-                print hdr; line = rest
-            # RFC5424 syslog
+                line = rest
+
             } else if (match(line, /^[^ ]+ [^ ]+ [^ ]+: /)) {
-                hdr = substr(line, RSTART, RLENGTH); sub(/ $/, "", hdr)
-                print hdr; line = substr(line, RSTART + RLENGTH)
+                header = substr(line, RSTART, RLENGTH); sub(/ $/, "", header)
+                line   = substr(line, RSTART + RLENGTH)
             }
-            # k8s log format
+
             if (match(line, /^[IWEF][0-9][0-9][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9]+ +[0-9]+ [^ ]+\] /)) {
-                klog = substr(line, RSTART, RLENGTH); sub(/ $/, "", klog)
-                print indent klog; line = substr(line, RSTART + RLENGTH)
+                klog_hdr = substr(line, RSTART, RLENGTH); sub(/ $/, "", klog_hdr)
+                line     = substr(line, RSTART + RLENGTH)
             }
 
             n = tokenize(line)
-            group = ""
-            for (i = 1; i <= n; i++) {
-                tok = _tok[i]
-                if (index(tok, "=") > 0) {
-                    if (group != "") {
-                        if (substr(group, 1, 1) == "\"") {
-                            print indent group
-                            print indent tok
-                        } else {
-                            print indent group " " tok
+
+            if (json_mode) {
+                delete fkeys; delete fvals; nf = 0
+                if (header   != "") { fkeys[++nf] = "_header";  fvals[nf] = json_str(header)   }
+                if (klog_hdr != "") { fkeys[++nf] = "_klog";    fvals[nf] = json_str(klog_hdr) }
+
+                group = ""
+                for (i = 1; i <= n; i++) {
+                    tok = _tok[i]
+                    if (index(tok, "=") > 0) {
+                        if (group != "") {
+                            if (substr(group, 1, 1) == "\"") {
+                                fkeys[++nf] = "_message"; fvals[nf] = json_str(unescape_go(substr(group, 2, length(group)-2)))
+                            } else {
+                                fkeys[++nf] = "_text";    fvals[nf] = json_str(group)
+                            }
+                            group = ""
                         }
-                        group = ""
+                        eq = index(tok, "=")
+                        fkeys[++nf] = substr(tok, 1, eq-1)
+                        fvals[nf]   = json_val(substr(tok, eq+1))
                     } else {
-                        print indent tok
+                        group = (group == "") ? tok : group " " tok
                     }
-                } else {
-                    group = (group == "") ? tok : group " " tok
                 }
+                if (group != "") {
+                    if (substr(group, 1, 1) == "\"") {
+                        fkeys[++nf] = "_message"; fvals[nf] = json_str(unescape_go(substr(group, 2, length(group)-2)))
+                    } else {
+                        fkeys[++nf] = "_text";    fvals[nf] = json_str(group)
+                    }
+                }
+
+                printf "{"
+                for (i = 1; i <= nf; i++)
+                    printf "%s%s:%s", (i > 1 ? "," : ""), json_str(fkeys[i]), fvals[i]
+                printf "}\n"
+
+            } else {
+                if (header   != "") print header
+                if (klog_hdr != "") print indent klog_hdr
+
+                group = ""
+                for (i = 1; i <= n; i++) {
+                    tok = _tok[i]
+                    if (index(tok, "=") > 0) {
+                        if (group != "") {
+                            if (substr(group, 1, 1) == "\"") {
+                                print indent group
+                                print indent tok
+                            } else {
+                                print indent group " " tok
+                            }
+                            group = ""
+                        } else {
+                            print indent tok
+                        }
+                    } else {
+                        group = (group == "") ? tok : group " " tok
+                    }
+                }
+                if (group != "") print indent group
+                if (sep) print ""
             }
-            if (group != "") print indent group
-            if (sep) print ""
         }
         '
     }
@@ -2348,52 +2488,6 @@ EOF
     _syslog_pretty_json() {
         local line trimmed key jval fmt
         local -a jlines
-
-        if   command -v jq      >/dev/null 2>&1; then
-            _jsonfmt() { jq --indent 2 .; }
-        elif command -v python3 >/dev/null 2>&1; then
-            _jsonfmt() { python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"; }
-        elif command -v python  >/dev/null 2>&1; then
-            _jsonfmt() { python  -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"; }
-        else
-            _jsonfmt() {
-                awk '
-                function print_indent(    i) { for (i=0; i<depth; i++) printf "  " }
-                function flush_newline()     { if (after_open) { printf "\n"; print_indent(); after_open=0 } }
-                BEGIN { depth=0; in_str=0; after_open=0 }
-                {
-                    n = length($0)
-                    for (i = 1; i <= n; i++) {
-                        c = substr($0, i, 1)
-                        if (in_str) {
-                            flush_newline(); printf "%s", c
-                            if      (c == "\\") { i++; printf "%s", substr($0,i,1) }
-                            else if (c == "\"")   in_str = 0
-                            continue
-                        }
-                        if (c == " " || c == "\t" || c == "\r") continue
-                        switch (c) {
-                        case "{": case "[":
-                            flush_newline(); printf "%s", c; depth++; after_open=1; break
-                        case "}": case "]":
-                            if (after_open) { after_open=0; depth-- }
-                            else            { printf "\n"; depth--; print_indent() }
-                            printf "%s", c; break
-                        case ",":
-                            flush_newline(); printf "%s", c; after_open=1; break
-                        case ":":
-                            flush_newline(); printf ": "; break
-                        case "\"":
-                            flush_newline(); in_str=1; printf "\""; break
-                        default:
-                            flush_newline(); printf "%s", c
-                        }
-                    }
-                }
-                END { printf "\n" }
-                '
-            }
-        fi
 
         while IFS= read -r line; do
             if [[ "$line" == "${indent}"* && "$line" != "${indent}${indent}"* ]]; then
@@ -2406,10 +2500,8 @@ EOF
                         readarray -t jlines <<< "$fmt"
                         local total=${#jlines[@]} j
                         for (( j=0; j<total; j++ )); do
-                            if   [[ $j -eq 0 ]]; then
+                            if   [[ $j -eq 0 ]]; then 
                                 printf '%s%s=%s\n' "$indent" "$key" "${jlines[$j]}"
-                            elif [[ $j -eq $((total-1)) ]]; then
-                                printf '%s%s\n'    "$indent" "${jlines[$j]}"
                             else
                                 printf '%s%s\n'    "$indent" "${jlines[$j]}"
                             fi
@@ -2422,10 +2514,18 @@ EOF
         done
     }
 
-    if [[ $# -gt 0 ]]; then
-        echo "$*" | _syslog_pretty_awk | _syslog_pretty_json
+    if [[ $json_mode -eq 1 ]]; then
+        if [[ $# -gt 0 ]]; then
+            echo "$*" | _syslog_pretty_awk | _jsonfmt_jsonl
+        else 
+            _syslog_pretty_awk | _jsonfmt_jsonl
+        fi
     else
-        _syslog_pretty_awk | _syslog_pretty_json
+        if [[ $# -gt 0 ]]; then 
+            echo "$*" | _syslog_pretty_awk | _syslog_pretty_json
+        else                    
+            _syslog_pretty_awk | _syslog_pretty_json
+        fi
     fi
 }
 
