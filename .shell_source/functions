@@ -2254,7 +2254,7 @@ SUPPORTED FORMATS
   + klog sub-header inside any of the above (k3s / kubelet)
 
 JSON OUTPUT FIELDS
-  _header   syslog header line
+  _time     syslog header / timestamp
   _klog     klog sub-header (k3s/kubelet), if present
   _message  standalone quoted message, if present
   _text     bare-word tokens that don't map to a key=value
@@ -2394,6 +2394,22 @@ EOF
             }
             return result
         }
+        function wordwrap(s, maxlen,    words, nw, i, line, result, sep) {
+            nw = split(s, words, " ")
+            line = ""; result = "["; sep = ""
+            for (i = 1; i <= nw; i++) {
+                if (line == "")
+                    line = words[i]
+                else if (length(line) + 1 + length(words[i]) <= maxlen)
+                    line = line " " words[i]
+                else {
+                    result = result sep json_str(line); sep = ","
+                    line = words[i]
+                }
+            }
+            if (line != "") result = result sep json_str(line)
+            return result "]"
+        }
         function json_val(s) {
             if (s ~ /^".*"$/)                                   return json_str(unescape_go(substr(s, 2, length(s)-2)))
             if (s ~ /^\{/ || s ~ /^\[/)                         return s
@@ -2446,34 +2462,39 @@ EOF
 
             if (json_mode) {
                 delete fkeys; delete fvals; nf = 0
-                if (header   != "") { fkeys[++nf] = "_header";  fvals[nf] = json_str(header)   }
+                delete _tarr; nt = 0
+                if (header   != "") { fkeys[++nf] = "_time"; fvals[nf] = json_str(header)   }
                 if (klog_hdr != "") { fkeys[++nf] = "_klog";    fvals[nf] = json_str(klog_hdr) }
 
-                group = ""
+                first = 1
                 for (i = 1; i <= n; i++) {
                     tok = _tok[i]
                     if (index(tok, "=") > 0) {
-                        if (group != "") {
-                            if (substr(group, 1, 1) == "\"") {
-                                fkeys[++nf] = "_message"; fvals[nf] = json_str(unescape_go(substr(group, 2, length(group)-2)))
-                            } else {
-                                fkeys[++nf] = "_text";    fvals[nf] = json_str(group)
-                            }
-                            group = ""
-                        }
                         eq = index(tok, "=")
                         fkeys[++nf] = substr(tok, 1, eq-1)
                         fvals[nf]   = json_val(substr(tok, eq+1))
+                        first = 0
+                    } else if (first && substr(tok, 1, 1) == "\"") {
+                        fkeys[++nf] = "_message"
+                        inner = unescape_go(substr(tok, 2, length(tok)-2))
+                        fvals[nf] = (length(inner) > 60) ? wordwrap(inner, 60) : json_str(inner)
+                        first = 0
                     } else {
-                        group = (group == "") ? tok : group " " tok
+                        _tarr[++nt] = tok
+                        first = 0
                     }
                 }
-                if (group != "") {
-                    if (substr(group, 1, 1) == "\"") {
-                        fkeys[++nf] = "_message"; fvals[nf] = json_str(unescape_go(substr(group, 2, length(group)-2)))
-                    } else {
-                        fkeys[++nf] = "_text";    fvals[nf] = json_str(group)
-                    }
+                if (nt == 1) {
+                    fkeys[++nf] = "_text"
+                    inner = _tarr[1]
+                    if (substr(inner, 1, 1) == "\"")
+                        inner = unescape_go(substr(inner, 2, length(inner)-2))
+                    fvals[nf] = (length(inner) > 60) ? wordwrap(inner, 60) : json_str(inner)
+                } else if (nt > 1) {
+                    joined = _tarr[1]
+                    for (i = 2; i <= nt; i++) joined = joined " " _tarr[i]
+                    fkeys[++nf] = "_text"
+                    fvals[nf] = (length(joined) > 60) ? wordwrap(joined, 60) : json_str(joined)
                 }
 
                 printf "{"
@@ -2526,9 +2547,9 @@ EOF
                         readarray -t jlines <<< "$fmt"
                         local total=${#jlines[@]} j
                         for (( j=0; j<total; j++ )); do
-                            if   [[ $j -eq 0 ]];            then 
+                            if   [[ $j -eq 0 ]];            then
                                 printf '%s%s=%s\n' "$indent" "$key" "${jlines[$j]}"
-                            else 
+                            else
                                 printf '%s%s\n'    "$indent" "${jlines[$j]}"
                             fi
                         done
@@ -2542,19 +2563,20 @@ EOF
 
     if [[ $json_mode -eq 1 ]]
         then
-            if [[ $# -gt 0 ]]; 
+            if [[ $# -gt 0 ]];
                 then echo "$*" | _syslog_pretty_awk | _jsonfmt_jsonl
-            else 
+            else
                 _syslog_pretty_awk | _jsonfmt_jsonl
             fi
         else
-            if [[ $# -gt 0 ]]; then 
+            if [[ $# -gt 0 ]]; then
                 echo "$*" | _syslog_pretty_awk | _syslog_pretty_json
             else
                 _syslog_pretty_awk | _syslog_pretty_json
             fi
     fi
 }
+
 
 myfunctions_aliases () {
     echo -e '
