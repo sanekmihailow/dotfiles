@@ -2227,11 +2227,11 @@ EOF
 }
 
 syslog_pretty() {
-# Usage: syslog_pretty [-s] [-j] ["log line"]
+# Usage: syslog_pretty --col-start="<Number>" [-s] [-j] ["log line"]
 # Example: tail -f /var/log/slapd.log | syslog_pretty -s
 # Example: syslog_pretty "[date] conn=1 op=0 RESULT err=0 tag=101"
 # Example: cat /var/log/k3s.log | syslog_pretty -j | grep '"err":[^0]'
-    local sep=0 json_mode=0
+    local sep=0 json_mode=0 col_spec=""
     local indent="    "
     local help_text
     help_text=$(cat <<'EOF'
@@ -2242,8 +2242,9 @@ Each key=value pair gets its own indented line. JSON values are
 pretty-printed. Reads from stdin if no argument is given.
 
 OPTIONS
-  -s    print a blank separator line between log entries
-  -j    output as JSON (JSONL: one object per line, then pretty-printed)
+  -s            print a blank separator line between log entries
+  -j            output as JSON (JSONL: one object per line, then pretty-printed)
+  --col-start   change time column
 
 SUPPORTED FORMATS
   [timestamp] key=val ...         OpenLDAP / nginx
@@ -2263,14 +2264,16 @@ EXAMPLES
   syslog_pretty "[10/Feb/2026:15:28:58 +0300] conn=38 op=5 RESULT err=0"
   tail -f /var/log/slapd.log | syslog_pretty -s
   cat /var/log/k3s.log | syslog_pretty -j | grep '"err":[^0]'
+  cat /var/log/nginx/access.log | syslog_pretty --col-start="4,5" # or --col-start="4-5"
 EOF
 )
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
-            -h|--help|help) echo "$help_text"; return 0 ;;
-            -s)             sep=1 ;;
-            -j|--json)      json_mode=1 ;;
-            -*)             echo "syslog_pretty: unknown option: $1" >&2; return 1 ;;
+            -h|--help|help)    echo "$help_text"; return 0 ;;
+            -s)                sep=1 ;;
+            -j|--json)         json_mode=1 ;;
+            --col-start=*)     col_spec="${1#--col-start=}" ;;
+            -*)                echo "syslog_pretty: unknown option: $1" >&2; return 1 ;;
             *)              break ;;
         esac
         shift
@@ -2286,7 +2289,7 @@ EOF
         _jsonfmt_jsonl() { python3 -c "import json,sys; [print(json.dumps(json.loads(l),indent=2)) for l in sys.stdin if l.strip()]"; }
     elif command -v python >/dev/null 2>&1; then
         _jsonfmt()       { python -c "import json,sys; print(json.dumps(json.load(sys.stdin),indent=2))"; }
-        _jsonfmt_jsonl() { python -c "import json,sys; [print(json.dumps(json.loads(l),indent=2)) for l in sys.stdin if l.strip()]"; }
+        _jsonfmt_jsonl() { python  -c "import json,sys; [print(json.dumps(json.loads(l),indent=2)) for l in sys.stdin if l.strip()]"; }
     else
         _jsonfmt() {
             awk '
@@ -2331,7 +2334,21 @@ EOF
     fi
 
     _syslog_pretty_awk() {
-        awk -v indent="$indent" -v sep="$sep" -v json_mode="$json_mode" '
+        awk -v indent="$indent" -v sep="$sep" -v json_mode="$json_mode" -v col_spec="$col_spec" '
+
+        BEGIN {
+            col_s = 0; col_e = 0
+            if (col_spec != "") {
+                if (col_spec ~ /^[0-9]+-[0-9]+$/) {
+                    split(col_spec, _p, "-"); col_s = _p[1]+0; col_e = _p[2]+0
+                } else if (col_spec ~ /,/) {
+                    n = split(col_spec, _p, ",")
+                    col_s = _p[1]+0; col_e = _p[n]+0
+                } else {
+                    col_s = col_spec+0; col_e = col_spec+0
+                }
+            }
+        }
 
         function tokenize(line,    raw, n, i, tok, q) {
             delete _tok
@@ -2389,7 +2406,16 @@ EOF
             line = $0
             header = ""; klog_hdr = ""
 
-            if (match(line, /^\[[^]]*\]/)) {
+            if (col_s > 0) {
+                n_raw = split(line, _raw, " ")
+                header = ""; payload = ""
+                for (i = 1; i <= n_raw; i++) {
+                    if (i >= col_s && i <= col_e) header  = (header  == "") ? _raw[i] : header  " " _raw[i]
+                    else                          payload = (payload == "") ? _raw[i] : payload " " _raw[i]
+                }
+                line = payload
+
+            } else if (match(line, /^\[[^]]*\]/)) {
                 header = substr(line, RSTART, RLENGTH)
                 line   = substr(line, RSTART + RLENGTH)
 
@@ -2500,9 +2526,9 @@ EOF
                         readarray -t jlines <<< "$fmt"
                         local total=${#jlines[@]} j
                         for (( j=0; j<total; j++ )); do
-                            if   [[ $j -eq 0 ]]; then 
+                            if   [[ $j -eq 0 ]];            then 
                                 printf '%s%s=%s\n' "$indent" "$key" "${jlines[$j]}"
-                            else
+                            else 
                                 printf '%s%s\n'    "$indent" "${jlines[$j]}"
                             fi
                         done
@@ -2514,18 +2540,19 @@ EOF
         done
     }
 
-    if [[ $json_mode -eq 1 ]]; then
-        if [[ $# -gt 0 ]]; then
-            echo "$*" | _syslog_pretty_awk | _jsonfmt_jsonl
-        else 
-            _syslog_pretty_awk | _jsonfmt_jsonl
-        fi
-    else
-        if [[ $# -gt 0 ]]; then 
-            echo "$*" | _syslog_pretty_awk | _syslog_pretty_json
-        else                    
-            _syslog_pretty_awk | _syslog_pretty_json
-        fi
+    if [[ $json_mode -eq 1 ]]
+        then
+            if [[ $# -gt 0 ]]; 
+                then echo "$*" | _syslog_pretty_awk | _jsonfmt_jsonl
+            else 
+                _syslog_pretty_awk | _jsonfmt_jsonl
+            fi
+        else
+            if [[ $# -gt 0 ]]; then 
+                echo "$*" | _syslog_pretty_awk | _syslog_pretty_json
+            else
+                _syslog_pretty_awk | _syslog_pretty_json
+            fi
     fi
 }
 
