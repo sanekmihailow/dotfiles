@@ -224,26 +224,9 @@ alias lessr="less --raw-control-chars"
 alias showfatindir="du -hx --max-depth=15 ./ | grep '[[:digit:]]\.*G' |sort -n -r"
 
        #foreground jobs
-alias fg1="fg 1"
-alias fg2="fg 2"
-alias fg3="fg 3"
-alias fg4="fg 4"
-alias fg5="fg 5"
-alias fg6="fg 6"
-alias fg7="fg 7"
-alias fg8="fg 8"
-alias fg9="fg 9"
-alias fg10="fg 10"
-alias fg11="fg 11"
-alias fg12="fg 12"
-alias fg13="fg 13"
-alias fg14="fg 14"
-alias fg15="fg 15"
-alias fg16="fg 16"
-alias fg17="fg 17"
-alias fg18="fg 18"
-alias fg19="fg 19"
-alias fg20="fg 20"
+for _n in $(seq 1 99); do 
+    alias "fg${_n}=fg ${_n}"
+done; unset _n
 
 #------------------------------ comment ----------------------
 #mount ---------------------------------------

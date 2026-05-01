@@ -1821,6 +1821,39 @@ jobs() {
     done
 }
 
+fg() {
+# Resume a job by number or partial name: fg, fg 1, fg %1, fg vim ...
+    local arg="${1:-}"
+
+    # no arg → resume current (+) job
+    [[ -z "$arg" ]] && { builtin fg; return; }
+
+    # numeric (1, %1) → pass straight to builtin
+    [[ "$arg" =~ ^%?[0-9]+$ ]] && { builtin fg "$arg"; return; }
+
+    # partial name search: scan jobs via ps
+    local jobs_raw job_num pid marker best_num=-1
+    jobs_raw=$(builtin jobs -l)
+    [[ -z "$jobs_raw" ]] && { echo "fg: no jobs" >&2; return 1; }
+
+    while IFS= read -r line; do
+        [[ "$line" =~ ^\[([0-9]+)\]([+-]?)[[:space:]]+([0-9]+) ]] || continue
+        job_num="${BASH_REMATCH[1]}"
+        pid="${BASH_REMATCH[3]}"
+        local cmd
+        cmd=$(ps -p "$pid" -o cmd= 2>/dev/null)
+        if [[ "$cmd" == *"$arg"* ]]; then
+            (( best_num < 0 || job_num < best_num )) && best_num=$job_num
+        fi
+    done <<< "$jobs_raw"
+
+    if (( best_num < 0 )); then
+        echo "fg: no job matching '$arg'" >&2
+        return 1
+    fi
+    builtin fg "%$best_num"
+}
+
 renull() {
 # clean file     
     if [ -z "$1" ]; then
@@ -2860,7 +2893,7 @@ SYNC:
         scpresume
 
 BACKUP/COPY:
-        addBackupa          - backup file/dir (.bak<N>.bak or .tar.gz)
+        addBackup           - backup file/dir (.bak<N>.bak or .tar.gz)
         addVers             - version file to /tmp/versions/<path>/<file>_vers<N>
         addGit              - track file/s in local git repo ~/DOWNLOAD/local_GIT/<repo>
         pbcopy, pbpaste     - copy / paste for / from clipboard
