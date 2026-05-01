@@ -19,24 +19,35 @@ reset_NC='\[\e[0m\]'
 _cmd_prompt_running=0
 _cmd_elapsed_str=''
 _last_exit_code=0
+_mline_buf=""
+
+# capture each readline input line (including \ continuations)
+_save_readline_ml() { [[ -n "$READLINE_LINE" ]] && _mline_buf+="$READLINE_LINE"$'\n'; }
+bind -x '"\C-x\C-r": _save_readline_ml'
+bind '"\C-m": "\C-x\C-r\C-j"'
 
 _cmd_timer_preexec() {
+    # ignore readline helper so it doesn't screw `_last_bash_cmd`
+    [[ "$BASH_COMMAND" == "_save_readline_ml" ]] && return
     if [[ $_cmd_prompt_running == 0 ]]; then
         _cmd_timer=${_cmd_timer:-$SECONDS}
+        _last_bash_cmd="${_last_bash_cmd:-$BASH_COMMAND}"
     fi
 }
 
 _cmd_timer_precmd() {
     _cmd_prompt_running=1
 
-    # log successful commands to ~/.bash_history_success
-    if [[ $_last_exit_code -eq 0 ]]; then
-        local last_cmd
-        last_cmd=$(tail -n1 ~/.bash_history 2>/dev/null)
-        if [[ -n "$last_cmd" && "$last_cmd" != \#* ]]; then
-            #echo "$(date '+%F %T') $last_cmd" >> ~/.bash_history_success
-            printf '#%s\n%s\n' "$(date '+%s')" "$last_cmd" >> ~/.bash_history_success
+    # log successful commands to `.bash_history_success`
+    if [[ $_last_exit_code -eq 0 && -n "$_last_bash_cmd" ]]; then
+        printf '#%s\n%s\n' "$(date '+%s')" "$_last_bash_cmd" >> ~/.bash_history_success
         fi
+
+    # save multiline commands to `.multiline_history`
+    # _mline_buf accumulates raw readline input lines, preserving the user's original layout
+    local _ml_trimmed="${_mline_buf%$'\n'}"
+    if [[ "$_ml_trimmed" == *$'\n'* ]]; then
+        printf '# %s [%s]\n%s\n\n' "$(date '+%F %T')" "$_last_exit_code" "$_ml_trimmed" >> "$HOME/.multiline_history"
     fi
 
     # execution timer: show if >= 60s, or any duration on failure
@@ -61,6 +72,8 @@ _precmd_wrapper() {
     _cmd_timer_precmd
     history -c
     history -r
+    unset _last_bash_cmd
+    _mline_buf=""
 }
 
 if [[ "$TERM" =~ "screen" ]]; then
