@@ -415,14 +415,15 @@ EOF
 }
 
 egreplessdir() {
-# Usage: egreplessdir 'pattern' /path/to/dir [comment_char] [--binary] [--no-num] [--exclude=dir1:dir2]
+# Usage : egreplessdir 'pattern' /path/to/dir [comment_char] [--binary] [--no-num] [--exclude='part1|part2'] [--exclude-dir=d1:d2]
     local comment='#'
     local pattern=''
     local path=''
     local no_num=false
-    local grep_flags="-iIr"
+    local binary=false
+    local exclude_parts=()
     local exclude_dirs=()
-    local grep_excludes=()
+    local exclude_part=''
     local args=()
     local help_text
     help_text=$(cat <<'EOF'
@@ -432,21 +433,27 @@ USAGE
   egreplessdir 'pattern' /path/to/dir [comment_char] [OPTIONS]
 
 ARGS
-  pattern               search string (case-insensitive)
-  dir                   directory to search recursively
-  comment_char          strip inline comments starting with this char (default: #)
+  pattern       search string (case-insensitive)
+  dir           directory to search recursively
+  comment_char  strip inline comments starting with this char (default: #)
 
 OPTIONS
-  --binary              include binary files (-a)
-  --no-num              hide line numbers
-  --exclude=dir1:dir2   exclude directories (colon-separated)
-  --help, -h            help
+  --binary                    include binary files (-a)
+  --no-num                    hide line numbers
+  --exclude='part'            exclude output lines matching part (grep -Ev, repeatable)
+  --exclude='part1|part2'     exclude multiple patterns at once
+  --exclude='part1' --exclude='part2'
+  --exclude-dir=dir           skip directory entirely via find -prune (repeatable)
+  --exclude-dir=dir1:dir2     skip multiple dirs (colon-separated)
+  --exclude-dir=dir1 --exclude-dir=dir2
+  --help, -h                  help
 
 EXAMPLES
   egreplessdir 'error' /var/log
-  egreplessdir 'error' /var/log '\#'
-  egreplessdir 'TODO' ./src '\#' --exclude=.git:node_modules
-  egreplessdir 'pattern' ./src '\#' --binary --no-num
+  egreplessdir 'mess' /etc --exclude='ssl/certs|mime.types'
+  egreplessdir 'vendor' ./src --exclude-dir=.git:node_modules
+  egreplessdir 'log' ./src --exclude-dir=.git --exclude-dir=node_modules
+  egreplessdir 'pas' ./src --exclude='vendor' --exclude-dir=.git --no-num
 EOF
 )
 
@@ -457,12 +464,14 @@ EOF
     for arg in "$@"; do
         case "$arg" in
             --exclude=*)
-                        IFS=':' read -ra dirs <<< "${arg#*=}"
-                        exclude_dirs+=("${dirs[@]}") ;;
-            --no-num)   no_num=true ;;
-            --binary)   grep_flags="-iar" ;;
-            *)          args+=("$arg") ;;
-        esac        
+                exclude_parts+=("${arg#*=}") ;;
+            --exclude-dir=*)
+                IFS=':' read -ra dirs <<< "${arg#*=}"
+                exclude_dirs+=("${dirs[@]}") ;;
+            --no-num)    no_num=true ;;
+            --binary)    binary=true ;;
+            *)           args+=("$arg") ;;
+        esac
     done
 
     if [ "${#args[@]}" -lt 2 ]; then
@@ -470,25 +479,50 @@ EOF
     fi
     pattern="${args[0]}"
     path="${args[1]}"
+    if [ ! -e "$path" ]; then echo "Error: path '$path' not found"; return 1; fi
+    if [ ! -r "$path" ]; then echo "Error: path '$path' permission denied"; return 1; fi    
     if [ "${#args[@]}" -ge 3 ] && [ -n "${args[2]}" ] && [ "${args[2]}" != ' ' ]; then
         comment="${args[2]}"
     fi
 
-    for dir in "${exclude_dirs[@]}"; do
-        grep_excludes+=(--exclude-dir="$dir")
-    done
-
-    if [ "$no_num" = true ]; then
-        grep "${grep_excludes[@]}" -on ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" \
-            |egrep -v ":[0-9]+:\s*${comment}" \
-            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
-            |grep -i "$pattern" |sed 's/:[0-9]\+:/:/1' |grep -i "$pattern"
-    else
-        grep "${grep_excludes[@]}" -on ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" \
-            |egrep -v ":[0-9]+:\s*${comment}" \
-            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
-            |grep -i "$pattern"
+    if [ "${#exclude_parts[@]}" -gt 0 ]; then
+        exclude_part=$(printf '%s|' "${exclude_parts[@]}")
+        exclude_part="${exclude_part%|}"
     fi
+
+    local grep_flags="-iI"
+    [ "$binary" = true ] && grep_flags="-ia"
+
+    # build find -prune expression for excluded dirs
+    local prune_args=()
+    if [ "${#exclude_dirs[@]}" -gt 0 ]; then
+        prune_args+=('(')
+        for i in "${!exclude_dirs[@]}"; do
+            [ "$i" -gt 0 ] && prune_args+=('-o')
+            if [[ "${exclude_dirs[$i]}" == */* ]]; then
+                prune_args+=('-path' "${exclude_dirs[$i]}")
+            else
+                prune_args+=('-name' "${exclude_dirs[$i]}")
+            fi
+        done
+        prune_args+=(')' '-prune' '-o')
+    fi
+
+    {
+        if [ "${#exclude_dirs[@]}" -gt 0 ]; then
+            find "$path" "${prune_args[@]}" -type f \
+                -exec grep -on ".\{0,120\}${pattern}.\{0,120\}" "${grep_flags}H" {} +
+    else
+            grep -on ".\{0,120\}${pattern}.\{0,120\}" "${grep_flags}r" "$path"
+        fi
+    } \
+            |egrep -v ":[0-9]+:\s*${comment}" \
+            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
+            |grep -i "$pattern" \
+            | { [ -n "$exclude_pat" ] && grep -Ev "$exclude_part" || cat; } \
+            | { [ "$no_num" = true ] && sed 's/:[0-9]\+:/:/1' || cat; } \
+            |grep -i "$pattern"
+
 }
 
 egrepless() {
@@ -570,8 +604,6 @@ EOF
             |grep -i "$pattern"
     fi
 }    
-}
-
 
 diffFiles() {
     diff --color --unified=0 $1 $2
