@@ -415,62 +415,79 @@ EOF
 }
 
 egreplessdir() {
-#C- Example: egreplessdir  'string' /path/to/dir '\comment_prefix' '--binary' '--exclude=dir1:dir2' 
-#or          egreplessdir  'pattern' /path --exclude=.git:node_modules
-    local run=false
+# Usage: egreplessdir 'pattern' /path/to/dir [comment_char] [--binary] [--no-num] [--exclude=dir1:dir2]
     local comment='#'
-    local path="$2"
-    local pattern="$1"
-    local param=''
+    local pattern=''
+    local path=''
+    local no_num=false
+    local grep_flags="-iIr"
     local exclude_dirs=()
     local grep_excludes=()
-    local exclude='tmp_d313d4379asgdgs'
-    local grep_flags="-iIr"
-    local arr_old_args=("$@")
-    local arr_new_args=()
+    local args=()
+    local help_text
+    help_text=$(cat <<'EOF'
+egreplessdir — recursive grep with context window, comment filtering, and line numbers
 
-    for arg in "${arr_old_args[@]}"; do
-        if [[ "$arg" == --exclude=* ]]; then
-            IFS=':' read -ra dirs <<< "${arg#*=}"
-            exclude_dirs+=("${dirs[@]}")
-        else
-            arr_new_args+=("$arg")
-        fi
-    done
+USAGE
+  egreplessdir 'pattern' /path/to/dir [comment_char] [OPTIONS]
 
-        # rewrite parametes (remove parameters exclude)
-    set -- "${arr_new_args[@]}"
-    pattern="$1"
-    path="$2"
-    
-    if [ "$#" -lt 2 ]; then
-       echo -e "Error: too few arguments, must be min - 2"
-    elif [ "$#" -gt 4 ]; then
-       echo -e "Error: too many arguments, must be max - 4 (including --exclude='dir1:dir2')"
-    else
-        run=true
-        if [ "$#" -ge 3 ]; then
-            if [ -n "$3" ] && [ "$3" != " " ]; then
-                comment="$3"
-            fi
-        fi
+ARGS
+  pattern               search string (case-insensitive)
+  dir                   directory to search recursively
+  comment_char          strip inline comments starting with this char (default: #)
 
-        if [ "$#" -eq 4 ]; then
-            param="$4"
-        fi
+OPTIONS
+  --binary              include binary files (-a)
+  --no-num              hide line numbers
+  --exclude=dir1:dir2   exclude directories (colon-separated)
+  --help, -h            help
+
+EXAMPLES
+  egreplessdir 'error' /var/log
+  egreplessdir 'error' /var/log '\#'
+  egreplessdir 'TODO' ./src '\#' --exclude=.git:node_modules
+  egreplessdir 'pattern' ./src '\#' --binary --no-num
+EOF
+)
+
+    if [ "$1" = '--help' ] || [ "$1" = '-h' ]; then
+        echo "$help_text"; return 0
     fi
 
-    if [ "$run" = true ]; then
-        if [ "$param" = '--binary' ]; then  grep_flags="-iar" ; fi
-        for dir in "${exclude_dirs[@]}"; do
-                #add element to array
-            grep_excludes+=(--exclude-dir="$dir")
-        done
+    for arg in "$@"; do
+        case "$arg" in
+            --exclude=*)
+                        IFS=':' read -ra dirs <<< "${arg#*=}"
+                        exclude_dirs+=("${dirs[@]}") ;;
+            --no-num)   no_num=true ;;
+            --binary)   grep_flags="-iar" ;;
+            *)          args+=("$arg") ;;
+        esac        
+    done
 
-        grep "${grep_excludes[@]}" -o ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" |\
-        egrep -v "^${comment}|^\s?+${comment}" | \
-        sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" | \
-        grep -i "$pattern"
+    if [ "${#args[@]}" -lt 2 ]; then
+        echo "Error: pattern and path required"; return 1
+    fi
+    pattern="${args[0]}"
+    path="${args[1]}"
+    if [ "${#args[@]}" -ge 3 ] && [ -n "${args[2]}" ] && [ "${args[2]}" != ' ' ]; then
+        comment="${args[2]}"
+    fi
+
+    for dir in "${exclude_dirs[@]}"; do
+        grep_excludes+=(--exclude-dir="$dir")
+    done
+
+    if [ "$no_num" = true ]; then
+        grep "${grep_excludes[@]}" -on ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" \
+            |egrep -v ":[0-9]+:\s*${comment}" \
+            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
+            |grep -i "$pattern" |sed 's/:[0-9]\+:/:/1' |grep -i "$pattern"
+    else
+        grep "${grep_excludes[@]}" -on ".\{0,120\}${pattern}.\{0,120\}" $grep_flags "$path" \
+            |egrep -v ":[0-9]+:\s*${comment}" \
+            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
+            |grep -i "$pattern"
     fi
 }
 
