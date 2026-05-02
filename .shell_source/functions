@@ -475,37 +475,84 @@ egreplessdir() {
 }
 
 egrepless() {
-#C- Example: egrepless  'struing' /path/to/file '\string_comment' '--<param>'
-#or             egrepless  'string pattern' /path/to/file
-    local run=false
+# Usage: egrepless 'pattern' /path/to/file [comment_char] [--no-num]
+# Examples: egrepless  'struing' /path/to/file '\string_comment'
+#           egrepless  'string pattern' /path/to/file
+#           cat file | egrepless 'pattern' '\comment'
     local comment='#'
-    local path="$2"
-    local pattern="$1"
-    local param=''
+    local comment='#'
+    local pattern=''
+    local path=''
+    local no_num=false
+    local piped=false
+    local help_text
+    help_text=$(cat <<'EOF'
+egrepless — grep with context window, comment filtering, and line numbers
 
-    if [ "$#" -le 1 ]; then
-       echo -e "Error: too few arguments, must will be min - 2"
-    elif [ "$#" -gt 4 ]; then
-       echo -e "Error: too many arguments, must will be max - 4"
+USAGE
+  egrepless 'pattern' /path/to/file [comment_char] [--no-num]
+  cat file | egrepless 'pattern' [comment_char] [--no-num]
+
+ARGS
+  pattern       search string (case-insensitive)
+  file          file to search (not needed when piping)
+  comment_char  strip inline comments starting with this char (default: #)
+  --no-num      hide line numbers
+  --help, -h    this help
+
+EXAMPLES
+  egrepless 'error' /var/log/syslog
+  egrepless 'error' /var/log/syslog '\#'
+  cat /etc/protocols | egrepless 'udp'
+  cat /etc/protocols | egrepless 'udp' '\#'
+  cat /etc/protocols | egrepless 'udp' '\#' --no-num
+EOF
+)
+
+    if [ "$1" = '--help' ] || [ "$1" = '-h' ]; then
+        echo "$help_text"; return 0
+    fi
+
+    if [ -p /dev/stdin ]; then
+        piped=true
+        path='/dev/stdin'
+    fi
+
+    if [ "$piped" = true ]; then
+        if [ "$#" -lt 1 ]; then
+            echo "Error: pattern required"; return 1
+        fi
+        pattern="$1"
+        for arg in "${@:2}"; do
+            if [ "$arg" = '--no-num' ]; then no_num=true
+            elif [ -n "$arg" ] && [ "$arg" != ' ' ]; then comment="$arg"
+            fi
+        done
     else
-        run=true
-
-        if [ "$#" -ge 3 ]; then
-            if [ "$3" != '' ];  then comment="$3"; fi
-            if [ "$3" != ' ' ]; then comment="$3"; fi
+        if [ "$#" -lt 2 ]; then
+            echo "Error: pattern and file required"; return 1
         fi
-
-        if [ "$#" -eq 4 ]; then param="$4"; fi
+        pattern="$1"
+        path="$2"
+        for arg in "${@:3}"; do
+            if [ "$arg" = '--no-num' ]; then no_num=true
+            elif [ -n "$arg" ] && [ "$arg" != ' ' ]; then comment="$arg"
+            fi
+        done
     fi
 
-
-    if [ "$run" = true ]; then
-        if [ "$param" == '--num' ]; then
-            grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path"  |egrep -v "^${comment}|^$\s?+${comment}" |grep -in "$pattern"; else
-            grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path"  |egrep -v "^${comment}|^$\s?+${comment}" \
-                                |sed "s/\(:${comment}\).*/ -_CLEARED_by_filter_-/g" |grep -in "$pattern"
-        fi
+    if [ "$no_num" = true ]; then
+        grep -o ".\{0,150\}${pattern}.\{0,150\}" -i "$path" \
+            |egrep -v "^\s*${comment}" \
+            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
+            |grep -i "$pattern"
+    else
+        grep -on ".\{0,150\}${pattern}.\{0,150\}" -i "$path" \
+            |egrep -v "^[0-9]*:\s*${comment}" \
+            |sed "s/\(\s\+\|:\)${comment}.*/ -_CLEARED_by_filter_-/g" \
+            |grep -i "$pattern"
     fi
+}    
 }
 
 
