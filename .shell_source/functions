@@ -2916,6 +2916,79 @@ EOF
         ' "${input_files[@]}"
 }
 
+bincat() {
+# cat with non-printable/non-ASCII chars stripped
+# Usage: bincat file [--squeeze] [--min=Number] [--string]
+    local squeeze=false
+    local min_len=1
+    local use_strings=false
+    local files=()
+    local help_text
+    help_text=$(cat <<'EOF'
+bincat — cat for binary files: strips control chars and non-ASCII bytes
+
+USAGE
+  bincat [OPTIONS] file [file...]
+
+OPTIONS
+  --squeeze        remove empty/whitespace-only lines from output
+  --min=N          drop lines shorter than N printable chars (default: 1)
+  --strings        use strings(1) mode: extract sequences of N+ printable chars
+  --help, -h       this help
+
+EXAMPLES
+  bincat /usr/bin/ls
+  bincat --squeeze /var/lib/dpkg/status
+  bincat --min=4 binary.db
+  bincat --strings --min=6 /usr/bin/bash
+EOF
+)
+
+    if [ "$1" = '--help' ] || [ "$1" = '-h' ]; then
+        echo "$help_text"; return 0
+    fi
+
+    for arg in "$@"; do
+        case "$arg" in
+            --squeeze)   squeeze=true ;;
+            --strings)   use_strings=true ;;
+            --min=*)     min_len="${arg#*=}" ;;
+            -*)          echo "Unknown option: $arg" >&2; return 1 ;;
+            *)           files+=("$arg") ;;
+        esac
+    done
+
+    if [ "${#files[@]}" -eq 0 ]; then
+        echo "Error: file required" >&2; return 1
+    fi
+
+    local file rc=0
+    for file in "${files[@]}"; do
+        if [ ! -e "$file" ]; then
+            echo "bincat: '$file': no such file" >&2; rc=1; continue
+        fi
+        if [ ! -r "$file" ]; then
+            echo "bincat: '$file': permission denied" >&2; rc=1; continue
+        fi
+
+        if [ "$use_strings" = true ]; then
+            strings -n "$min_len" "$file"
+        else
+            local out
+            out=$(tr -cd '\t\n\040-\176' < "$file")
+            if [ "$min_len" -gt 1 ]; then
+                out=$(echo "$out" | awk "length >= $min_len")
+            fi
+            if [ "$squeeze" = true ]; then
+                echo "$out" | grep -v '^[[:space:]]*$'
+            else
+                echo "$out"
+            fi
+        fi
+    done
+    return "$rc"
+}
+
 
 myfunctions_aliases () {
     echo -e '
@@ -3016,6 +3089,7 @@ OTHER:
         incognito
         extract cat_z
         defcat                              - /usr/bin/cat
+        bincat                              - cat binary file without unreadable symbols
         scriptformat                        - remove ansci unprintable cahracters
         se, ses, seb                        - short sudo
         sq, plz, sr, l1
