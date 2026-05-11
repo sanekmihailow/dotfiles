@@ -39,9 +39,10 @@ _cmd_timer_precmd() {
     _cmd_prompt_running=1
 
     # log successful commands to `.bash_history_success`
-    if [[ $_last_exit_code -eq 0 && -n "$_last_bash_cmd" ]]; then
+    local _nosave_re='^(PROMPT_COMMAND=|_precmd_wrapper$|\[ -n "\$force_color_prompt" \])'
+    if [[ $_last_exit_code -eq 0 && -n "$_last_bash_cmd" && ! "$_last_bash_cmd" =~ $_nosave_re ]]; then
         printf '#%s\n%s\n' "$(date '+%s')" "$_last_bash_cmd" >> ~/.bash_history_success
-        fi
+    fi
 
     # save multiline commands to `.multiline_history`
     # _mline_buf accumulates raw readline input lines, preserving the user's original layout
@@ -70,8 +71,7 @@ _precmd_wrapper() {
     _last_exit_code=$?   # capture before anything else runs
     history -a           # flush to file — last_cmd readable after this
     _cmd_timer_precmd
-    history -c
-    history -r
+    history -n           # add delta posttion history from start session and last command
     unset _last_bash_cmd
     _mline_buf=""
 }
@@ -86,6 +86,8 @@ else
     trap '_cmd_timer_preexec' DEBUG
 fi
 
+PROMPT_COMMAND="_precmd_wrapper"
+export -n PROMPT_COMMAND
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -98,8 +100,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-PROMPT_COMMAND="_precmd_wrapper"
-export -n PROMPT_COMMAND
 if [ "$color_prompt" = yes ]; then
     PS1=" $(move_cursor_to_end_line) \`if [ \$? = 0 ]; then echo -e \"${fg_green} \xE2\x9C\x85 ${reset_NC}\"; else echo -e \"${fg_red} \xE2\x9D\x8C ${reset_NC}\"; fi\` "
     PS1+="${debian_chroot:+($debian_chroot)} ${fg_GREEN} ${fg_lightyellow}\n#----------------${reset_NC}"
@@ -120,7 +120,7 @@ fi
 
 unset color_prompt force_color_prompt
 case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1" ;;
-*) ;;
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1" ;;
+    *) ;;
 esac
