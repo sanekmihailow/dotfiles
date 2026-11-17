@@ -11,4 +11,4 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias grep='grep --color=auto'
 
-PS1='[docker] \t j=\j \u@\h:\w\n \$ '
+PS1='\n\n[docker] \t j=\j \u@\h:\w\n \$ '
